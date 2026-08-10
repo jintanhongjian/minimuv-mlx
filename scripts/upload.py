@@ -104,8 +104,14 @@ bfloat16:
 | build | PSNR vs bf16 | correlation | outcome |
 |---|---:|---:|---|
 | 8-bit | **27.6 dB** | 0.959 | near-identical |
-| 4-bit | 22.0 dB | 0.854 | cooler colour, background artifacting, subject intact |
+| 4-bit | 22.0 dB | 0.854 | subject intact; artifacts visible **at this canvas** |
 | 3-bit | 16.3 dB | 0.740 | **subject destroyed** |
+
+Read that table as a *ranking*, not as a description of quality. It was measured at 256x256 to make
+five renders affordable, and that canvas is far off the 768-pixel short edge H3 was trained for — the
+bfloat16 baseline carries artifacts there too. A full 15 s render at 1344x768 on the 4-bit build is
+photorealistic, follows the prompt across the whole duration, and shows none of the colour cast or
+background artifacting visible in the small-canvas comparison.
 
 At 3 bits the scene is gone — no animal, no log, just a textured field. It is built but **not
 published**. Notably it does not degrade by blurring: its per-frame variance *rises* (54.7 against
