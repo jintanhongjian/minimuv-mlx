@@ -89,8 +89,12 @@ and multiplied by 50 (the blocks are identical):
 | 5 s, 1344x768 | 37,966 | 10.5 s | **8.8 min** | 9.3 GB |
 | 15 s, 1344x768 | 109,318 | 74.9 s | **1.04 h** | 24.4 GB |
 
-A full 5 s generation confirms the extrapolation rather than relying on it: a real step of the
-complete pipeline measured **531.6 s (8.86 min)** against the 8.8 min predicted from one block.
+Full generations confirm the extrapolation rather than relying on it. A real step of the complete
+5 s pipeline measured **531.6 s (8.86 min)** against the 8.8 min predicted from one block. A 15 s
+run averaged **52 min/step** on the 4-bit build against 62 min predicted for bfloat16 — a ~1.19x
+speedup, close to the ~1.2x estimated below for that length. Individual steps in that run ranged
+35.5 to 60.9 min with no algorithmic cause (the work is identical at every timestep), so treat
+single-step timings as carrying real machine-state variance.
 
 Per-step cost is the measured, assumption-free number. The released weights are **CFG-distilled**
 ("guidance baked into the weights, so there is no guider, no `negative_prompt` and no
@@ -124,7 +128,11 @@ Collection: [**pipenetwork/MiniMax-H3 MLX**](https://huggingface.co/collections/
 | [bf16](https://huggingface.co/pipenetwork/MiniMax-H3-MLX-bf16) | 66.3 GB | 40.3 GB | reference | reference |
 | [8bit](https://huggingface.co/pipenetwork/MiniMax-H3-MLX-8bit) | 35.3 GB | **21.5 GB** | 27.6 dB | 0.0329 |
 | [6bit](https://huggingface.co/pipenetwork/MiniMax-H3-MLX-6bit) | 30.3 GB | **16.5 GB** | — | 0.0611 |
-| [4bit](https://huggingface.co/pipenetwork/MiniMax-H3-MLX-4bit) | 25.3 GB | **11.5 GB** | 22.0 dB | 0.1649 |
+| [4bit](https://huggingface.co/pipenetwork/MiniMax-H3-MLX-4bit) | 25.3 GB | **11.5 GB** | 22.0 dB* | 0.1649 |
+
+\* measured at 256x256, which is far off the trained distribution — see the note under
+[Full-resolution 15 s generation](#full-resolution-15-s-generation). At the canvas H3 was built for,
+4-bit output is clean.
 
 `bf16` is the faithful conversion: it preserves the release's **mixed** precision rather than
 flattening it — MiniMax ships twelve tensors (the two patch projections, the timestep MLP, both
@@ -184,6 +192,42 @@ Velocity error is the right quantity to watch rather than final pixels, because 
 *integrates* it — a bias that is small per step still accumulates along the trajectory. That same
 property is why it cannot tell you where output stops being usable, which has to be generated. It
 is: 4-bit keeps the subject at 22.0 dB, 3-bit destroys it at 16.3 dB.
+
+### Full-resolution 15 s generation
+
+The comparison above was run at 256x256 to make five renders affordable, and that canvas is well off
+the 768-pixel short edge H3 was trained for — the bfloat16 baseline itself carries artifacts there.
+It is a fair *ranking*, and it located the cliff between 4-bit and 3-bit. It is **not** a fair
+description of 4-bit's quality.
+
+A full 15 s render on the 4-bit build settles that:
+
+| | |
+|---|---|
+| output | 1344x768, 362 frames, 15.07 s, stereo 32 kHz |
+| packed sequence | 109,110 rows |
+| steps | 8 forwards, 3119 s average, **426 min (7.1 h)** total |
+| AdaLN cache | 145 MB, replacing 13.8 GB of projections that were then dropped |
+
+The result is photorealistic — a fox picking its way along a mossy log in backlit mist, with visible
+shallow depth of field — and it follows the prompt across the full duration, leaving frame in the
+final quarter as instructed. The cooler colour cast and background artifacting seen at 256x256 do
+not appear. **The model card's description of 4-bit as visibly degraded is too harsh for the
+intended canvas.**
+
+The audio holds up on inspection too: L/R correlation **+0.744** (genuinely stereo, not a duplicated
+channel), a natural spectral rolloff, and an **8.2x swing in per-second RMS** that rises through the
+middle of the clip and falls at the end — tracking the action rather than sitting as static noise.
+
+The clip itself is not in this repository: it was written to a scratch directory that has since been
+cleaned. Reproducing it costs ~7 h of GPU:
+
+```bash
+python scripts/generate.py "A red fox picks its way along a fallen mossy log through a misty forest \
+  at dawn, pauses to sniff the air, then leaps down into the ferns. Cinematic, shallow depth of \
+  field, drifting fog, birdsong." -d 15 -s 9 --seed 0 -o fox_15s.mp4 \
+  -t /path/to/MiniMax-H3-MLX-4bit
+```
 
 ### AdaLN: measure, do not reason
 
