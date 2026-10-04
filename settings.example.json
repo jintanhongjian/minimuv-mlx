@@ -1,0 +1,22 @@
+{
+  "video": {
+    "model_path": "~/.omlx/models/pipenetwork/MiniMax-H3-FL2VA-MLX-Serve-4bit",
+    "service_url": "http://127.0.0.1:11234",
+    "model_id": "",
+    "api_params": {}
+  },
+  "image": {
+    "model_path": "~/.omlx/models/mlx-community/HiDream-O1-Image-Dev-mlx-q6"
+  },
+  "music": {
+    "model_path": "~/.omlx/models/mlx-community/MiniMax-Music3-8bit"
+  },
+  "text": {
+    "service_url": "http://127.0.0.1:8000",
+    "model_ids": [],
+    "api_params": {
+      "temperature": 0.2,
+      "max_tokens": 500
+    }
+  }
+}

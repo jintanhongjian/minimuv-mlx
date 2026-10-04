@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101113">
+    <title>MiniMuv</title>
+    <link rel="stylesheet" href="/app.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="MiniMuv">
+          <span class="brand-mark">MV</span>
+          <span class="brand-copy"><strong>MINIMUV</strong><span>LOCAL STUDIO</span></span>
+        </a>
+        <div class="topbar-right">
+          <button id="settings-open" class="settings-open" type="button" data-i18n="settingsButton" aria-label="Settings">设置</button>
+          <span class="local-pill"><span class="live-dot"></span><span data-i18n="localOnly">本地运行 · 私密创作</span></span>
+          <label class="language-picker">
+            <span class="sr-only" data-i18n="language">语言</span>
+            <select id="language" aria-label="Language">
+              <option value="zh-CN">简体中文</option>
+              <option value="en">English</option>
+              <option value="zh-TW">繁體中文</option>
+              <option value="fr">Français</option>
+              <option value="de">Deutsch</option>
+              <option value="ja">日本語</option>
+              <option value="ko">한국어</option>
+              <option value="es">Español</option>
+              <option value="pt">Português</option>
+              <option value="tr">Türkçe</option>
+              <option value="ar">العربية</option>
+              <option value="vi">Tiếng Việt</option>
+              <option value="id">Bahasa Indonesia</option>
+              <option value="ru">Русский</option>
+            </select>
+          </label>
+        </div>
+      </header>
+
+      <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title">
+        <form id="settings-form">
+          <div class="settings-heading">
+            <div>
+              <span class="section-kicker" data-i18n="settingsKicker">MODEL CONFIGURATION</span>
+              <h2 id="settings-title" data-i18n="settingsTitle">模型与服务设置</h2>
+            </div>
+            <button id="settings-close" class="settings-close" type="button" aria-label="Close">×</button>
+          </div>
+          <p class="settings-note" data-i18n="settingsPrivacy">仅支持本机服务地址；不保存 API 密钥。设置保存在项目目录的 settings.json。</p>
+          <fieldset class="settings-group">
+            <legend data-i18n="settingsVideo">视频生成 · MiniMax H3</legend>
+            <label for="settings-video-path" data-i18n="settingsModelPath">模型目录</label>
+            <input id="settings-video-path" type="text" autocomplete="off" required>
+            <label for="settings-video-url" data-i18n="settingsServiceUrl">本机服务地址</label>
+            <input id="settings-video-url" type="text" inputmode="url" autocomplete="url" required>
+            <label for="settings-video-model" data-i18n="settingsModelIdOptional">模型 ID（可选，留空自动检测）</label>
+            <input id="settings-video-model" type="text" autocomplete="off">
+            <label for="settings-video-params" data-i18n="settingsVideoParams">额外 API 参数（JSON 对象）</label>
+            <textarea id="settings-video-params" class="settings-json" spellcheck="false" rows="3"></textarea>
+          </fieldset>
+          <fieldset class="settings-group">
+            <legend data-i18n="settingsImage">图像生成 · HiDream</legend>
+            <label for="settings-image-path" data-i18n="settingsModelPath">模型目录</label>
+            <input id="settings-image-path" type="text" autocomplete="off" required>
+            <p class="settings-field-note" data-i18n="settingsLocalRunner">使用本机 Python 推理程序；此模型通过本地目录加载，不使用 HTTP 服务地址。</p>
+          </fieldset>
+          <fieldset class="settings-group">
+            <legend data-i18n="settingsMusic">音乐生成 · Music3</legend>
+            <label for="settings-music-path" data-i18n="settingsModelPath">模型目录</label>
+            <input id="settings-music-path" type="text" autocomplete="off" required>
+            <p class="settings-field-note" data-i18n="settingsLocalRunner">使用本机 Python 推理程序；此模型通过本地目录加载，不使用 HTTP 服务地址。</p>
+          </fieldset>
+          <fieldset class="settings-group">
+            <legend data-i18n="settingsText">提示词优化 · 本地文本模型</legend>
+            <label for="settings-text-url" data-i18n="settingsServiceUrl">本机服务地址</label>
+            <input id="settings-text-url" type="text" inputmode="url" autocomplete="url" required>
+            <label for="settings-text-models" data-i18n="settingsTextModels">模型 ID 列表（每行一个；与服务发现列表合并）</label>
+            <textarea id="settings-text-models" class="settings-json" spellcheck="false" rows="4"></textarea>
+            <label for="settings-text-params" data-i18n="settingsTextParams">请求参数（JSON；temperature、top_p、max_tokens）</label>
+            <textarea id="settings-text-params" class="settings-json" spellcheck="false" rows="3"></textarea>
+          </fieldset>
+          <p id="settings-status" class="settings-status" role="status" hidden></p>
+          <div class="settings-actions">
+            <button id="settings-cancel" type="button" data-i18n="settingsCancel">取消</button>
+            <button id="settings-save" type="submit" data-i18n="settingsSave">保存设置</button>
+          </div>
+        </form>
+      </dialog>
+
+      <main class="workspace">
+        <section class="intro">
+          <div class="eyebrow"><span class="eyebrow-line"></span><span id="intro-eyebrow" data-i18n="eyebrow">本地视频与音频生成</span></div>
+          <h1 data-i18n="headline">把想象，<span>变成视听。</span></h1>
+          <p class="intro-copy" data-i18n="introCopy">用 MiniMax H3 在你的 Mac 上，将文字生成同步的视频与立体声音频。</p>
+        </section>
+
+        <div class="studio-grid">
+          <section class="panel composer-panel">
+            <div class="panel-heading">
+              <div>
+                <div class="section-kicker" data-i18n="createLabel">创作工作台</div>
+                <h2 data-i18n="newGeneration">新建生成</h2>
+              </div>
+              <span class="step-badge">01 <span data-i18n="describe">描述</span></span>
+            </div>
+
+            <div class="mode-switch" role="group" aria-label="Generation mode">
+              <button id="video-mode-button" class="mode-button active" type="button" aria-pressed="true" data-i18n="modeVideo">视频</button>
+              <button id="image-mode-button" class="mode-button" type="button" aria-pressed="false" data-i18n="modeImage">图像</button>
+              <button id="music-mode-button" class="mode-button" type="button" aria-pressed="false" data-i18n="modeMusic">音乐</button>
+            </div>
+
+            <div id="video-model-section">
+            <div id="model-notice" class="model-notice" role="status">
+              <span class="notice-icon" aria-hidden="true">!</span>
+              <div class="notice-content">
+                <strong id="model-title" data-i18n="checkingModels">正在检查本地模型…</strong>
+                <p id="model-description"></p>
+                <div id="model-links" class="model-links"></div>
+                <button id="load-model-button" class="load-model-button" type="button" hidden data-i18n="loadModel">启动并加载模型</button>
+              </div>
+            </div>
+            </div>
+
+            <div id="image-model-section" hidden>
+              <div id="image-model-notice" class="model-notice" role="status">
+                <span class="notice-icon" aria-hidden="true">!</span>
+                <div class="notice-content">
+                  <strong id="image-model-title" data-i18n="imageChecking">正在检查 HiDream 图像模型…</strong>
+                  <p id="image-model-description"></p>
+                  <div id="image-model-links" class="model-links"></div>
+                </div>
+              </div>
+            </div>
+
+            <div id="music-model-section" hidden>
+              <div id="music-model-notice" class="model-notice" role="status">
+                <span class="notice-icon" aria-hidden="true">!</span>
+                <div class="notice-content">
+                  <strong id="music-model-title" data-i18n="musicChecking">正在检查 MiniMax Music3…</strong>
+                  <p id="music-model-description"></p>
+                  <div id="music-model-links" class="model-links"></div>
+                </div>
+              </div>
+            </div>
+
+            <form id="generation-form">
+              <div class="field-label-row">
+                <label id="prompt-label" class="field-label" for="prompt" data-i18n="promptLabel">描述你想看到的画面</label>
+                <span id="prompt-hint" class="field-hint" data-i18n="promptHint">细节越丰富，画面越生动</span>
+              </div>
+              <textarea id="prompt" name="prompt" maxlength="4000" required
+                data-i18n-placeholder="promptPlaceholder"
+                placeholder="例如：雨后的东京小巷，霓虹灯倒映在湿润的路面，一只橘猫从纸灯笼下缓缓走过，电影感镜头，远处传来轻柔的雨声。"></textarea>
+              <div class="textarea-footer"><span data-i18n="promptPrivacy">提示词仅在本机处理</span><span id="prompt-count">0 / 4000</span></div>
+              <div class="prompt-enhancer">
+                <label for="prompt-enhancer-model" data-i18n="enhancerModelLabel">本地文本模型</label>
+                <div class="prompt-enhancer-controls">
+                  <div class="select-wrap">
+                    <select id="prompt-enhancer-model" aria-label="Local text model" disabled>
+                      <option data-i18n="enhancerModelLoading">正在查找本地文本模型…</option>
+                    </select>
+                    <span class="select-arrow">⌄</span>
+                  </div>
+                  <button id="enhance-prompt-button" class="enhance-prompt-button" type="button" disabled data-i18n="enhancePrompt">提取关键词并优化</button>
+                </div>
+                <p id="prompt-enhancer-status" class="prompt-enhancer-status" role="status" hidden></p>
+                <div id="prompt-enhancer-result" class="prompt-enhancer-result" hidden>
+                  <strong data-i18n="enhancerKeywords">提取的关键词</strong>
+                  <div id="prompt-enhancer-keywords" class="prompt-enhancer-keywords"></div>
+                  <label for="prompt-enhancer-output" data-i18n="enhancerOptimizedPrompt">优化后的提示词</label>
+                  <textarea id="prompt-enhancer-output" readonly></textarea>
+                  <div class="prompt-enhancer-actions">
+                    <button id="apply-enhanced-prompt" type="button" data-i18n="enhancerApply">替换原提示词</button>
+                    <button id="dismiss-enhanced-prompt" type="button" data-i18n="enhancerDismiss">关闭</button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="video-controls">
+              <div class="controls-grid">
+                <div class="field">
+                  <label class="field-label" for="duration" data-i18n="duration">时长</label>
+                  <div class="select-wrap">
+                    <select id="duration" name="duration">
+                      <option value="5" data-i18n="duration5">5 秒</option>
+                      <option value="8" data-i18n="duration8">8 秒</option>
+                      <option value="10" data-i18n="duration10">10 秒</option>
+                      <option value="15" data-i18n="duration15">15 秒</option>
+                    </select>
+                    <span class="select-arrow">⌄</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="aspect" data-i18n="aspectRatio">画面比例</label>
+                  <div class="select-wrap">
+                    <select id="aspect" name="aspect">
+                      <option value="16:9" data-i18n="aspectLandscape">16:9 横屏</option>
+                      <option value="9:16" data-i18n="aspectPortrait">9:16 竖屏</option>
+                      <option value="1:1" data-i18n="aspectSquare">1:1 方形</option>
+                      <option value="4:3">4:3</option>
+                      <option value="3:4">3:4</option>
+                    </select>
+                    <span class="select-arrow">⌄</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="steps" data-i18n="quality">采样步数</label>
+                  <div class="select-wrap">
+                    <select id="steps" name="steps">
+                      <option value="4" data-turbo-step data-i18n="stepsFast">4 · Turbo 预览</option>
+                      <option value="6" data-turbo-step data-i18n="stepsBalanced">6 · Turbo 均衡</option>
+                      <option value="8" data-turbo-step data-i18n="stepsDetailed">8 · Turbo 细节</option>
+                      <option value="16" data-standard-step data-i18n="stepsStandard" hidden>16 · 标准质量</option>
+                    </select>
+                    <span class="select-arrow">⌄</span>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="seed" data-i18n="seed">随机种子</label>
+                  <input id="seed" name="seed" type="number" min="0" max="4294967295" value="0">
+                </div>
+              </div>
+
+              <details class="model-settings">
+                <summary data-i18n="modelSettings">本地模型</summary>
+                <p id="model-path" class="model-path"></p>
+                <a class="model-source-link" href="https://huggingface.co/pipenetwork/MiniMax-H3-MLX-8bit"
+                  target="_blank" rel="noreferrer" data-i18n="transformerNote">已有的 8-bit transformer 不包含完整生成所需组件 ↗</a>
+              </details>
+
+              <div class="compute-note">
+                <span class="compute-icon" aria-hidden="true">◷</span>
+                <p data-i18n="computeNote">H3 生成计算量很大。已启用 4-bit Turbo；5 秒视频约 125 帧，实际耗时取决于设备与系统负载。</p>
+              </div>
+              <label class="turbo-toggle"><input id="turbo" type="checkbox" checked><span data-i18n="turboLabel">使用 4-step Turbo LoRA（推荐预览）</span></label>
+              </div>
+
+              <div id="image-controls" hidden>
+                <div class="field">
+                  <label class="field-label" for="image-seed" data-i18n="seed">随机种子</label>
+                  <input id="image-seed" type="number" min="0" max="4294967295" value="42">
+                </div>
+                <details class="model-settings">
+                  <summary data-i18n="imageModelSettings">HiDream 本地图像模型</summary>
+                  <p id="image-model-path" class="model-path"></p>
+                  <a class="model-source-link" href="https://huggingface.co/mlx-community/HiDream-O1-Image-Dev-mlx-q6"
+                    target="_blank" rel="noreferrer" data-i18n="imageModelSource">HiDream-O1 Q6 模型卡 ↗</a>
+                </details>
+                <div class="compute-note">
+                  <span class="compute-icon" aria-hidden="true">◷</span>
+                  <p id="image-compute-copy" data-i18n="imageComputeNote">HiDream Q6 使用 2048×2048 方形画布；在 M4 Pro 上生成可能需要数分钟。</p>
+                </div>
+              </div>
+
+              <div id="music-controls" hidden>
+                <div class="field">
+                  <label class="field-label" for="music-lyrics-mode" data-i18n="musicModeLabel">人声模式</label>
+                  <div class="select-wrap">
+                    <select id="music-lyrics-mode">
+                      <option value="lyrics" data-i18n="musicLyricsMode">带歌词</option>
+                      <option value="instrumental" data-i18n="musicInstrumentalMode">纯音乐</option>
+                    </select>
+                    <span class="select-arrow">⌄</span>
+                  </div>
+                </div>
+                <div id="music-lyrics-field" class="field music-lyrics-field">
+                  <label class="field-label" for="music-lyrics" data-i18n="musicLyricsLabel">歌词</label>
+                  <textarea id="music-lyrics" maxlength="4000" data-i18n-placeholder="musicLyricsPlaceholder"
+                    placeholder="例如：[verse] 第一段歌词&#10;[chorus] 副歌歌词"></textarea>
+                  <span class="field-hint" data-i18n="musicLyricsHint">可用 [verse]、[chorus] 等段落标签组织歌词。</span>
+                </div>
+                <div class="controls-grid music-generation-grid">
+                  <div class="field">
+                    <label class="field-label" for="music-duration" data-i18n="musicDuration">时长上限</label>
+                    <div class="select-wrap">
+                      <select id="music-duration">
+                        <option value="15">15 s</option>
+                        <option value="30" selected>30 s</option>
+                        <option value="60">60 s</option>
+                        <option value="120">120 s</option>
+                      </select>
+                      <span class="select-arrow">⌄</span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="field-label" for="music-steps" data-i18n="musicSteps">生成步数</label>
+                    <div class="select-wrap">
+                      <select id="music-steps">
+                        <option value="20">20</option>
+                        <option value="30" selected>30</option>
+                      </select>
+                      <span class="select-arrow">⌄</span>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="field-label" for="music-seed" data-i18n="seed">随机种子</label>
+                    <input id="music-seed" type="number" min="0" max="4294967295" value="42">
+                  </div>
+                </div>
+                <details class="model-settings">
+                  <summary data-i18n="musicModelSettings">MiniMax Music3 本地音乐模型</summary>
+                  <p id="music-model-path" class="model-path"></p>
+                  <a class="model-source-link" href="https://huggingface.co/mlx-community/MiniMax-Music3-8bit"
+                    target="_blank" rel="noreferrer" data-i18n="musicModelSource">Music3 8-bit 模型卡 ↗</a>
+                </details>
+                <div class="compute-note">
+                  <span class="compute-icon" aria-hidden="true">◷</span>
+                  <p data-i18n="musicComputeNote">Music3 8-bit 模型约 14.2 GB；较长曲目会显著增加生成时间。歌词和纯音乐均在本机生成。</p>
+                </div>
+              </div>
+
+              <button id="generate-button" class="generate-button" type="submit" disabled>
+                <span class="button-spark" aria-hidden="true">✳</span>
+                <span id="generate-label" data-i18n="generate">生成视频与音频</span>
+                <span class="button-arrow" aria-hidden="true">↗</span>
+              </button>
+            </form>
+          </section>
+
+          <section class="panel result-panel">
+            <div class="panel-heading result-heading">
+              <div>
+                <div class="section-kicker" data-i18n="previewLabel">生成结果</div>
+                <h2 data-i18n="previewTitle">预览画布</h2>
+              </div>
+              <span id="job-status" class="status-chip" data-i18n="waiting">等待创作</span>
+            </div>
+            <div id="preview" class="preview">
+              <div class="preview-glow"></div>
+              <div class="preview-orbit orbit-one"></div>
+              <div class="preview-orbit orbit-two"></div>
+              <div id="empty-state" class="empty-state">
+                <div class="preview-symbol"><span></span><span></span><span></span><span></span></div>
+                <p id="preview-empty-copy" data-i18n="previewEmpty">你的下一个世界<br>将在这里出现</p>
+                <span class="preview-caption" data-i18n="previewEmptyHint">输入提示词，开始生成</span>
+              </div>
+              <video id="video-result" controls playsinline hidden></video>
+              <img id="image-result" alt="" hidden>
+              <audio id="audio-result" controls hidden></audio>
+              <div id="loading-state" class="loading-state" hidden>
+                <div class="loader-ring"></div>
+                <strong id="loading-title" data-i18n="preparing">正在准备生成…</strong>
+                <span id="loading-copy" data-i18n="longRunning">生成可能需要较长时间。可安全离开此页面，任务会在本机继续。</span>
+                <button id="cancel-button" class="cancel-button" type="button" data-i18n="cancelGeneration" hidden>取消生成</button>
+              </div>
+            </div>
+            <div id="result-footer" class="result-footer" hidden>
+              <div class="result-meta">
+                <span class="result-dot"></span>
+                <span data-i18n="generatedLocally">已在本机生成</span>
+              </div>
+              <div class="result-actions">
+                <a id="download-video" class="text-action" download data-i18n="downloadVideo">下载视频</a>
+                <a id="download-audio" class="text-action" download data-i18n="downloadAudio">下载音频</a>
+                <a id="download-image" class="text-action" download data-i18n="imageDownload" hidden>下载图像</a>
+              </div>
+            </div>
+            <div id="log-panel" class="log-panel" hidden>
+              <div class="log-heading"><span data-i18n="generationLog">生成日志</span><span class="log-live"></span></div>
+              <pre id="job-logs"></pre>
+            </div>
+            <section class="history-panel" aria-labelledby="history-title">
+              <div class="history-heading">
+                <h3 id="history-title" data-i18n="historyTitle">历史项目</h3>
+                <span id="history-count" class="history-count"></span>
+              </div>
+              <div class="history-filters" role="group" aria-label="History category">
+                <button class="history-filter active" type="button" data-history-filter="all" aria-pressed="true" data-i18n="historyAll">全部</button>
+                <button class="history-filter" type="button" data-history-filter="video" aria-pressed="false" data-i18n="historyVideo">视频</button>
+                <button class="history-filter" type="button" data-history-filter="image" aria-pressed="false" data-i18n="historyImage">图像</button>
+                <button class="history-filter" type="button" data-history-filter="music" aria-pressed="false" data-i18n="historyMusic">音乐</button>
+              </div>
+              <div id="history-status" class="history-status" role="status" aria-live="polite" hidden></div>
+              <div id="history-list" class="history-list"></div>
+            </section>
+          </section>
+        </div>
+
+        <footer class="footer">
+          <span>Powered by MiniMax H3</span>
+          <span class="footer-divider">·</span>
+          <span data-i18n="footerLocal">模型推理完全在本机运行</span>
+          <span class="footer-spacer"></span>
+          <span class="footer-version">MLX <span class="footer-dot">/</span> Apple Silicon</span>
+        </footer>
+      </main>
+    </div>
+    <script src="/app.js" defer></script>
+  </body>
+</html>

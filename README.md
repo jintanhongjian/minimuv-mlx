@@ -310,6 +310,109 @@ keyframe posterior is **sampled** rather than taken at its mode, under a generat
 normalization — about 11 bits of every conditioning latent. MLX's RNG differs from torch's, so that
 draw is not bit-identical to the reference's, though everything around it is.
 
+## Local web studio
+
+The repository includes a localhost-only web interface for generating H3's synchronized video and
+stereo audio. It is not a text-chat UI: **MiniMax H3 is a video/audio diffusion pipeline, not an
+autoregressive language model.** The interface supports English, Simplified and Traditional Chinese,
+French, German, Japanese, Korean, Spanish, Portuguese, Turkish, Arabic, Vietnamese, Indonesian, and
+Russian.
+
+Download the complete 4-bit MLX-Serve package (about 41.9 GB) into the default model folder:
+
+```bash
+hf download ddalcu/MiniMax-H3-FL2VA-MLX-Serve-4bit \
+  --local-dir ~/.omlx/models/pipenetwork/MiniMax-H3-FL2VA-MLX-Serve-4bit
+```
+
+Install the Apple Silicon build of [MLX-Serve](https://github.com/ddalcu/mlx-serve/releases/latest)
+and make its `mlx-serve` executable available on `PATH` or at `~/.local/bin/mlx-serve`. Then start
+the studio:
+
+```bash
+./.venv/bin/python -m webapp.server
+```
+
+Open <http://127.0.0.1:8765>. The app starts the local MLX-Serve API when you choose **Start and
+load model**, loads the 4-bit model pack, and submits synchronized video/audio requests. Model
+inference and generated files stay on this Mac; output is saved under
+`~/.cache/minimax-h3-mlx/outputs/`. One job runs at a time, progress is shown in the browser, and
+active generation can be cancelled. Completed video, image, and music projects appear in the
+history panel on the right and remain available after restarting the studio. Their prompt and
+creation time are stored locally beside the generated files. The **Text to image** mode uses the local HiDream-O1 Q6 MLX
+weights; it is text-to-image only and generates square 2048×2048 PNGs. Image inference runs in its
+own Python 3.11 environment, separate from the studio and H3 runtime.
+
+On macOS, you can also double-click `start.command` to launch the studio and open it in your
+browser, then double-click `stop.command` to stop it. These commands use the project `.venv` and
+store the server PID and log in `~/Library/Application Support/MiniMuv/`. Stopping the studio also
+stops the MLX-Serve process it started.
+
+To install the HiDream inference code (without downloading the larger BF16 weights) and its
+isolated runtime:
+
+```bash
+HIDREAM_CODE_ROOT="$HOME/.omlx/models/pipenetwork/hidream-o1-mlx-code"
+hf download mlx-community/HiDream-O1-Image-Dev-mlx-bf16 \
+  --local-dir "$HIDREAM_CODE_ROOT" \
+  --include 'scripts/*' --include '*.md' --include '*.txt' --include '*.gitattributes' \
+  --include requirements.txt
+uv venv --python 3.11 "$HIDREAM_CODE_ROOT/.venv"
+uv pip install --python "$HIDREAM_CODE_ROOT/.venv/bin/python" \
+  -r "$HIDREAM_CODE_ROOT/requirements.txt"
+```
+
+The Q6 model weights belong at
+`~/.omlx/models/mlx-community/HiDream-O1-Image-Dev-mlx-q6/`. The studio detects both the weight
+files and inference environment and enables image generation only when both are ready. HiDream Q6
+is intended for square images and does not support reference-image editing. Generated PNGs are
+saved alongside H3 outputs under `~/.cache/minimax-h3-mlx/outputs/`.
+
+The **Music** mode uses the local [MiniMax-Music3 8-bit MLX model](https://huggingface.co/mlx-community/MiniMax-Music3-8bit)
+to generate WAV tracks from a text description, either with supplied lyrics or as instrumental
+music. The model weights should be at
+`~/.omlx/models/mlx-community/MiniMax-Music3-8bit/`; download them with:
+
+```bash
+hf download mlx-community/MiniMax-Music3-8bit \
+  --local-dir ~/.omlx/models/mlx-community/MiniMax-Music3-8bit
+```
+
+Music3 inference uses the isolated Python 3.11 environment described above and requires
+`mlx-audio` with its MLX dependencies installed there. The studio detects the model and runtime
+separately and enables music generation only when both are available. Enter lyrics for a vocal
+track; instrumental mode supplies the model's `[instrumental]` condition automatically. Generated
+WAV files are saved under `~/.cache/minimax-h3-mlx/outputs/`. Check the model card for its license
+and usage terms before generating or distributing music.
+
+The prompt editor also offers **Extract keywords & optimize** for video, image, and music prompts.
+It discovers text-generation models served by the local OMLX OpenAI-compatible API
+(`http://127.0.0.1:8000/v1` by default), including available Qwen, GLM, and Gemma models. Start
+OMLX before opening the studio; choose a model, review the extracted keywords and suggested prompt,
+then explicitly apply it if desired. Prompt text is sent only to the local OMLX service, not to a
+cloud API. Set `OMLX_BASE_URL` to another loopback HTTP address if the local service uses a
+different port; remote addresses are rejected.
+
+Open **Settings** in the studio header to configure the H3, HiDream, and Music3 model directories,
+the local MLX-Serve and OMLX service URLs, an optional H3 model ID, extra H3 API parameters, and
+text-model IDs/request parameters. Image and Music3 currently run through local Python inference
+scripts, so their settings use model directories rather than HTTP endpoints. Service URLs are
+restricted to loopback HTTP addresses; API keys are not accepted or stored. Settings persist in the
+git-ignored project-root `settings.json`; see [`settings.example.json`](./settings.example.json) for
+the default schema.
+
+The app binds to loopback and rejects non-local browser hosts.
+
+The existing [PipeNetwork 8-bit transformer](https://huggingface.co/pipenetwork/MiniMax-H3-MLX-8bit)
+is only a transformer component, not a runnable H3 package. The complete 4-bit pack includes the
+text encoder, transformer, both VAEs, tokenizer, and Turbo LoRA. It is a footprint optimization:
+the model is still compute-intensive. Turbo is enabled by default for 4–8 step previews; expect
+generation to take substantially longer on a MacBook Pro than on the M4 Max timings reported by the
+model publisher. Longer clips scale the wait significantly.
+
+The model package includes its `LICENSE` and `NOTICE`. Review and follow those terms before use;
+the model card describes territorial restrictions.
+
 ### End to end
 
 ```bash
@@ -404,6 +507,10 @@ scripts/
   upload.py             publish to the Hub; refuses to run without the upstream LICENSE
   make_collection.py    build/refresh the Hub collection
   run_tests.sh          all seven suites
+
+webapp/
+  server.py             localhost API and background generation jobs
+  static/               responsive multilingual web interface
 
 tests/           parity vs the reference, quant round-trip, smoke
 ```
