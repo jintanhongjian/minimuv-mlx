@@ -4,6 +4,8 @@ import json
 import base64
 import io
 import shutil
+import subprocess
+import sys
 import tempfile
 import threading
 import unittest
@@ -11,7 +13,7 @@ from collections import deque
 from pathlib import Path
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
-from unittest.mock import patch
+from unittest.mock import MagicMock, Mock, patch
 
 from webapp import server
 
@@ -68,6 +70,127 @@ class ModelDiscoveryTests(unittest.TestCase):
 
 
 class GenerationHistoryTests(unittest.TestCase):
+    def test_persists_and_restores_generation_controls_without_private_runtime_settings(self):
+        cases = [
+            ("video", "h3", ".mp4", {
+                "prompt": "Portrait film", "duration": 10, "aspect": "9:16",
+                "steps": 24, "turbo": False, "seed": 123, "first_frame_id": "",
+            }),
+            ("image", "hidream", ".png", {"prompt": "Forest painting", "seed": 777}),
+            ("music", "music3", ".wav", {
+                "prompt": "Piano song", "duration": 45, "steps": 25, "seed": 333,
+                "lyrics_mode": "lyrics", "lyrics": "[verse]\nA song of home", "model": "music3",
+            }),
+        ]
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+            server, "OUTPUT_ROOT", Path(temp_dir)
+        ):
+            for kind, prefix, suffix, settings in cases:
+                with self.subTest(kind=kind):
+                    item_id = str(server.uuid.uuid4())
+                    path = Path(temp_dir) / f"{prefix}-{item_id}{suffix}"
+                    path.write_bytes(b"media")
+                    job = {"id": item_id, "kind": kind, "created_at": 123, "prompt": settings["prompt"]}
+                    server._persist_history(job, [path], {
+                        **settings, "model_path": "/private/model",
+                        "api_params": {"private_setting": True},
+                        "service_url": "http://127.0.0.1:11234",
+                    })
+                    record = json.loads((Path(temp_dir) / kind / f"{item_id}.json").read_text())
+                    expected = {key: value for key, value in settings.items() if key != "prompt"}
+                    self.assertEqual(record["generation"], expected)
+                    restored = next(item for item in server._history_items() if item["id"] == item_id)
+                    self.assertEqual(restored["generation"], expected)
+                    self.assertEqual(restored["prompt"], settings["prompt"])
+                    self.assertNotIn("/private/model", json.dumps(restored))
+
+    def test_history_preserves_first_frame_after_source_deletion(self):
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+            server, "OUTPUT_ROOT", Path(temp_dir)
+        ):
+            item_id = str(server.uuid.uuid4())
+            image_id = str(server.uuid.uuid4())
+            source = Path(temp_dir) / f"hidream-{image_id}.png"
+            Image.new("RGB", (32, 24), "green").save(source)
+            content = source.read_bytes()
+            media = Path(temp_dir) / f"h3-{item_id}.mp4"
+            media.write_bytes(b"video")
+            settings = {"prompt": "Green film", "first_frame_id": image_id,
+                        "first_frame_image": base64.b64encode(content).decode("ascii")}
+            server._persist_history(
+                {"id": item_id, "kind": "video", "created_at": 123, "prompt": settings["prompt"]},
+                [media], settings,
+            )
+            source.unlink()
+            item = server._history_items()[0]
+            self.assertEqual(item["generation"]["first_frame_id"], item_id)
+            self.assertEqual(item["first_frame_url"], f"/api/history/{item_id}/first-frame")
+            self.assertEqual(server.workflows.read_first_frame(Path(temp_dir), item_id), content)
+            path, content_type = server._history_media_path(item_id, "first-frame")
+            self.assertEqual(path.read_bytes(), content)
+            self.assertEqual(content_type, "image/png")
+            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+            self.assertNotIn("first_frame_image", json.dumps(item))
+            workflow = server.workflows.create_workflow(Path(temp_dir), {
+                "shots": [{"prompt": "New shot", "first_frame_id": item_id}],
+                "soundtrack": {"mode": "none"},
+            })
+            self.assertEqual(Path(workflow["shots"][0]["first_frame_path"]).read_bytes(), content)
+
+    def test_history_records_elapsed_time_and_tokens(self):
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+            server, "OUTPUT_ROOT", Path(temp_dir)
+        ):
+            item_id = str(server.uuid.uuid4())
+            media = Path(temp_dir) / f"music3-{item_id}.wav"
+            media.write_bytes(b"audio")
+            job = {"id": item_id, "kind": "music", "created_at": 100.0, "started_at": 110.0,
+                   "prompt": "Song", "logs": [], "tokens": 1234}
+            with patch.object(server.time, "time", return_value=135.25):
+                server._persist_history(job, [media])
+            self.assertEqual(job["logs"][-1], "Elapsed 25.2s · tokens 1234")
+            item = server._history_items()[0]
+            self.assertEqual(item["elapsed_seconds"], 25.2)
+            self.assertEqual(item["tokens"], 1234)
+
+            legacy_id = str(server.uuid.uuid4())
+            (Path(temp_dir) / f"h3-{legacy_id}.mp4").write_bytes(b"video")
+            (Path(temp_dir) / f"{legacy_id}.json").write_text(json.dumps(
+                {"id": legacy_id, "kind": "video", "created_at": 1, "prompt": "Old"}
+            ))
+            legacy = next(item for item in server._history_items() if item["id"] == legacy_id)
+            self.assertIsNone(legacy["elapsed_seconds"])
+            self.assertIsNone(legacy["tokens"])
+
+    def test_public_job_reports_running_elapsed_time(self):
+        job = {"id": "x", "kind": "image", "status": "running", "created_at": 10.0,
+               "started_at": 12.0, "prompt": "p", "logs": []}
+        with patch.object(server.time, "time", return_value=20.0):
+            public = server._public_job(job)
+        self.assertEqual(public["elapsed_seconds"], 8.0)
+        self.assertIsNone(public["tokens"])
+        self.assertNotIn("finished_at", job)
+
+    def test_history_rejects_corrupt_generation_settings(self):
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+            server, "OUTPUT_ROOT", Path(temp_dir)
+        ):
+            item_id = str(server.uuid.uuid4())
+            path = Path(temp_dir) / f"h3-{item_id}.mp4"
+            path.write_bytes(b"video")
+            record = {"id": item_id, "kind": "video", "created_at": 1, "prompt": "Film",
+                      "generation": {"duration": 5}}
+            metadata = Path(temp_dir) / f"{item_id}.json"
+            metadata.write_text(json.dumps(record))
+            with self.assertRaisesRegex(RuntimeError, "Invalid generation settings"):
+                server._history_items()
+            record["generation"] = {"duration": 5, "aspect": "16:9", "steps": 100,
+                                    "seed": 0, "turbo": True, "first_frame_id": ""}
+            metadata.write_text(json.dumps(record))
+            with self.assertRaisesRegex(RuntimeError, "Invalid generation settings"):
+                server._history_items()
+
     def test_persists_private_history_and_discovers_generated_media(self):
         with tempfile.TemporaryDirectory() as temp_dir, patch.object(
             server, "OUTPUT_ROOT", Path(temp_dir)
@@ -88,7 +211,8 @@ class GenerationHistoryTests(unittest.TestCase):
             self.assertEqual(items[0]["kind"], "image")
             self.assertEqual(items[0]["prompt"], "A quiet forest at dawn")
             self.assertEqual(items[0]["image_url"], f"/api/history/{item_id}/image")
-            self.assertEqual((Path(temp_dir) / f"{item_id}.json").stat().st_mode & 0o777, 0o600)
+            self.assertIsNone(items[0]["generation"])
+            self.assertEqual((Path(temp_dir) / "image" / f"{item_id}.json").stat().st_mode & 0o777, 0o600)
 
     def test_lists_existing_media_without_metadata(self):
         with tempfile.TemporaryDirectory() as temp_dir, patch.object(
@@ -103,6 +227,7 @@ class GenerationHistoryTests(unittest.TestCase):
             self.assertEqual(items[0]["kind"], "music")
             self.assertEqual(items[0]["audio_url"], f"/api/history/{item_id}/audio")
             self.assertEqual(items[0]["prompt"], "")
+            self.assertIsNone(items[0]["generation"])
 
 
 class GenerationSettingsTests(unittest.TestCase):
@@ -151,6 +276,9 @@ class GenerationSettingsTests(unittest.TestCase):
             {"prompt": "A film", "aspect": "2:1"},
             {"prompt": "A film", "steps": 4, "turbo": False},
             {"prompt": "A film", "steps": 16, "turbo": True},
+            {"prompt": "A film", "first_frame_id": "../image.png"},
+            {"prompt": "A film", "first_frame_id": None},
+            {"prompt": "A film", "first_frame_id": "9374EB0A-E015-4621-8856-88EEF9209D44"},
         ]
         for payload in invalid_payloads:
             with self.subTest(payload=payload), self.assertRaises(ValueError):
@@ -214,17 +342,39 @@ class GenerationSettingsTests(unittest.TestCase):
             ({"prompt": " "}, "invalid_prompt"),
             ({"prompt": "A song", "lyrics": " "}, "invalid_lyrics"),
             ({"prompt": "A song", "lyrics_mode": "unknown", "lyrics": "words"}, "invalid_music_mode"),
-            ({"prompt": "A song", "lyrics_mode": "instrumental", "duration": 121}, "invalid_duration"),
+            ({"prompt": "A song", "lyrics_mode": "instrumental", "duration": 301}, "invalid_duration"),
             ({"prompt": "A song", "lyrics_mode": "instrumental", "steps": 31}, "invalid_steps"),
             ({"prompt": "A song", "lyrics_mode": "instrumental", "seed": -1}, "invalid_seed"),
         ):
             with self.subTest(payload=payload), self.assertRaisesRegex(ValueError, error):
                 server._validate_music_generation(payload)
 
+    def test_music3_five_minute_duration_boundaries(self):
+        for mode in ("lyrics", "instrumental"):
+            for duration in (5, 120, 121, 180, 240, 300):
+                with self.subTest(mode=mode, duration=duration):
+                    settings = server._validate_music_generation({
+                        "model": "music3", "prompt": "A song", "lyrics_mode": mode,
+                        "lyrics": "[verse] Hello", "duration": duration,
+                    })
+                    self.assertEqual(settings["duration"], duration)
+            for duration in (4.99, 300.01, float("nan"), float("inf")):
+                with self.subTest(mode=mode, duration=duration):
+                    with self.assertRaisesRegex(ValueError, "invalid_duration"):
+                        server._validate_music_generation({
+                            "model": "music3", "prompt": "A song", "lyrics_mode": mode,
+                            "lyrics": "[verse] Hello", "duration": duration,
+                        })
+        with self.assertRaisesRegex(ValueError, "invalid_duration"):
+            server._validate_music_generation({
+                "model": "yue2-3b-8bit", "prompt": "A song",
+                "lyrics_mode": "instrumental", "duration": 121,
+            })
+
     def test_runs_music_inference_and_publishes_valid_wav(self):
         class FakeProcess:
             def __init__(self):
-                self.stdout = io.StringIO("loaded Music3\nmusic generation complete\n")
+                self.stdout = io.StringIO("loaded Music3\nSaved: music.wav\nTOKENS: 42\n")
 
             def poll(self):
                 return 0
@@ -253,14 +403,15 @@ class GenerationSettingsTests(unittest.TestCase):
 
             def start_process(command, **kwargs):
                 nonlocal observed_lyrics_path
-                self.assertEqual(command[:5], [
-                    str(root / "python"), "-u", "-m", "mlx_audio.music.generate", "--model",
-                ][:5])
-                self.assertEqual(command[5], str(root / "model"))
+                self.assertEqual(command[:4], [
+                    str(root / "python"), "-u", str(server.MUSIC_GENERATE_SCRIPT), "--model",
+                ])
+                self.assertEqual(command[4], str(root / "model"))
                 lyrics_path = Path(command[command.index("--lyrics-file") + 1])
                 observed_lyrics_path = lyrics_path
                 self.assertEqual(lyrics_path.read_text(encoding="utf-8"), "[verse] Hello")
                 self.assertEqual(command[command.index("--caption") + 1], "Gentle piano")
+                self.assertEqual(command[command.index("--duration") + 1], "300")
                 output_path = Path(command[command.index("--output") + 1])
                 output_path.write_bytes(b"RIFF" + bytes(4) + b"WAVE" + bytes(36))
                 return FakeProcess()
@@ -279,7 +430,7 @@ class GenerationSettingsTests(unittest.TestCase):
                 try:
                     server._run_music_job(job_id, {
                         "prompt": "Gentle piano", "lyrics": "[verse] Hello",
-                        "duration": 15, "steps": 20, "seed": 7,
+                        "duration": 300, "steps": 20, "seed": 7,
                         "model_path": str(root / "model"),
                     }, output)
                 finally:
@@ -292,7 +443,11 @@ class GenerationSettingsTests(unittest.TestCase):
             self.assertTrue(output.is_file())
             self.assertIsNotNone(observed_lyrics_path)
             self.assertFalse(observed_lyrics_path.exists())
-            self.assertEqual(server._public_job(job)["audio_url"], f"/api/jobs/{job_id}/audio")
+            public = server._public_job(job)
+            self.assertEqual(public["audio_url"], f"/api/jobs/{job_id}/audio")
+            self.assertEqual(public["tokens"], 42)
+            self.assertIsInstance(public["elapsed_seconds"], float)
+            self.assertGreaterEqual(public["elapsed_seconds"], 0)
 
 
 class AppSettingsTests(unittest.TestCase):
@@ -331,7 +486,7 @@ class AppSettingsTests(unittest.TestCase):
             with self.subTest(payload=payload), self.assertRaises(ValueError):
                 server._validate_app_settings(payload)
 
-    def test_merges_configured_text_model_ids_with_service_inventory(self):
+    def test_configured_text_models_replace_service_inventory_and_strip_separators(self):
         class FakeResponse:
             def __enter__(self):
                 return self
@@ -340,15 +495,103 @@ class AppSettingsTests(unittest.TestCase):
                 return False
 
             def read(self):
-                return json.dumps({"data": [{"id": "live-model"}]}).encode()
+                return json.dumps({"data": [{"id": "live-model"}, {"id": "configured-model"}]}).encode()
 
         settings = json.loads(json.dumps(server._DEFAULT_SETTINGS))
-        settings["text"]["model_ids"] = ["configured-model"]
+        settings["text"]["model_ids"] = [" configured-model; ", "second-model；", "configured-model"]
         with patch.object(server, "_settings_snapshot", return_value=settings), patch.object(
             server, "urlopen", return_value=FakeResponse()
         ):
             models = server._local_text_models()
-        self.assertEqual({model["id"] for model in models}, {"configured-model", "live-model"})
+        self.assertEqual([model["id"] for model in models], ["configured-model", "second-model"])
+
+    def test_empty_text_model_list_discovers_service_models_without_duplicates(self):
+        response = MagicMock()
+        response.__enter__.return_value.read.return_value = json.dumps({
+            "data": [{"id": "Z-text"}, {"id": "A-text"}, {"id": "Z-text"}, {"id": "hidream"}]
+        }).encode()
+        settings = json.loads(json.dumps(server._DEFAULT_SETTINGS))
+        settings["text"]["model_ids"] = []
+        with patch.object(server, "_settings_snapshot", return_value=settings), patch.object(
+            server, "urlopen", return_value=response
+        ):
+            self.assertEqual([model["id"] for model in server._local_text_models()], ["A-text", "Z-text"])
+
+    def test_text_model_settings_normalize_separators_and_reject_excess_ids(self):
+        settings = json.loads(json.dumps(server._DEFAULT_SETTINGS))
+        settings["text"]["model_ids"] = [" GLM-local;\nQwen-local；", "GLM-local", "；"]
+        self.assertEqual(server._validate_app_settings(settings)["text"]["model_ids"],
+                         ["GLM-local", "Qwen-local"])
+        settings["text"]["model_ids"] = [";".join(f"model-{index}" for index in range(101))]
+        with self.assertRaisesRegex(ValueError, "invalid_text_model_ids"):
+            server._validate_app_settings(settings)
+
+
+class StoryboardPlanningTests(unittest.TestCase):
+    def test_validates_long_story_and_requested_count(self):
+        story = "A traveller returns home. " * 300
+        settings = server._validate_storyboard_request({
+            "story": story, "model": "local-model", "shot_count": 8,
+        })
+        self.assertEqual(settings["story"], story.strip())
+        for changed in (
+            {"story": ""}, {"story": "x" * 30001},
+            {"shot_count": True}, {"shot_count": 0}, {"shot_count": 49},
+            {"shot_count": 2.5}, {"model": ""},
+        ):
+            with self.subTest(changed=changed), self.assertRaises(ValueError):
+                server._validate_storyboard_request({
+                    "story": story, "model": "local-model", "shot_count": 8, **changed,
+                })
+
+    def test_returns_validated_shots_and_instructs_selected_model(self):
+        shot = {
+            "title": "Homecoming", "prompt": "A traveller enters the village at sunset",
+            "duration": 8, "music_prompt": "Warm instrumental strings",
+        }
+        with patch.object(server, "_local_text_models", return_value=[
+            {"id": "local-model"},
+        ]), patch.object(server, "_request_local_text_json", return_value={
+            "shots": [shot, shot],
+        }) as request:
+            result = server._storyboard_with_local_model({
+                "story": "A traveller returns home.", "model": "local-model", "shot_count": 2,
+            })
+        self.assertEqual(result["shots"], [shot, shot])
+        self.assertEqual(request.call_args.args[0], "local-model")
+        self.assertIn("exactly 2", request.call_args.args[1])
+        self.assertEqual(request.call_args.args[2], "A traveller returns home.")
+        self.assertGreater(request.call_args.kwargs["max_tokens"], 1000)
+
+    def test_rejects_partial_or_malformed_storyboards_without_returning_shots(self):
+        shot = {
+            "title": "Opening", "prompt": "A quiet village", "duration": 5,
+            "music_prompt": "Soft instrumental piano",
+        }
+        for generated in (
+            {"shots": []}, {"shots": [None]},
+            {"shots": [{**shot, "duration": True}]},
+            {"shots": [{**shot, "duration": 30}]},
+            {"shots": [{**shot, "prompt": ""}]},
+            {"shots": [{**shot, "music_prompt": " "}]},
+            {"shots": [{**shot, "title": "x" * 121}]},
+        ):
+            with self.subTest(generated=generated), patch.object(
+                server, "_local_text_models", return_value=[{"id": "local-model"}]
+            ), patch.object(server, "_request_local_text_json", return_value=generated):
+                with self.assertRaises(RuntimeError):
+                    server._storyboard_with_local_model({
+                        "story": "A story", "model": "local-model", "shot_count": 1,
+                    })
+
+    def test_rejects_unavailable_model_before_generation(self):
+        with patch.object(server, "_local_text_models", return_value=[]), patch.object(
+            server, "_request_local_text_json"
+        ) as request, self.assertRaisesRegex(ValueError, "text_model_unavailable"):
+            server._storyboard_with_local_model({
+                "story": "A story", "model": "missing-model", "shot_count": 1,
+            })
+        request.assert_not_called()
 
 
 class PromptEnhancementTests(unittest.TestCase):
@@ -390,7 +633,11 @@ class PromptEnhancementTests(unittest.TestCase):
                     {"id": "glm-ocr-8bit"},
                 ]}).encode()
 
-        with patch.object(server, "urlopen", return_value=FakeResponse()):
+        settings = json.loads(json.dumps(server._DEFAULT_SETTINGS))
+        settings["text"]["model_ids"] = []
+        with patch.object(server, "_settings_snapshot", return_value=settings), patch.object(
+            server, "urlopen", return_value=FakeResponse()
+        ):
             models = server._local_text_models()
         self.assertEqual([model["id"] for model in models], [
             "gemma-4-12B-it-MLX-8bit",
@@ -549,6 +796,196 @@ class HiDreamGenerationTests(unittest.TestCase):
             self.assertEqual(server._public_job(job)["image_url"], f"/api/jobs/{job_id}/image")
 
 
+class CancellationTests(unittest.TestCase):
+    def make_job(self, kind="video"):
+        return {
+            "id": "cancel-test", "kind": kind, "status": "running",
+            "created_at": 0, "prompt": "Test cancellation", "logs": deque(),
+            "error": "", "cancel_requested": False, "response": Mock(),
+            "process": None,
+        }
+
+    def test_video_cancel_stops_owned_backend_without_closing_reader_or_holding_lock(self):
+        job = self.make_job()
+        process = Mock()
+        process.poll.return_value = None
+        job["h3_process"] = process
+
+        def terminate():
+            self.assertTrue(server._lock.acquire(blocking=False))
+            server._lock.release()
+            self.assertEqual(job["status"], "cancelling")
+            self.assertFalse(job["cancel_stopped"].is_set())
+
+        process.terminate.side_effect = terminate
+        with patch.dict(server._jobs, {job["id"]: job}, clear=True), patch.object(
+            server, "_mlx_server_process", process
+        ):
+            server._cancel_job(job["id"])
+            self.assertIsNone(server._mlx_server_process)
+            with self.assertRaises(server.GenerationCancelled):
+                server._check_cancelled(job["id"])
+        process.terminate.assert_called_once()
+        process.wait.assert_called_once_with(timeout=5)
+        job["response"].close.assert_not_called()
+        self.assertTrue(job["cancel_stopped"].is_set())
+
+    def test_image_and_music_cancel_escalate_when_terminate_is_ignored(self):
+        for kind in ("image", "music"):
+            with self.subTest(kind=kind):
+                job = self.make_job(kind)
+                process = Mock()
+                process.poll.return_value = None
+                process.wait.side_effect = [subprocess.TimeoutExpired("inference", 5), 0]
+                job["process"] = process
+                with patch.dict(server._jobs, {job["id"]: job}, clear=True):
+                    server._cancel_job(job["id"])
+                process.kill.assert_called_once()
+                self.assertEqual(process.wait.call_count, 2)
+
+    def test_cancel_reaps_real_process_that_ignores_sigterm(self):
+        process = subprocess.Popen(
+            [sys.executable, "-u", "-c",
+             "import signal,time; signal.signal(signal.SIGTERM, signal.SIG_IGN); "
+             "print('ready', flush=True); time.sleep(60)"],
+            stdout=subprocess.PIPE, text=True,
+        )
+        try:
+            self.assertEqual(process.stdout.readline().strip(), "ready")
+            server._stop_process(process)
+            self.assertIsNotNone(process.poll())
+            self.assertLess(process.returncode, 0)
+        finally:
+            if process.poll() is None:
+                process.kill()
+                process.wait(timeout=5)
+            process.stdout.close()
+
+    def test_external_h3_cancel_fails_without_claiming_cancellation(self):
+        job = self.make_job()
+        with patch.dict(server._jobs, {job["id"]: job}, clear=True):
+            with self.assertRaisesRegex(RuntimeError, "externally managed"):
+                server._cancel_job(job["id"])
+        self.assertFalse(job["cancel_requested"])
+        self.assertEqual(job["status"], "running")
+
+    def test_existing_external_service_is_not_misidentified_as_owned(self):
+        job = self.make_job()
+        with patch.dict(server._jobs, {job["id"]: job}, clear=True), patch.object(
+            server, "_mlx_server_process", None
+        ), patch.object(server, "_service_health", return_value=True), patch.object(
+            server.subprocess, "Popen"
+        ) as spawn:
+            server._start_mlx_server(job["id"], Path("/model"))
+            self.assertIsNone(job["h3_process"])
+            spawn.assert_not_called()
+            with self.assertRaisesRegex(RuntimeError, "externally managed"):
+                server._cancel_job(job["id"])
+
+    def test_stop_failure_is_reported_and_keeps_job_active(self):
+        job = self.make_job()
+        job["h3_process"] = Mock()
+        with patch.dict(server._jobs, {job["id"]: job}, clear=True), patch.object(
+            server, "_stop_process", side_effect=OSError("permission denied")
+        ):
+            with self.assertRaisesRegex(RuntimeError, "permission denied"):
+                server._cancel_job(job["id"])
+            server._check_cancelled(job["id"])
+        self.assertEqual(job["status"], "running")
+        self.assertFalse(job["cancel_requested"])
+        self.assertIn("permission denied", job["error"])
+
+    def test_queued_cancel_prevents_backend_start(self):
+        job = self.make_job()
+        job["status"] = "queued"
+        with patch.dict(server._jobs, {job["id"]: job}, clear=True), patch.object(
+            server, "_local_mlx_serve", return_value=Path("/fake/mlx-serve")
+        ), patch.object(server.subprocess, "Popen") as spawn:
+            server._cancel_job(job["id"])
+            with self.assertRaises(server.GenerationCancelled):
+                server._start_mlx_server(job["id"], Path("/model"))
+            spawn.assert_not_called()
+
+    def test_cancel_unblocks_stream_worker_and_releases_slot_only_after_backend_exit(self):
+        job = self.make_job()
+        entered = threading.Event()
+        exited = threading.Event()
+        stopped = threading.Event()
+        process = Mock()
+        process.poll.return_value = None
+        job["h3_process"] = process
+        stream = Mock()
+
+        def lines():
+            entered.set()
+            if not stopped.wait(2):
+                raise TimeoutError("backend was not stopped")
+            yield from ()
+
+        stream.__iter__ = Mock(side_effect=lines)
+
+        def wait(timeout):
+            self.assertEqual(server._active_job_id, job["id"])
+            self.assertEqual(job["status"], "cancelling")
+            stopped.set()
+            return 0
+
+        process.wait.side_effect = wait
+        with tempfile.TemporaryDirectory() as temp_dir, patch.dict(
+            server._jobs, {job["id"]: job}, clear=True
+        ), patch.object(server, "_active_job_id", job["id"]), patch.object(
+            server, "_mlx_server_process", process
+        ), patch.object(server, "_load_h3_model", return_value="h3"), patch.object(
+            server, "_generation_request", return_value={}
+        ), patch.object(server, "urlopen", return_value=stream):
+            output = Path(temp_dir) / "cancelled.mp4"
+
+            def run():
+                try:
+                    server._run_job(job["id"], {}, Path(temp_dir), output)
+                finally:
+                    exited.set()
+
+            worker = threading.Thread(target=run, daemon=True)
+            worker.start()
+            try:
+                self.assertTrue(entered.wait(2))
+                server._cancel_job(job["id"])
+                self.assertTrue(exited.wait(2))
+                worker.join(timeout=2)
+                self.assertEqual(job["status"], "cancelled")
+                self.assertIsNone(server._active_job_id)
+                self.assertIsNone(server._mlx_server_process)
+                self.assertFalse(output.exists())
+                self.assertEqual(job["error"], "")
+                stream.close.assert_called_once()
+            finally:
+                stopped.set()
+                worker.join(timeout=2)
+
+    def test_workflow_cancel_prevents_next_shot_even_without_an_active_job(self):
+        event = threading.Event()
+        event.set()
+        with patch.dict(server._workflow_cancel_events, {"workflow": event}, clear=True):
+            with self.assertRaises(server.GenerationCancelled):
+                server._start_workflow_job("workflow", "video", "Next shot")
+            with self.assertRaises(server.GenerationCancelled):
+                server._check_workflow_cancelled("workflow")
+
+    def test_cancel_during_model_load_is_not_reported_as_failure(self):
+        job = self.make_job()
+        job["cancel_requested"] = True
+        with tempfile.TemporaryDirectory() as temp_dir, patch.dict(
+            server._jobs, {job["id"]: job}, clear=True
+        ), patch.object(server, "_active_job_id", job["id"]), patch.object(
+            server, "_load_h3_model", side_effect=RuntimeError("backend exited")
+        ):
+            server._run_job(job["id"], {}, Path(temp_dir), Path(temp_dir) / "video.mp4")
+            self.assertEqual(job["status"], "cancelled")
+            self.assertEqual(job["error"], "")
+            self.assertIsNone(server._active_job_id)
+
+
 class LocalWebHandlerTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -562,6 +999,118 @@ class LocalWebHandlerTests(unittest.TestCase):
         cls.httpd.shutdown()
         cls.httpd.server_close()
         cls.thread.join(timeout=2)
+
+    def test_every_model_publishes_history_independent_of_selected_model(self):
+        cases = [
+            *(("video", model, "/api/jobs", "h3", "mp4")
+              for model in ("h3", *server.local_models.VIDEO_MODELS)),
+            *(("image", model, "/api/image-jobs", "hidream", "png")
+              for model in ("hidream", *server.local_models.IMAGE_MODELS)),
+            *(("music", model, "/api/music-jobs", "music", "wav")
+              for model in ("music3", *server.local_models.MUSIC_MODELS)),
+        ]
+        finished = threading.Event()
+        produced = {}
+
+        def publish(job_id, settings, output_path):
+            try:
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+                output_path.write_bytes(b"test generated media")
+                with server._lock:
+                    job = server._jobs[job_id]
+                    server._persist_history(job, [output_path], settings)
+                    job["status"] = "completed"
+                    produced[job_id] = output_path
+                    server._active_job_id = None
+            finally:
+                finished.set()
+
+        def publish_video(job_id, settings, model_path, output_path):
+            publish(job_id, settings, output_path)
+
+        ready = {"model_ready": True, "runtime_ready": True, "runtime_error": ""}
+        with tempfile.TemporaryDirectory() as temporary, patch.object(
+            server, "OUTPUT_ROOT", Path(temporary)
+        ), patch.dict(server._jobs, {}, clear=True), patch.object(
+            server, "_active_job_id", None
+        ), patch.object(server, "_active_workflow_id", None), patch.object(
+            server, "_settings_snapshot", return_value=server._DEFAULT_SETTINGS
+        ), patch.object(server, "_require_enabled_model"), patch.object(
+            server, "_find_models", return_value=["test-model"]
+        ), patch.object(server, "_hidream_status", return_value=ready), patch.object(
+            server, "_local_model_status", return_value=ready
+        ), patch.object(server, "_music_status", return_value=ready), patch.object(
+            server, "_run_job", side_effect=publish_video
+        ), patch.object(server, "_run_hidream_job", side_effect=publish), patch.object(
+            server, "_run_music_job", side_effect=publish
+        ):
+            expected = {}
+            for kind, model, endpoint, prefix, suffix in cases:
+                with self.subTest(model=model):
+                    finished.clear()
+                    request = Request(
+                        self.base_url + endpoint,
+                        data=json.dumps({"prompt": "Saved model project", "model": model,
+                                         "lyrics_mode": "instrumental"}).encode(),
+                        headers={"Content-Type": "application/json"}, method="POST",
+                    )
+                    with urlopen(request, timeout=2) as response:
+                        self.assertEqual(response.status, 202)
+                        item_id = json.load(response)["job"]["id"]
+                    self.assertTrue(finished.wait(2))
+                    self.assertEqual(produced[item_id], Path(temporary) / kind / f"{prefix}-{item_id}.{suffix}")
+                    expected[item_id] = (kind, model)
+            with urlopen(self.base_url + "/api/history", timeout=2) as response:
+                items = json.load(response)["items"]
+            self.assertEqual({item["id"] for item in items}, set(expected))
+            for item in items:
+                kind, model = expected[item["id"]]
+                default_model = {"video": "h3", "image": "hidream", "music": "music3"}[kind]
+                self.assertEqual(item["generation"].get("model", default_model), model)
+                url = item["audio_url"] if kind == "music" else item[f"{kind}_url"]
+                with urlopen(self.base_url + url, timeout=2) as response:
+                    self.assertEqual(response.read(), b"test generated media")
+
+    def test_cancel_endpoint_stops_backend_and_current_job_remains_responsive(self):
+        job = CancellationTests().make_job()
+        job["id"] = "4c9a5bf1-daad-47c2-8c58-b3e9c27b05e0"
+        process = Mock()
+        process.poll.return_value = None
+        job["h3_process"] = process
+        with patch.dict(server._jobs, {job["id"]: job}, clear=True), patch.object(
+            server, "_active_job_id", job["id"]
+        ), patch.object(server, "_mlx_server_process", process):
+            request = Request(self.base_url + f"/api/jobs/{job['id']}/cancel", data=b"", method="POST")
+            with urlopen(request, timeout=2) as response:
+                self.assertEqual(json.loads(response.read())["job"]["status"], "cancelling")
+            with urlopen(self.base_url + "/api/jobs/current", timeout=2) as response:
+                self.assertEqual(response.status, 200)
+        process.terminate.assert_called_once()
+        job["response"].close.assert_not_called()
+
+    def test_workflow_cancel_endpoint_stops_active_video_backend(self):
+        workflow_id = "9374eb0a-e015-4621-8856-88eef9209d44"
+        event = threading.Event()
+        job = CancellationTests().make_job()
+        process = Mock()
+        process.poll.return_value = None
+        job["h3_process"] = process
+        manifest = {"id": workflow_id, "status": "running"}
+        with patch.dict(server._jobs, {job["id"]: job}, clear=True), patch.object(
+            server, "_active_job_id", job["id"]
+        ), patch.object(server, "_active_workflow_id", workflow_id), patch.dict(
+            server._workflow_cancel_events, {workflow_id: event}, clear=True
+        ), patch.object(server, "_mlx_server_process", process), patch.object(
+            server.workflows, "get_workflow", return_value=manifest
+        ), patch.object(server, "_public_workflow", side_effect=lambda value: value):
+            request = Request(
+                self.base_url + f"/api/workflows/{workflow_id}/cancel", data=b"", method="POST"
+            )
+            with urlopen(request, timeout=2) as response:
+                self.assertEqual(response.status, 202)
+            self.assertTrue(event.is_set())
+        process.terminate.assert_called_once()
+        job["response"].close.assert_not_called()
 
     def test_serves_ui_and_rejects_nonlocal_host(self):
         with urlopen(self.base_url) as response:
@@ -629,6 +1178,316 @@ class LocalWebHandlerTests(unittest.TestCase):
         self.assertEqual(history[0]["prompt"], "A quiet forest")
         self.assertEqual(media, b"\x89PNG\r\n\x1a\nimage")
         self.assertEqual(content_type, "image/png")
+
+    def test_local_first_frame_upload_formats_and_snapshot(self):
+        import io
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+            server, "OUTPUT_ROOT", Path(temp_dir)
+        ):
+            for image_format in ("PNG", "JPEG", "WEBP"):
+                with self.subTest(image_format=image_format):
+                    buffer = io.BytesIO()
+                    Image.new("RGB", (32, 24), "blue").save(buffer, format=image_format)
+                    request = Request(
+                        self.base_url + "/api/first-frames", data=buffer.getvalue(),
+                        headers={"Content-Type": "application/octet-stream"}, method="POST",
+                    )
+                    with urlopen(request) as response:
+                        self.assertEqual(response.status, 201)
+                        uploaded = json.loads(response.read())
+                    with urlopen(request) as response:
+                        self.assertEqual(json.loads(response.read())["id"], uploaded["id"])
+                    with urlopen(self.base_url + uploaded["image_url"]) as response:
+                        data = response.read()
+                        with Image.open(io.BytesIO(data)) as image:
+                            self.assertEqual(image.format, "PNG")
+                            self.assertEqual(image.size, (32, 24))
+                    workflow = server.workflows.create_workflow(Path(temp_dir), {
+                        "shots": [{"prompt": "A local opening", "duration": 5,
+                                   "first_frame_id": uploaded["id"]}],
+                        "soundtrack": {"mode": "none"},
+                    })
+                    path = Path(temp_dir) / "first-frames" / f"{uploaded['id']}.png"
+                    self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+                    path.unlink()
+                    snapshot = Path(workflow["shots"][0]["first_frame_path"])
+                    self.assertEqual(snapshot.read_bytes(), data)
+                    updated = server.workflows.update_workflow(
+                        Path(temp_dir), workflow["id"], {
+                            "shots": [{"prompt": "Edited", "duration": 5,
+                                       "first_frame_id": uploaded["id"]}],
+                            "soundtrack": {"mode": "none"},
+                        },
+                    )
+                    self.assertEqual(Path(updated["shots"][0]["first_frame_path"]).read_bytes(), data)
+
+    def test_local_first_frame_upload_rejects_invalid_and_oversized_inputs(self):
+        import io
+        from PIL import Image
+        buffer = io.BytesIO()
+        Image.new("RGB", (4001, 4000)).save(buffer, format="PNG")
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+            server, "OUTPUT_ROOT", Path(temp_dir)
+        ):
+            for data, expected in ((b"not an image", 400), (buffer.getvalue(), 400),
+                                   (b"", 413)):
+                request = Request(self.base_url + "/api/first-frames", data=data, method="POST")
+                with self.assertRaises(HTTPError) as caught:
+                    urlopen(request)
+                self.assertEqual(caught.exception.code, expected)
+                caught.exception.close()
+            request = Request(
+                self.base_url + "/api/first-frames", data=b"x", method="POST",
+                headers={"Content-Length": str(20 * 1024 * 1024 + 1)},
+            )
+            with self.assertRaises(HTTPError) as caught:
+                urlopen(request)
+            self.assertEqual(caught.exception.code, 413)
+            caught.exception.close()
+            self.assertFalse((Path(temp_dir) / "first-frames").exists())
+            request = Request(
+                self.base_url + "/api/first-frames", data=b"x", method="POST",
+                headers={"Origin": "https://example.com"},
+            )
+            with self.assertRaises(HTTPError) as caught:
+                urlopen(request)
+            self.assertEqual(caught.exception.code, 403)
+            caught.exception.close()
+
+    def test_local_first_frame_upload_cache_limit_and_symlink_boundary(self):
+        import io
+        from PIL import Image
+        buffer = io.BytesIO()
+        Image.new("RGB", (4, 4), "red").save(buffer, format="PNG")
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+            server, "OUTPUT_ROOT", Path(temp_dir)
+        ):
+            directory = Path(temp_dir) / "first-frames"
+            directory.mkdir()
+            for number in range(100):
+                (directory / f"{number}.png").write_bytes(b"x")
+            request = Request(
+                self.base_url + "/api/first-frames", data=buffer.getvalue(), method="POST",
+            )
+            with self.assertRaises(HTTPError) as caught:
+                urlopen(request)
+            self.assertEqual(caught.exception.code, 409)
+            caught.exception.close()
+            self.assertEqual(len(list(directory.iterdir())), 100)
+            image_id = "9374eb0a-e015-4621-8856-88eef9209d44"
+            (directory / f"{image_id}.png").symlink_to(directory / "0.png")
+            with self.assertRaises(HTTPError) as caught:
+                urlopen(self.base_url + f"/api/first-frames/{image_id}")
+            self.assertEqual(caught.exception.code, 404)
+            caught.exception.close()
+
+    def test_creates_updates_and_lists_storyboard_workflow_drafts(self):
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+            server, "OUTPUT_ROOT", Path(temp_dir)
+        ):
+            image_id = "9374eb0a-e015-4621-8856-88eef9209d44"
+            source = Path(temp_dir) / f"hidream-{image_id}.png"
+            Image.new("RGB", (32, 32), "blue").save(source)
+            original_image = source.read_bytes()
+            payload = {
+                "name": "Rainy evening",
+                "aspect": "16:9",
+                "shots": [{
+                    "title": "Opening", "prompt": "A quiet rainy street",
+                    "music_prompt": "Soft piano under rain",
+                    "first_frame_id": image_id,
+                    "duration": 5, "steps": 4, "seed": 1, "turbo": True,
+                }],
+                "soundtrack": {
+                    "mode": "none", "mix": "score", "prompt": "Gentle piano",
+                    "lyrics_mode": "instrumental", "lyrics": "[instrumental]",
+                },
+            }
+            request = Request(
+                f"{self.base_url}/api/workflows",
+                data=json.dumps(payload).encode(),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with urlopen(request) as response:
+                self.assertEqual(response.status, 201)
+                created = json.loads(response.read())["workflow"]
+            self.assertNotIn("first_frame_path", created["shots"][0])
+            source.unlink()
+            with urlopen(self.base_url + created["shots"][0]["first_frame_url"]) as response:
+                self.assertEqual(response.headers.get_content_type(), "image/png")
+                self.assertEqual(response.read(), original_image)
+
+            updated_payload = {
+                **payload,
+                "name": "Rainy evening, revised",
+                "shots": [{**payload["shots"][0], "title": "New opening"}],
+            }
+            request = Request(
+                f"{self.base_url}/api/workflows/{created['id']}/update",
+                data=json.dumps(updated_payload).encode(),
+                headers={"Content-Type": "application/json"},
+                method="POST",
+            )
+            with urlopen(request) as response:
+                updated = json.loads(response.read())["workflow"]
+            with urlopen(f"{self.base_url}/api/workflows") as response:
+                items = json.loads(response.read())["items"]
+
+        self.assertEqual(updated["name"], "Rainy evening, revised")
+        self.assertEqual(updated["shots"][0]["title"], "New opening")
+        self.assertEqual(updated["shots"][0]["music_prompt"], "Soft piano under rain")
+        self.assertEqual(len(items), 1)
+        self.assertNotIn("output_path", updated)
+        self.assertNotIn("video_path", updated["shots"][0])
+        self.assertNotIn("music_path", updated["shots"][0])
+        self.assertEqual(updated["shots"][0]["first_frame_id"], image_id)
+
+    def test_standalone_video_passes_validated_first_frame_to_runner(self):
+        from PIL import Image
+        for source_kind in ("history", "upload", "none"):
+            with self.subTest(source_kind=source_kind), tempfile.TemporaryDirectory() as temp_dir, patch.object(
+                server, "OUTPUT_ROOT", Path(temp_dir)
+            ), patch.object(server, "_find_models", return_value=[Path(temp_dir) / "model"]), patch.object(
+                server, "_active_job_id", None
+            ), patch.object(server, "_active_workflow_id", None), patch.dict(server._jobs, clear=True):
+                image_id = "9374eb0a-e015-4621-8856-88eef9209d44"
+                path = Path(temp_dir) / f"hidream-{image_id}.png"
+                if source_kind == "upload":
+                    path = Path(temp_dir) / "first-frames" / f"{image_id}.png"
+                    path.parent.mkdir()
+                if source_kind != "none":
+                    Image.new("RGB", (32, 24), "blue").save(path)
+                payload = {"prompt": "Opening frame", "first_frame_id": image_id if source_kind != "none" else ""}
+                captured = {}
+                ready = threading.Event()
+
+                def capture(job_id, settings, model_path, output_path):
+                    captured.update(settings)
+                    ready.set()
+
+                with patch.object(server, "_run_job", side_effect=capture):
+                    request = Request(
+                        self.base_url + "/api/jobs", data=json.dumps(payload).encode(),
+                        headers={"Content-Type": "application/json"}, method="POST",
+                    )
+                    with urlopen(request) as response:
+                        self.assertEqual(response.status, 202)
+                        job = json.loads(response.read())["job"]
+                    self.assertTrue(ready.wait(2))
+                api_request = server._generation_request("h3", captured)
+                self.assertNotIn("first_frame_image", job)
+                self.assertNotIn("first_frame_id", api_request)
+                if source_kind == "none":
+                    self.assertNotIn("first_frame_image", api_request)
+                else:
+                    image_bytes = path.read_bytes()
+                    path.unlink()
+                    self.assertEqual(base64.b64decode(api_request["first_frame_image"]), image_bytes)
+
+    def test_standalone_video_rejects_missing_invalid_or_symlink_first_frame(self):
+        image_id = "9374eb0a-e015-4621-8856-88eef9209d44"
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+            server, "OUTPUT_ROOT", Path(temp_dir)
+        ), patch.object(server, "_run_job") as runner:
+            path = Path(temp_dir) / f"hidream-{image_id}.png"
+            for state in ("missing", "invalid", "symlink"):
+                if state == "invalid":
+                    path.write_bytes(b"not an image")
+                elif state == "symlink":
+                    path.unlink()
+                    path.symlink_to(Path(temp_dir) / "missing.png")
+                request = Request(
+                    self.base_url + "/api/jobs",
+                    data=json.dumps({"prompt": "Film", "first_frame_id": image_id}).encode(),
+                    headers={"Content-Type": "application/json"}, method="POST",
+                )
+                with self.assertRaises(HTTPError) as caught:
+                    urlopen(request)
+                self.assertEqual(caught.exception.code, 400)
+                self.assertIn(json.loads(caught.exception.read())["error"],
+                              {"first_frame_not_found", "invalid_first_frame"})
+                caught.exception.close()
+            runner.assert_not_called()
+
+    def test_workflow_reservation_blocks_standalone_jobs_without_exposing_subjobs(self):
+        with tempfile.TemporaryDirectory() as temp_dir, patch.object(
+            server, "OUTPUT_ROOT", Path(temp_dir)
+        ), patch.object(server, "_find_models", return_value=[Path(temp_dir) / "model"]):
+            workflow_id = "9374eb0a-e015-4621-8856-88eef9209d44"
+            job_id = "0374eb0a-e015-4621-8856-88eef9209d44"
+            previous_active_workflow = server._active_workflow_id
+            previous_active_job = server._active_job_id
+            with server._lock:
+                server._active_workflow_id = workflow_id
+                server._active_job_id = job_id
+                server._jobs[job_id] = {
+                    "id": job_id, "kind": "video", "status": "running",
+                    "created_at": 1, "prompt": "Workflow shot", "logs": deque(),
+                    "workflow_id": workflow_id, "video_path": None,
+                    "audio_path": None, "image_path": None, "error": "",
+                }
+            try:
+                current = json.loads(urlopen(
+                    f"{self.base_url}/api/jobs/current"
+                ).read())["job"]
+                request = Request(
+                    f"{self.base_url}/api/jobs",
+                    data=json.dumps({"prompt": "Standalone generation"}).encode(),
+                    headers={"Content-Type": "application/json"},
+                    method="POST",
+                )
+                with self.assertRaises(HTTPError) as context:
+                    urlopen(request)
+                response_body = json.loads(context.exception.read())
+                context.exception.close()
+            finally:
+                with server._lock:
+                    server._jobs.pop(job_id, None)
+                    server._active_job_id = previous_active_job
+                    server._active_workflow_id = previous_active_workflow
+
+        self.assertIsNone(current)
+        self.assertEqual(context.exception.code, 409)
+        self.assertEqual(response_body["error"], "job_already_running")
+
+    def test_storyboard_api_returns_shots_without_saving_or_starting_workflow(self):
+        payload = {"story": "A traveller returns home.", "model": "local-model", "shot_count": 1}
+        shot = {
+            "title": "Home", "prompt": "A traveller enters the village", "duration": 5,
+            "music_prompt": "Warm instrumental strings",
+        }
+        with patch.object(server, "_storyboard_with_local_model", return_value={
+            "shots": [shot],
+        }) as planner, patch.object(server.workflows, "create_workflow") as create:
+            request = Request(
+                f"{self.base_url}/api/storyboards", data=json.dumps(payload).encode(),
+                headers={"Content-Type": "application/json"}, method="POST",
+            )
+            with urlopen(request) as response:
+                self.assertEqual(response.status, 200)
+                self.assertEqual(json.loads(response.read()), {"shots": [shot]})
+        planner.assert_called_once_with(payload)
+        create.assert_not_called()
+
+    def test_storyboard_api_reports_invalid_story_and_generation_failure(self):
+        for payload, status, error in (
+            ({"story": "", "model": "local-model", "shot_count": 1}, 400, "invalid_story"),
+            ({"story": "A story", "model": "local-model", "shot_count": 1}, 502, "local_text_generation_failed"),
+        ):
+            with self.subTest(status=status), patch.object(
+                server, "_storyboard_with_local_model", side_effect=RuntimeError("Malformed model output")
+            ):
+                request = Request(
+                    f"{self.base_url}/api/storyboards", data=json.dumps(payload).encode(),
+                    headers={"Content-Type": "application/json"}, method="POST",
+                )
+                with self.assertRaises(HTTPError) as caught:
+                    urlopen(request)
+                self.assertEqual(caught.exception.code, status)
+                self.assertEqual(json.loads(caught.exception.read())["error"], error)
 
     def test_lists_local_text_models_and_enhances_prompt(self):
         with patch.object(server, "_local_text_models", return_value=[
@@ -710,3 +1569,30 @@ class LocalWebHandlerTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@unittest.skipUnless(shutil.which("ffmpeg"), "ffmpeg required")
+class ChainedFirstFrameTests(unittest.TestCase):
+    def test_extract_last_frame_returns_final_frame(self) -> None:
+        from webapp import workflows
+        ffmpeg = shutil.which("ffmpeg")
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            video = root / "clip.mp4"
+            subprocess.run([
+                ffmpeg, "-nostdin", "-y", "-loglevel", "error",
+                "-f", "lavfi", "-i", "color=c=red:s=64x64:d=1:r=10",
+                "-f", "lavfi", "-i", "color=c=blue:s=64x64:d=1:r=10",
+                "-filter_complex", "[0][1]concat=n=2:v=1[v]", "-map", "[v]",
+                "-pix_fmt", "yuv420p", str(video),
+            ], check=True)
+            path = workflows.extract_last_frame(root, "a" * 32, video, ffmpeg)
+            self.assertTrue(path.name.startswith("first-frame-"))
+            raw = subprocess.run([
+                ffmpeg, "-nostdin", "-loglevel", "error", "-i", str(path),
+                "-f", "rawvideo", "-pix_fmt", "rgb24", "-",
+            ], check=True, capture_output=True).stdout
+            r, g, b = raw[0], raw[1], raw[2]
+            self.assertGreater(b, 200)
+            self.assertLess(r, 60)
+            self.assertEqual([p for p in path.parent.iterdir() if p.name.startswith(".last-frame-")], [])

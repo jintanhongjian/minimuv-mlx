@@ -1,0 +1,1982 @@
+"""Command-line interface for ltx-2-mlx.
+
+Usage:
+    ltx-2-mlx generate --prompt "a cat walking" --output out.mp4
+    ltx-2-mlx generate --prompt "animate this" --image photo.jpg -o anim.mp4
+    ltx-2-mlx generate --prompt "a scene" --two-stage -o hires.mp4
+    ltx-2-mlx generate --prompt "a scene" --two-stages-hq --stage1-steps 20 -o hq.mp4
+    ltx-2-mlx a2v --prompt "music video" --audio music.wav -o a2v.mp4
+    ltx-2-mlx retake --prompt "new scene" --video source.mp4 --start 1 --end 3 -o retake.mp4
+    ltx-2-mlx extend --prompt "continue" --video source.mp4 --extend-frames 2 -o extended.mp4
+    ltx-2-mlx keyframe --prompt "transition" --start img1.png --end img2.png -o kf.mp4
+    ltx-2-mlx ic-lora --prompt "scene" --lora lora.safetensors 1.0 --video-conditioning depth.mp4 1.0 -o out.mp4
+    ltx-2-mlx enhance --prompt "a cat walking" --mode t2v
+    ltx-2-mlx info --model dgrauet/ltx-2.3-mlx-q8
+    ltx-2-mlx train --config training_config.yaml
+    ltx-2-mlx preprocess --videos ./my_videos --model dgrauet/ltx-2.3-mlx-q8 -o ./preprocessed
+"""
+
+from __future__ import annotations
+
+import argparse
+import sys
+import time
+from pathlib import Path
+from typing import TYPE_CHECKING
+
+from ltx_pipelines_mlx.dfr import DEFAULT_DETAILING_LORA
+from ltx_pipelines_mlx.utils.blocks import VIDEO_DECODER_CHOICES
+from ltx_pipelines_mlx.utils.stepwise import DEFAULT_PREVIEW_FRAMES
+
+if TYPE_CHECKING:
+    from ltx_pipelines_mlx.utils.types import AutoDuration
+
+DEFAULT_MODEL = "dgrauet/ltx-2.3-mlx-q8"
+DEFAULT_GEMMA = "mlx-community/gemma-3-12b-it-4bit"
+
+
+def _add_base_args(parser: argparse.ArgumentParser) -> None:
+    """Add base arguments shared by all subcommands (prompt, output, model, seed)."""
+    parser.add_argument("--prompt", "-p", required=True, help="Text prompt")
+    parser.add_argument("--output", "-o", required=True, help="Output video path (.mp4)")
+    parser.add_argument(
+        "--model", "-m", default=DEFAULT_MODEL, help=f"Model weights (HF repo or path, default: {DEFAULT_MODEL})"
+    )
+    parser.add_argument(
+        "--gemma", default=DEFAULT_GEMMA, help=f"Gemma model for text encoding (default: {DEFAULT_GEMMA})"
+    )
+    parser.add_argument("--seed", "-s", type=int, default=-1, help="Random seed (-1 = random)")
+    parser.add_argument("--quiet", "-q", action="store_true", help="Suppress progress output")
+    parser.add_argument(
+        "--stepwise-image-output-dir",
+        default=None,
+        help=(
+            "[EXPERIMENTAL] Every N denoising steps, decode a short window of latent "
+            "frames from the in-progress prediction and write it to this directory as "
+            "a self-contained animated WebP — a couple of seconds of real motion at "
+            "the current denoise quality. One file per step, written once; play them "
+            "back to back for the whole progression. Keeps the VAE decoder resident "
+            "through denoising, which raises peak memory. May change in future versions."
+        ),
+    )
+    parser.add_argument(
+        "--stepwise-interval",
+        type=int,
+        default=1,
+        help="Preview every N denoising steps (default: 1). The final step is always previewed.",
+    )
+    parser.add_argument(
+        "--stepwise-frames",
+        type=int,
+        default=DEFAULT_PREVIEW_FRAMES,
+        help=(
+            f"Latent frames decoded per preview (default: {DEFAULT_PREVIEW_FRAMES}). The VAE "
+            f"upsamples time 8x, so N latent frames yield 8N-7 pixel frames — the default gives "
+            f"{8 * DEFAULT_PREVIEW_FRAMES - 7}, about 2.3 s at 25 fps. Cost is linear in this and "
+            "independent of the clip's length. Set to 1 for a single still and no motion."
+        ),
+    )
+    parser.add_argument(
+        "--stepwise-frame",
+        type=int,
+        default=None,
+        help=(
+            "Latent frame the preview window is centred on (default: the middle of the "
+            "clip). Negative values count from the end, so -1 is the last frame."
+        ),
+    )
+
+
+def _build_stepwise(args: argparse.Namespace):
+    """Build the stepwise preview handler from CLI args, or None when disabled.
+
+    Validates the output directory up front: a bad path should fail in the first
+    second, not minutes later when the first preview is written.
+    """
+    output_dir = getattr(args, "stepwise_image_output_dir", None)
+    if not output_dir:
+        return None
+
+    from pathlib import Path
+
+    from ltx_pipelines_mlx.utils.stepwise import StepwiseConfig, StepwisePreview
+
+    path = Path(output_dir).expanduser()
+    # retake/extend take no --frame-rate; their previews play at the LTX default.
+    frame_rate = float(getattr(args, "frame_rate", None) or 24.0)
+    try:
+        path.mkdir(parents=True, exist_ok=True)
+        probe = path / ".ltx-stepwise-write-test"
+        probe.touch()
+        probe.unlink()
+    except OSError as exc:
+        raise SystemExit(f"--stepwise-image-output-dir {output_dir!r} is not usable: {exc}") from exc
+
+    # Warned unconditionally, not just under --low-ram: previews hold the VAE decoder
+    # and the transformer in memory at the same time, which is the shape of the jetsam
+    # kills fixed in 0.14.19. A jetsam kill is not an exception — the process dies with
+    # no traceback — so the handler's failure containment cannot cover it, and this line
+    # is the only thing that will point a user at previews afterwards.
+    print(
+        "[stepwise] warning: previews keep the VAE decoder resident through denoising, so "
+        "it and the transformer are in memory at once. On a memory-tight machine this can "
+        "get the process killed outright, with no error.",
+        file=sys.stderr,
+        flush=True,
+    )
+    if getattr(args, "low_ram", False):
+        print(
+            "[stepwise] warning: raising peak memory is the opposite of what --low-ram is "
+            "for; consider dropping one of the two.",
+            file=sys.stderr,
+            flush=True,
+        )
+
+    return StepwisePreview(
+        StepwiseConfig(
+            output_dir=path,
+            interval=max(1, args.stepwise_interval),
+            frame=args.stepwise_frame,
+            frames=max(1, args.stepwise_frames),
+            frame_rate=frame_rate,
+            seed=args.seed,
+        ),
+        verbose=not args.quiet,
+    )
+
+
+def _build_tile_count_config(args: argparse.Namespace):
+    """Return a TileCountConfig from --tile-frames / --tile-spatial / --tile-overlap.
+
+    Returns None if both frames and spatial are 1 (no tiling).
+    """
+    frames_n = getattr(args, "tile_frames", 1)
+    spatial_n = getattr(args, "tile_spatial", 1)
+    overlap = getattr(args, "tile_overlap", 2)
+    if frames_n <= 1 and spatial_n <= 1:
+        return None
+    from ltx_core_mlx.model.video_vae.tiling import DimensionTilingConfig, TileCountConfig
+
+    return TileCountConfig(
+        frames=DimensionTilingConfig(num_tiles=frames_n, overlap=overlap if frames_n > 1 else 0),
+        height=DimensionTilingConfig(num_tiles=spatial_n, overlap=overlap if spatial_n > 1 else 0),
+        width=DimensionTilingConfig(num_tiles=spatial_n, overlap=overlap if spatial_n > 1 else 0),
+    )
+
+
+def _add_negative_prompt_arg(parser: argparse.ArgumentParser) -> None:
+    """Add ``--negative-prompt`` (CFG pipelines only)."""
+    parser.add_argument(
+        "--negative-prompt",
+        default=None,
+        help=(
+            "Negative prompt for CFG: what should not appear in the video. Default: the upstream "
+            "DEFAULT_NEGATIVE_PROMPT (common artifacts and quality issues). An empty string "
+            'encodes "" verbatim. CFG pipelines only: rejected by --distilled and --dfr.'
+        ),
+    )
+
+
+def _add_teacache_args(parser: argparse.ArgumentParser) -> None:
+    """Add the TeaCache stage-1 flags (``generate`` two-stage modes and ``a2v``)."""
+    parser.add_argument(
+        "--enable-teacache",
+        action="store_true",
+        help=(
+            "generate --two-stage / --two-stages-hq and a2v only (LTX-2.3 packs): enable "
+            "TeaCache stage-1 acceleration (opt-in, ~1.46x speedup on Euler at default "
+            "thresh; see CLAUDE.md)"
+        ),
+    )
+    parser.add_argument(
+        "--teacache-thresh",
+        type=float,
+        default=None,
+        help=(
+            "Override TeaCache rel_l1_thresh (default 0.5; higher = more skipping = "
+            "faster but lossier). Ignored unless --enable-teacache is set."
+        ),
+    )
+
+
+def _add_generation_args(parser: argparse.ArgumentParser, *, frames_default: int | None = 97) -> None:
+    """Add generation-specific arguments (dimensions, steps) on top of base args.
+
+    ``frames_default=None`` (used by the ``generate`` subparser only) leaves
+    ``--frames`` unset so the auto-duration collapse logic in
+    ``_resolve_num_frames_arg`` can distinguish "not given" from an explicit
+    value. Other subcommands (``a2v``, ``keyframe``, ``ic-lora``, ...) keep
+    their historical ``97`` default.
+    """
+    _add_base_args(parser)
+    parser.add_argument("--height", "-H", type=int, default=480, help="Video height (default: 480)")
+    parser.add_argument("--width", "-W", type=int, default=704, help="Video width (default: 704)")
+    if frames_default is None:
+        parser.add_argument(
+            "--frames",
+            "-f",
+            type=int,
+            default=None,
+            help=(
+                "Number of frames. Default: auto-predicted from the prompt on packs with "
+                "a DurationHead (LTX-2.5+); required explicitly otherwise. See --auto-duration."
+            ),
+        )
+    else:
+        parser.add_argument(
+            "--frames", "-f", type=int, default=frames_default, help=f"Number of frames (default: {frames_default})"
+        )
+    parser.add_argument(
+        "--frame-rate",
+        type=float,
+        required=True,
+        help=(
+            "Output frame rate (mandatory; matches upstream `frame_rate=` on every pipeline). "
+            "LTX-2.3 was trained at 24; values far from that drift out of distribution."
+        ),
+    )
+    parser.add_argument(
+        "--tile-frames",
+        type=int,
+        default=1,
+        help=(
+            "Number of temporal tiles for modality tiling (default: 1 = no tiling). "
+            "Each tile is denoised independently and blended back. Trades wall-clock "
+            "for peak memory. Combine with --low-ram for max savings."
+        ),
+    )
+    parser.add_argument(
+        "--tile-spatial",
+        type=int,
+        default=1,
+        help=(
+            "Number of spatial tiles per axis (height and width). 2 = 2x2 = 4 spatial "
+            "tiles. Combined with --tile-frames N gives N*S*S tiles total. Default: 1."
+        ),
+    )
+    parser.add_argument(
+        "--tile-overlap",
+        type=int,
+        default=2,
+        help=(
+            "Token-grid overlap between adjacent tiles (default: 2). Higher overlap "
+            "= smoother blend but more redundant compute. Ignored when both "
+            "--tile-frames and --tile-spatial are 1."
+        ),
+    )
+    parser.add_argument(
+        "--low-ram",
+        action="store_true",
+        help=(
+            "Stream transformer blocks from mmap'd safetensors via "
+            "mx.compile + per-block sync + Metal heap release. Cuts "
+            "transformer peak Metal ~75%% (e.g. q8 ~10-12 GB -> ~2.8 GB). "
+            "Targets 16 GB Macs (q8) and 32 GB Macs (bf16). Supported "
+            "on generate (one-stage / --two-stage / --two-stages-hq), a2v, "
+            "keyframe, ic-lora, retake, and extend. Compatible with generate's --lora flag "
+            "via per-block BlockLoraSource bind-time fusion. Two-stage at "
+            "LoRA strength 1.0 swaps to the pre-fused "
+            "transformer-distilled.safetensors at the stage 1->2 transition; "
+            "custom strengths trigger bind-time LoRA fusion (slower but "
+            "supports any strength)."
+        ),
+    )
+
+
+def _parse_auto_duration(value: str) -> AutoDuration:
+    """Parse a ``MIN:MAX`` string (seconds) into an :class:`AutoDuration`.
+
+    Mirrors upstream ``ltx_pipelines.utils.args.AutoDurationAction``'s
+    ``min_seconds <= max_seconds`` guard (and its exact message wording) so an
+    inverted range (e.g. ``10:2``) is rejected at parse time instead of
+    silently flowing through into a wrong-duration render.
+    """
+    from ltx_pipelines_mlx.utils.types import AutoDuration
+
+    parts = value.split(":")
+    if len(parts) != 2:
+        raise argparse.ArgumentTypeError(f"--auto-duration expects MIN:MAX (e.g. 2:10), got {value!r}")
+    try:
+        min_seconds, max_seconds = float(parts[0]), float(parts[1])
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(f"--auto-duration expects MIN:MAX as numbers, got {value!r}") from exc
+    if min_seconds > max_seconds:
+        raise argparse.ArgumentTypeError(
+            f"--auto-duration MIN_SECONDS ({min_seconds}) must be <= MAX_SECONDS ({max_seconds})"
+        )
+    return AutoDuration(min_seconds=min_seconds, max_seconds=max_seconds)
+
+
+def _resolve_num_frames_arg(args: argparse.Namespace) -> int | AutoDuration:
+    """Collapse ``--frames``/``--auto-duration`` into the value a pipeline's ``num_frames`` expects.
+
+    Mirrors upstream ``ltx_pipelines.utils.args._resolve_num_frames``: an explicit
+    ``--frames`` wins (with a warning if ``--auto-duration`` was also given);
+    otherwise ``--auto-duration`` if given, else the ``AutoDuration()`` default.
+    Only the ``generate`` subparser sets ``--frames`` default to ``None`` and
+    exposes ``--auto-duration``, so this is only meaningfully called there.
+    """
+    from ltx_pipelines_mlx.utils.types import DEFAULT_AUTO_DURATION
+
+    frames = getattr(args, "frames", None)
+    auto_duration = getattr(args, "auto_duration", None)
+    if frames is not None and auto_duration is not None:
+        print(
+            f"warning: both --frames and --auto-duration were given; using --frames={frames} "
+            "and ignoring --auto-duration.",
+            file=sys.stderr,
+        )
+    if frames is not None:
+        return frames
+    if auto_duration is not None:
+        return auto_duration
+    return DEFAULT_AUTO_DURATION
+
+
+def _require_diffusion_decoder_preconditions(args: argparse.Namespace, model_dir: str) -> None:
+    """Reject an unusable ``--video-decoder diffusion`` request before any generation runs.
+
+    Both diffusion-specific failure modes (the pack has no
+    ``vae_decoder_av.safetensors``, or the target exceeds the stage-5 token
+    guard) otherwise only surface at decode time, after a full 20-minute
+    generation. Mirrors the ``require_num_frames_source`` fail-fast precedent.
+
+    Args:
+        args: Parsed ``generate`` arguments (``height``/``width``/frames/decoder).
+        model_dir: The ``--model`` value (HF repo id or local path).
+
+    Raises:
+        FileNotFoundError: The resolved pack has no diffusion decoder weights.
+        ValueError: ``--diffvae-tile`` was passed without ``--video-decoder diffusion``,
+            the override grid is invalid, or the resolved tiling can't fit the decode budget.
+    """
+    override = tuple(args.diffvae_tile) if getattr(args, "diffvae_tile", None) else None
+    if getattr(args, "video_decoder", "conv") != "diffusion":
+        if override is not None:
+            raise ValueError("--diffvae-tile requires --video-decoder diffusion")
+        return
+
+    from ltx_core_mlx.components.patchifiers import compute_video_latent_shape
+    from ltx_pipelines_mlx.utils.blocks import _resolve_model_dir
+
+    path = _resolve_model_dir(model_dir) / "vae_decoder_av.safetensors"
+    if not path.exists():
+        raise FileNotFoundError(f"{path} — the diffusion video decoder ships with LTX 2.5 packs only")
+
+    num_frames = _resolve_num_frames_arg(args)
+    if not isinstance(num_frames, int):
+        # Auto-duration: only an explicit --auto-duration gives a meaningful upper bound.
+        if getattr(args, "auto_duration", None) is None:
+            if override is not None and override != (0, 0, 0):
+                # Grid validity doesn't depend on the frame count, so check it eagerly even
+                # though the token-count / budget check below needs a resolved frame bound.
+                from ltx_core_mlx.model.video_vae.diffusion_decoder.config import LTX_2_5_DIFFUSION_DECODER
+                from ltx_core_mlx.model.video_vae.diffusion_decoder.tiling import (
+                    DiffusionTileConfig,
+                    DiffusionTileGeometry,
+                )
+
+                geometry = DiffusionTileGeometry.from_config(LTX_2_5_DIFFUSION_DECODER)
+                DiffusionTileConfig.from_pixels(geometry, *override)
+            print(
+                "note: --video-decoder diffusion size check skipped — the frame count is "
+                "auto-predicted; pass -f or --auto-duration MIN:MAX to check it up front.",
+                file=sys.stderr,
+            )
+            return
+        num_frames = int(num_frames.max_seconds * args.frame_rate)
+
+    f, h, w = compute_video_latent_shape(num_frames, args.height, args.width)
+    _validate_diffvae_tiling(path, f, h, w, override)
+
+
+def _validate_diffvae_tiling(path: Path, f: int, h: int, w: int, override: tuple[int, int, int] | None) -> None:
+    """Fail fast on an impossible tiling: no tile fits the budget, a bad override, or a forced one-tile decode over the guard."""
+    from ltx_core_mlx.model.video_vae.diffusion_decoder.config import LTX_2_5_DIFFUSION_DECODER
+    from ltx_core_mlx.model.video_vae.diffusion_decoder.tiling import (
+        DiffusionTileConfig,
+        DiffusionTileGeometry,
+        auto_tile_config,
+        padded_latent_fhw,
+    )
+    from ltx_pipelines_mlx.utils.blocks import _DiffusionVideoDecoder, diffusion_decode_budget_bytes
+
+    cfg = LTX_2_5_DIFFUSION_DECODER  # the only pack family shipping this decoder; avoids reading the header (tests use a stub file)
+    geometry = DiffusionTileGeometry.from_config(cfg)
+    fhw = padded_latent_fhw(cfg, (f, h, w))
+    if override is None:
+        auto_tile_config(geometry, fhw, budget_bytes=diffusion_decode_budget_bytes(), weight_bytes=path.stat().st_size)
+    elif override == (0, 0, 0):
+        _DiffusionVideoDecoder.check_size((1, 128, f, h, w))
+    else:
+        DiffusionTileConfig.from_pixels(geometry, *override)
+
+
+_RETAKE_COST_EPILOG = (
+    "Cost note: denoising cost follows the TOTAL clip length, not the size of the "
+    "regenerated window -- preserved frames are still computed and attended over on "
+    "every pass, so retaking 1 latent frame of a 10 s clip costs the same as retaking all of it. "
+    "An [estimate] line on stderr states the work before step 1 and a time projection after it."
+)
+
+
+def _build_parser() -> argparse.ArgumentParser:
+    """Build the top-level argument parser (all subcommands).
+
+    Factored out of :func:`main` so tests can parse args without invoking
+    the CLI's dispatch/side-effect machinery.
+    """
+    parser = argparse.ArgumentParser(
+        prog="ltx-2-mlx",
+        description="LTX-2.3 video generation on Apple Silicon (MLX)",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""\
+examples:
+  ltx-2-mlx generate --prompt "a sunset" --output sunset.mp4
+  ltx-2-mlx generate --prompt "animate" --image photo.jpg -o anim.mp4
+  ltx-2-mlx generate --prompt "a scene" --two-stage -o hires.mp4
+  ltx-2-mlx a2v --prompt "music video" --audio music.wav -o a2v.mp4
+  ltx-2-mlx retake --prompt "new scene" --video source.mp4 --start 1 --end 3 -o out.mp4
+  ltx-2-mlx extend --prompt "continue" --video source.mp4 --extend-frames 2 -o out.mp4
+  ltx-2-mlx keyframe --prompt "transition" --start img1.png --end img2.png -o out.mp4
+  ltx-2-mlx ic-lora --prompt "scene" --lora lora.safetensors 1.0 --video-conditioning depth.mp4 1.0 -o out.mp4
+  ltx-2-mlx enhance --prompt "a cat walking" --mode t2v
+  ltx-2-mlx info --model dgrauet/ltx-2.3-mlx-q4
+""",
+    )
+    sub = parser.add_subparsers(dest="command")
+
+    # --- generate (T2V / I2V / two-stage / HQ) ---
+    gen = sub.add_parser("generate", help="Generate video from text (T2V) or image (I2V)")
+    _add_generation_args(gen, frames_default=None)
+    gen.add_argument(
+        "--num-generated-keyframes",
+        type=int,
+        default=0,
+        metavar="N",
+        help=(
+            "Number of extra generated keyframes to place at evenly spaced interior frame positions "
+            "(default: 0, off). Each keyframe relaxes the effective temporal compression at its position "
+            "but costs a full latent frame of tokens while yielding one pixel frame, so N keyframes add "
+            "roughly N / num_latent_frames to the stage-1 sequence length. Stage 1 only. Requires an "
+            "LTX 2.5 pack (use_keyframes_abs_pos_embedding); refused up front otherwise."
+        ),
+    )
+    gen.add_argument(
+        "--no-audio",
+        action="store_true",
+        help=(
+            "Skip audio decode + mux and write an mp4 with no audio track. "
+            "Video generation is unchanged (audio latents are still produced jointly by the DiT); "
+            "only the audio VAE / vocoder load and decode are skipped."
+        ),
+    )
+    gen.add_argument(
+        "--video-decoder",
+        choices=VIDEO_DECODER_CHOICES,
+        default="conv",
+        help=(
+            "[experimental] Video VAE decoder: 'conv' (default) or 'diffusion' "
+            "(LTX 2.5 NADiffusionDecoder, sharper, slower, tiled above the decode budget; needs "
+            "vae_decoder_av.safetensors)"
+        ),
+    )
+    gen.add_argument(
+        "--diffvae-tile",
+        nargs=3,
+        type=int,
+        metavar=("FRAMES", "HEIGHT", "WIDTH"),
+        default=None,
+        help=(
+            "[experimental] Diffusion decoder tile size in pixel frames / pixels (multiples of 2 frames / 8 px; "
+            "0 disables tiling on that axis, '0 0 0' forces one tile). Default: sized automatically "
+            "from LTX2_VAE_DECODE_BUDGET_GB (or half of unified memory). Requires --video-decoder diffusion."
+        ),
+    )
+    gen.add_argument(
+        "--auto-duration",
+        type=_parse_auto_duration,
+        default=None,
+        metavar="MIN:MAX",
+        help=(
+            "Bounds (seconds) for auto-predicted duration, e.g. '2:10'. Only takes effect "
+            "when --frames is not given and the checkpoint has DurationHead weights "
+            "(LTX-2.5+); default bounds are 1:20. Ignored (with a warning) if --frames "
+            "is also given."
+        ),
+    )
+    from ltx_pipelines_mlx.utils.args import ImageAction as _ImageAction
+
+    gen.add_argument(
+        "--image",
+        "-i",
+        action=_ImageAction,
+        nargs="+",
+        dest="images",
+        default=None,
+        metavar="ARG",
+        help=(
+            "Reference image for I2V. Form: PATH [FRAME_IDX STRENGTH [CRF]]. "
+            "PATH alone defaults to FRAME_IDX=0 STRENGTH=1.0 (legacy single-image I2V). "
+            "Repeatable to anchor multiple frames (e.g. --image foo.jpg 0 1.0 "
+            "--image foo.jpg 96 1.0 to anchor both ends and preserve identity). "
+            "FRAME_IDX is the pixel frame index (0-based); 0 replaces the first latent "
+            "frame directly, others guide via VideoConditionByKeyframeIndex. "
+            "FRAME_IDX may be 'last' or negative (counted from the end), so an end "
+            "anchor follows the frame count --auto-duration picks. "
+            "Mirrors upstream LTX_2_3 --image."
+        ),
+    )
+    from ltx_pipelines_mlx.utils.args import SegmentAction as _SegmentAction
+
+    gen.add_argument(
+        "--segment",
+        action=_SegmentAction,
+        nargs="+",
+        dest="segments",
+        default=None,
+        metavar="ARG",
+        help=(
+            "Prompt Relay segment: a local prompt gated to a slice of the timeline. "
+            "Form: TEXT [LEN_FRAMES] (LEN_FRAMES in latent frames; omit to auto-distribute "
+            "evenly). Repeatable, in timeline order — e.g. --segment 'a red car' "
+            "--segment 'a blue sky'. The global --prompt applies to all frames. "
+            "Works on all generate modes (video cross-attention); on CFG modes the mask "
+            "applies to the conditional pass only. Not compatible with modality tiling."
+        ),
+    )
+    gen.add_argument(
+        "--relay-epsilon",
+        type=float,
+        default=1e-3,
+        help="Prompt Relay falloff (smaller = sharper temporal gating). Default: 1e-3.",
+    )
+    gen.add_argument(
+        "--relay-strength",
+        type=float,
+        default=1.0,
+        help="Prompt Relay penalty multiplier (higher = stricter segment isolation). Default: 1.0.",
+    )
+    gen.add_argument("--steps", type=int, default=None, help="Denoising steps for one-stage (default: 30)")
+    gen.add_argument(
+        "--two-stage",
+        action="store_true",
+        help="Two-stage pipeline: dev model + CFG at half-res, upscale, distilled LoRA refine (requires q8 model)",
+    )
+    gen.add_argument(
+        "--two-stages-hq",
+        action="store_true",
+        dest="two_stages_hq",
+        help="HQ two-stage pipeline (res_2s sampler for stage 1). Mirrors upstream TI2VidTwoStagesHQPipeline.",
+    )
+    gen.add_argument(
+        "--distilled",
+        action="store_true",
+        help="Distilled two-stage pipeline (half-res distilled + upscale + distilled refine, no CFG). Mirrors upstream DistilledPipeline.",
+    )
+    gen.add_argument(
+        "--one-stage",
+        action="store_true",
+        dest="one_stage",
+        help="Dev model + CFG one-stage at full target resolution (no upsampler, no stage 2). Mirrors upstream TI2VidOneStagePipeline. Higher quality than --distilled at small resolutions; slower than --two-stage at large.",
+    )
+    gen.add_argument(
+        "--dfr",
+        action="store_true",
+        help=(
+            "[experimental] DFR (Diffusion Fidelity Rendering) base path, LTX 2.5 packs only: distilled "
+            "half-res stage with keyframe slots on a segment-aligned canvas, then a full-res detailing "
+            "stage with the official detailing IC-LoRA guided by the stage-1 latent. Mirrors upstream "
+            "DFRPipeline (spatial_upscalings=1). The detailing LoRA is a gated "
+            "HuggingFace repo: accept its licence on the model page once before the first run."
+        ),
+    )
+    gen.add_argument(
+        "--detailing-lora",
+        default=DEFAULT_DETAILING_LORA,
+        metavar="PATH_OR_REPO",
+        help=(
+            "Detailing IC-LoRA for --dfr (local .safetensors or HF repo id). Default: the official LTX-2.5 "
+            "detailing LoRA (Lightricks/LTX-2.5-22b-IC-LoRA-Pixel-Spatial-Upscaler, gated: accept its licence "
+            "on HuggingFace once, or pass a local file)."
+        ),
+    )
+    gen.add_argument(
+        "--spatial-upscalings",
+        type=int,
+        choices=(1, 2),
+        default=1,
+        help=(
+            "DFR spatial epilogue: 1 = stage 2 at full resolution (default), 2 = stage 1 at H/4 and "
+            "stage 2 + temporal rounds at H/2, then a full-res detailing epilogue (Lanczos-upsampled "
+            "re-encoded keyframes + 2x2 spatially-tiled denoise). Dims are floored to multiples of "
+            "128 px, with a warning. --dfr only; not compatible with --segment or --tile-*."
+        ),
+    )
+    gen.add_argument(
+        "--temporal-upscalings",
+        type=int,
+        choices=(0, 1, 2),
+        default=0,
+        help=(
+            "DFR temporal x2 refine rounds: 0 = base fps, 1 = 2x frames and fps (2 tiles), "
+            "2 = 4x (4 tiles). --dfr only."
+        ),
+    )
+    gen.add_argument(
+        "--temporal-upsampler-path",
+        default=None,
+        metavar="PATH",
+        help=(
+            "Temporal x2 latent upsampler for --temporal-upscalings (default: the pack's "
+            "temporal_upscaler_x2_v1_0.safetensors). --dfr only."
+        ),
+    )
+    gen.add_argument("--stage1-steps", type=int, default=None, help="Stage 1 steps (default: 30 standard, 15 HQ)")
+    gen.add_argument("--stage2-steps", type=int, default=None, help="Stage 2 steps (default: 3)")
+    gen.add_argument("--cfg-scale", type=float, default=None, help="CFG guidance scale (default: 3.0)")
+    _add_negative_prompt_arg(gen)
+    gen.add_argument(
+        "--stg-scale",
+        type=float,
+        default=None,
+        help="STG guidance scale (default: 1.0 standard, 0.0 HQ — upstream LTX_2_3_PARAMS)",
+    )
+    gen.add_argument(
+        "--dev-transformer",
+        default="transformer-dev.safetensors",
+        help="Dev transformer filename (default: transformer-dev.safetensors)",
+    )
+    gen.add_argument(
+        "--distilled-lora",
+        default=None,
+        help=(
+            "Distilled LoRA filename for stage 2 (default: resolved from the pack "
+            "— 2.3 -> ltx-2.3-22b-distilled-lora-384, 2.5 -> ltx-2.5-22b-distilled-lora-450-bf16)"
+        ),
+    )
+    gen.add_argument(
+        "--distilled-lora-strength", type=float, default=1.0, help="Distilled LoRA strength for stage 2 (default: 1.0)"
+    )
+    _add_teacache_args(gen)
+    gen.add_argument("--enhance-prompt", action="store_true", help="Enhance prompt using Gemma before generation")
+    gen.add_argument(
+        "--lora",
+        action="append",
+        nargs=2,
+        metavar=("PATH", "STRENGTH"),
+        help=(
+            "LoRA weights and strength (repeatable). PATH can be a local .safetensors file "
+            "or a HuggingFace repo ID. Example: --lora my_lora.safetensors 1.0"
+        ),
+    )
+
+    # --- a2v (Audio-to-Video) ---
+    a2v = sub.add_parser("a2v", help="[beta] Generate video from audio + text prompt")
+    _add_generation_args(a2v)
+    _add_teacache_args(a2v)
+    a2v.add_argument("--audio", "-a", required=True, help="Input audio file (WAV/MP3/etc.)")
+    a2v.add_argument("--audio-start", type=float, default=0.0, help="Audio start time in seconds (default: 0)")
+    a2v.add_argument("--stage1-steps", type=int, default=None, help="Stage 1 steps (default: 30)")
+    a2v.add_argument("--stage2-steps", type=int, default=None, help="Stage 2 steps (default: 3)")
+    a2v.add_argument("--cfg-scale", type=float, default=None, help="CFG guidance scale (default: 3.0)")
+    _add_negative_prompt_arg(a2v)
+    a2v.add_argument(
+        "--stg-scale", type=float, default=None, help="STG guidance scale (default: 1.0 — upstream LTX_2_3_PARAMS)"
+    )
+    a2v.add_argument(
+        "--image",
+        "-i",
+        action=_ImageAction,
+        nargs="+",
+        dest="images",
+        default=None,
+        metavar="ARG",
+        help=(
+            "Reference image for I2V. Form: PATH [FRAME_IDX STRENGTH [CRF]]. "
+            "Repeatable to anchor multiple frames. PATH alone defaults to "
+            "FRAME_IDX=0 STRENGTH=1.0 (legacy single-image)."
+        ),
+    )
+
+    # --- retake ---
+    ret = sub.add_parser(
+        "retake",
+        help="[beta] Regenerate a time segment of an existing video",
+        epilog=_RETAKE_COST_EPILOG,
+    )
+    _add_base_args(ret)
+    ret.add_argument("--video", "-v", required=True, help="Source video file")
+    ret.add_argument("--start", type=int, required=True, help="Start latent frame index (inclusive)")
+    ret.add_argument("--end", type=int, required=True, help="End latent frame index (exclusive)")
+    ret.add_argument("--steps", type=int, default=None, help="Denoising steps (default: 30)")
+    ret.add_argument("--cfg-scale", type=float, default=None, help="CFG guidance scale (default: 3.0)")
+    _add_negative_prompt_arg(ret)
+    ret.add_argument(
+        "--stg-scale", type=float, default=None, help="STG guidance scale (default: 1.0 — upstream LTX_2_3_PARAMS)"
+    )
+    ret.add_argument("--no-regen-audio", action="store_true", help="Preserve original audio (don't regenerate)")
+    ret.add_argument(
+        "--low-ram",
+        action="store_true",
+        help="Stream transformer blocks from mmap'd safetensors (see generate --low-ram)",
+    )
+
+    # --- extend ---
+    ext = sub.add_parser(
+        "extend",
+        help="[beta] Add frames before or after an existing video",
+        epilog=_RETAKE_COST_EPILOG,
+    )
+    _add_base_args(ext)
+    ext.add_argument("--video", "-v", required=True, help="Source video file")
+    ext.add_argument("--extend-frames", type=int, required=True, help="Number of latent frames to add")
+    ext.add_argument("--direction", choices=["before", "after"], default="after", help="Direction (default: after)")
+    ext.add_argument(
+        "--low-ram",
+        action="store_true",
+        help="Stream transformer blocks from mmap'd safetensors (see generate --low-ram)",
+    )
+    ext.add_argument("--steps", type=int, default=None, help="Denoising steps (default: 30)")
+    ext.add_argument("--cfg-scale", type=float, default=None, help="CFG guidance scale (default: 3.0)")
+    _add_negative_prompt_arg(ext)
+    ext.add_argument(
+        "--stg-scale", type=float, default=None, help="STG guidance scale (default: 1.0 — upstream LTX_2_3_PARAMS)"
+    )
+
+    # --- keyframe ---
+    kf = sub.add_parser("keyframe", help="Interpolate between keyframe images")
+    _add_generation_args(kf)
+    kf.add_argument("--start", required=True, help="Start keyframe image path")
+    kf.add_argument("--end", required=True, help="End keyframe image path")
+    kf.add_argument(
+        "--start-strength",
+        type=float,
+        default=1.0,
+        help="Start keyframe conditioning strength in [0, 1] (default: 1.0 — upstream-iso)",
+    )
+    kf.add_argument(
+        "--end-strength",
+        type=float,
+        default=1.0,
+        help="End keyframe conditioning strength in [0, 1] (default: 1.0 — upstream-iso). Lower values give the prompt more freedom to diverge from the end fixture.",
+    )
+    kf.add_argument("--stage1-steps", type=int, default=None, help="Stage 1 denoising steps")
+    kf.add_argument("--stage2-steps", type=int, default=None, help="Stage 2 denoising steps")
+    kf.add_argument("--cfg-scale", type=float, default=None, help="Override CFG scale (default: 3.0 video, 7.0 audio)")
+    _add_negative_prompt_arg(kf)
+    kf.add_argument("--stg-scale", type=float, default=None, help="Override STG scale (default: 1.0)")
+    kf.add_argument(
+        "--dev-transformer",
+        default=None,
+        help="Dev (non-distilled) transformer filename for higher quality stage 1 (e.g. transformer-dev.safetensors)",
+    )
+    kf.add_argument(
+        "--distilled-lora",
+        default=None,
+        help="Distilled LoRA filename for stage 2 refinement (e.g. ltx-2.3-22b-distilled-lora-384.safetensors)",
+    )
+    kf.add_argument("--lora-strength", type=float, default=1.0, help="Distilled LoRA strength (default: 1.0)")
+
+    # --- ic-lora ---
+    ic = sub.add_parser("ic-lora", help="Generate video with IC-LoRA control conditioning")
+    _add_generation_args(ic)
+    ic.add_argument(
+        "--lora",
+        action="append",
+        nargs=2,
+        metavar=("PATH", "STRENGTH"),
+        required=True,
+        help=(
+            "IC-LoRA weights and strength (repeatable). PATH can be a local .safetensors file "
+            "or a HuggingFace repo ID (e.g. Lightricks/LTX-2.3-22b-IC-LoRA-Union-Control). "
+            "Example: --lora Lightricks/LTX-2.3-22b-IC-LoRA-Union-Control 1.0"
+        ),
+    )
+    ic.add_argument(
+        "--video-conditioning",
+        action="append",
+        nargs=2,
+        metavar=("PATH", "STRENGTH"),
+        required=True,
+        help="Reference control video and strength (repeatable). Example: --video-conditioning depth.mp4 1.0",
+    )
+    ic.add_argument(
+        "--image",
+        "-i",
+        action=_ImageAction,
+        nargs="+",
+        dest="images",
+        default=None,
+        metavar="ARG",
+        help=("Reference image for I2V. Form: PATH [FRAME_IDX STRENGTH [CRF]]. Repeatable to anchor multiple frames."),
+    )
+    ic.add_argument("--stage1-steps", type=int, default=None, help="Stage 1 denoising steps")
+    ic.add_argument("--stage2-steps", type=int, default=None, help="Stage 2 denoising steps")
+    ic.add_argument(
+        "--conditioning-strength",
+        type=float,
+        default=1.0,
+        help="IC-LoRA conditioning attention strength 0.0-1.0 (default: 1.0)",
+    )
+    ic.add_argument("--skip-stage-2", action="store_true", help="Skip stage 2 upsampling (half resolution output)")
+    ic.add_argument(
+        "--upsample-only",
+        action="store_true",
+        help=(
+            "Half-res generative pass (control applied throughout) + 2x latent "
+            "upsample, then decode directly at full resolution — skips the Stage 2 "
+            "refine that drops control adherence. ~3x faster than --single-stage; "
+            "control fidelity sits between two-stage and native single-stage."
+        ),
+    )
+    ic.add_argument(
+        "--refine-steps",
+        type=int,
+        default=None,
+        help=(
+            "With --upsample-only, run an N-step control-aware refine after the "
+            "upsample: re-encodes the control at full resolution and re-applies it "
+            "with the IC-LoRA fused, cleaning upsampler artifacts without the "
+            "adherence drift of two-stage. 3 ~ matches the standard Stage 2 depth; "
+            "higher = more cleanup + more drift from the draft (capped at 8)."
+        ),
+    )
+    ic.add_argument(
+        "--single-stage",
+        action="store_true",
+        help=(
+            "Single-stage full-resolution generation with the reference conditioning "
+            "applied throughout (Comfy Union Control topology). No upsampler / Stage 2. "
+            "Tracks the control signal more tightly than two-stage; slower at large res."
+        ),
+    )
+
+    ic.add_argument(
+        "--dev-transformer",
+        default=None,
+        help=(
+            "Dev (non-distilled) transformer filename. Enables dev mode: the "
+            "distilled LoRA is fused alongside the IC-LoRA (Comfy IC-LoRA recipe). "
+            "e.g. transformer.safetensors in a dev model dir"
+        ),
+    )
+
+    ic.add_argument(
+        "--distilled-lora",
+        default="ltx-2.3-22b-distilled-lora-384-1.1.safetensors",
+        help=(
+            "Distilled LoRA fused alongside the IC-LoRA in dev mode "
+            "(default: ltx-2.3-22b-distilled-lora-384-1.1.safetensors)"
+        ),
+    )
+    ic.add_argument(
+        "--distilled-lora-strength",
+        type=float,
+        default=0.5,
+        help="Distilled LoRA strength in dev mode (default: 0.5)",
+    )
+
+    # --- lipdub ---
+    ld = sub.add_parser(
+        "lipdub",
+        help="[experimental] Lip-dub a reference video: re-generate visuals matching the reference audio.",
+    )
+    _add_base_args(ld)
+    ld.add_argument("--height", "-H", type=int, default=480, help="Output height (default: 480)")
+    ld.add_argument("--width", "-W", type=int, default=704, help="Output width (default: 704)")
+    ld.add_argument(
+        "--low-ram",
+        action="store_true",
+        help="Stream transformer blocks (same semantics as ic-lora --low-ram).",
+    )
+    ld.add_argument(
+        "--reference-video",
+        required=True,
+        help="Reference video (provides visuals + audio for the lip-dub).",
+    )
+    ld.add_argument(
+        "--reference-strength",
+        type=float,
+        default=1.0,
+        help="Reference video conditioning strength (default: 1.0).",
+    )
+    ld.add_argument(
+        "--lora",
+        action="append",
+        nargs=2,
+        metavar=("PATH", "STRENGTH"),
+        required=True,
+        help="Lip-dub IC-LoRA (exactly one required). PATH can be local or HF repo ID.",
+    )
+    ld.add_argument("--stage1-steps", type=int, default=None)
+    ld.add_argument("--stage2-steps", type=int, default=None)
+
+    # --- hdr-ic-lora ---
+    hdr = sub.add_parser(
+        "hdr-ic-lora",
+        help="Generate HDR video via IC-LoRA with LogC3 inverse (saves SDR mp4 + .hdr.npz)",
+    )
+    _add_generation_args(hdr)
+    hdr.add_argument(
+        "--lora",
+        action="append",
+        nargs=2,
+        metavar=("PATH", "STRENGTH"),
+        required=True,
+        help=(
+            "HDR IC-LoRA weights and strength (repeatable). PATH can be local .safetensors "
+            "or a HuggingFace repo ID (e.g. Lightricks/LTX-2.3-22b-IC-LoRA-HDR). "
+            "Auto-detects HDR transform from safetensors metadata."
+        ),
+    )
+    hdr.add_argument(
+        "--video-conditioning",
+        action="append",
+        nargs=2,
+        metavar=("PATH", "STRENGTH"),
+        default=None,
+        help="Optional reference control video(s) and strength (repeatable). Pure T2V HDR if omitted.",
+    )
+    hdr.add_argument(
+        "--image",
+        "-i",
+        action=_ImageAction,
+        nargs="+",
+        dest="images",
+        default=None,
+        metavar="ARG",
+        help=("Reference image for I2V. Form: PATH [FRAME_IDX STRENGTH [CRF]]. Repeatable to anchor multiple frames."),
+    )
+    hdr.add_argument("--stage1-steps", type=int, default=None, help="Stage 1 denoising steps")
+    hdr.add_argument("--stage2-steps", type=int, default=None, help="Stage 2 denoising steps")
+    hdr.add_argument(
+        "--conditioning-strength",
+        type=float,
+        default=1.0,
+        help="IC-LoRA conditioning attention strength 0.0-1.0 (default: 1.0)",
+    )
+    hdr.add_argument("--skip-stage-2", action="store_true", help="Skip stage 2 upsampling (half resolution output)")
+
+    # --- enhance ---
+    enh = sub.add_parser("enhance", help="Enhance a prompt using Gemma (no video generation)")
+    enh.add_argument("--prompt", "-p", required=True, help="Prompt to enhance")
+    enh.add_argument("--mode", choices=["t2v", "i2v"], default="t2v", help="Prompt mode (default: t2v)")
+    enh.add_argument("--gemma", default=DEFAULT_GEMMA, help=f"Gemma model (default: {DEFAULT_GEMMA})")
+    enh.add_argument("--seed", "-s", type=int, default=10, help="Random seed (default: 10)")
+
+    # --- info ---
+    info = sub.add_parser("info", help="Show model info and memory estimate")
+    info.add_argument("--model", "-m", default=DEFAULT_MODEL, help="Model weights (HF repo or path)")
+
+    # --- train ---
+    trn = sub.add_parser("train", help="Train a LoRA or full model (requires ltx-trainer-mlx)")
+    trn.add_argument("--config", "-c", required=True, help="Path to training config YAML file")
+    trn.add_argument(
+        "--low-ram",
+        action="store_true",
+        help="Enable gradient checkpointing (recompute blocks in backward) to fit the dev model on 64 GB",
+    )
+
+    # --- preprocess ---
+    pre = sub.add_parser("preprocess", help="Preprocess videos into latents + conditions for training")
+    pre.add_argument("--videos", "-v", required=True, help="Directory containing video files (mp4/mov/avi)")
+    pre.add_argument("--output", "-o", required=True, help="Output directory for preprocessed data")
+    pre.add_argument(
+        "--model", "-m", default=DEFAULT_MODEL, help=f"Model weights for VAE encoding (default: {DEFAULT_MODEL})"
+    )
+    pre.add_argument("--gemma", default=DEFAULT_GEMMA, help=f"Gemma model for text encoding (default: {DEFAULT_GEMMA})")
+    pre.add_argument("--height", "-H", type=int, default=None, help="Resize height (default: keep original)")
+    pre.add_argument("--width", "-W", type=int, default=None, help="Resize width (default: keep original)")
+    pre.add_argument(
+        "--max-frames", type=int, default=97, help="Max frames per video (must satisfy frames %% 8 == 1, default: 97)"
+    )
+    pre.add_argument("--captions", default=None, help="Directory with .txt caption files (same stems as videos)")
+    pre.add_argument("--caption-ext", default=".txt", help="Caption file extension (default: .txt)")
+    pre.add_argument(
+        "--with-audio",
+        action="store_true",
+        help="Also encode each clip's audio into audio_latents/ for joint audio-video training",
+    )
+    pre.add_argument(
+        "--frame-rate",
+        type=float,
+        default=None,
+        help="Override fps written into latents + used to size audio tokens (default: probed per clip)",
+    )
+
+    # --- slice ---
+    slc = sub.add_parser("slice", help="Slice long videos into normalized training clips (audio retained)")
+    slc.add_argument("sources", nargs="+", help="Video files or directories to slice")
+    slc.add_argument("--output", "-o", required=True, help="Root output directory (one subfolder per source)")
+    slc.add_argument("--interval", type=float, default=4.0, help="Clip length in seconds (default: 4.0)")
+    slc.add_argument("--timecodes", default=None, help="Optional start,end timecode list file (overrides --interval)")
+    slc.add_argument("--res", default="384x384", help="Target resolution WxH, both divisible by 32 (default: 384x384)")
+    slc.add_argument("--fps", type=float, default=24.0, help="Output frame rate (default: 24.0)")
+    slc.add_argument(
+        "--fit",
+        choices=["crop", "pad"],
+        default="crop",
+        help="Aspect handling: crop=center-crop (default), pad=letterbox",
+    )
+    slc.add_argument("--min-length", type=float, default=2.0, help="Drop clips shorter than this (default: 2.0s)")
+    slc.add_argument(
+        "--max-clips", type=int, default=None, help="Cap clips per source (build a pool to cull; default: all)"
+    )
+    slc.add_argument(
+        "--sample",
+        choices=["even", "sequential"],
+        default="even",
+        help="When --max-clips is set: even=spread across source (default), sequential=first N",
+    )
+    slc.add_argument("--skip-start", type=float, default=0.0, help="Skip N seconds at the start of each source (intro)")
+    slc.add_argument("--skip-end", type=float, default=0.0, help="Skip N seconds at the end of each source (outro)")
+    slc.add_argument(
+        "--caption-template", default=None, help="If set, write this text to a .txt next to each clip for editing"
+    )
+    slc.add_argument("--crf", type=int, default=18, help="x264 quality, lower = better (default: 18)")
+
+    return parser
+
+
+def main() -> None:
+    """Entry point for the ltx-2-mlx CLI."""
+    parser = _build_parser()
+    args = parser.parse_args()
+
+    if args.command is None:
+        parser.print_help()
+        sys.exit(1)
+
+    # Resolve seed=-1 to a random value
+    if hasattr(args, "seed") and args.seed < 0:
+        import random
+
+        args.seed = random.randint(0, 2**31 - 1)
+
+    commands = {
+        "generate": _cmd_generate,
+        "a2v": _cmd_a2v,
+        "retake": _cmd_retake,
+        "extend": _cmd_extend,
+        "keyframe": _cmd_keyframe,
+        "ic-lora": _cmd_ic_lora,
+        "lipdub": _cmd_lipdub,
+        "hdr-ic-lora": _cmd_hdr_ic_lora,
+        "enhance": _cmd_enhance,
+        "info": _cmd_info,
+        "train": _cmd_train,
+        "preprocess": _cmd_preprocess,
+        "slice": _cmd_slice,
+    }
+    try:
+        commands[args.command](args)
+    except RuntimeError as e:
+        # #75: the macOS GPU watchdog kills sustained GPU work with a cryptic
+        # Metal error; explain it and point at the mitigations. Never set the
+        # driver env var on the user's behalf — the trade-off is theirs.
+        from ltx_pipelines_mlx.utils.watchdog import watchdog_hint
+
+        hint = watchdog_hint(e)
+        if hint is None:
+            raise
+        print(f"\nerror: {e}\n\n{hint}", file=sys.stderr)
+        sys.exit(1)
+
+
+# =============================================================================
+# Generate (T2V / I2V / Two-stage / HQ)
+# =============================================================================
+
+
+def _cmd_generate(args: argparse.Namespace) -> None:
+    """Generate a video from a text prompt (and optionally a reference image)."""
+    t0 = time.time()
+
+    # Fail fast on the diffusion decoder's preconditions: both would otherwise only
+    # surface after the whole generation, at decode time.
+    _require_diffusion_decoder_preconditions(args, args.model)
+
+    prompt = _maybe_enhance_prompt(args)
+
+    lora_paths = [(path, float(strength)) for path, strength in args.lora] if args.lora else []
+
+    # Prompt Relay (temporal prompt gating) — applies to every generate mode. Pass the
+    # (possibly mixed) list when any beat is pinned; None entries auto-fill downstream.
+    relay = None
+    if getattr(args, "segments", None):
+        from ltx_core_mlx.conditioning.prompt_relay import PromptRelayInput
+
+        specified = [s.length for s in args.segments]
+        relay = PromptRelayInput(
+            local_prompts=[s.text for s in args.segments],
+            segment_lengths=specified if any(length is not None for length in specified) else None,
+            epsilon=args.relay_epsilon,
+            strength=args.relay_strength,
+        )
+
+    if args.enable_teacache and not (args.two_stages_hq or args.two_stage):
+        raise SystemExit(
+            "--enable-teacache requires --two-stage or --two-stages-hq. The other "
+            "generate modes do not support TeaCache."
+        )
+
+    if sum(map(bool, (args.two_stages_hq, args.two_stage, args.distilled, args.one_stage, args.dfr))) > 1:
+        raise SystemExit("Choose at most one of --two-stage, --two-stages-hq, --distilled, --one-stage, --dfr.")
+    if args.dfr:
+        if args.num_generated_keyframes:
+            raise SystemExit("--dfr places its keyframe slots from the canvas; drop --num-generated-keyframes.")
+        if args.enable_teacache:
+            raise SystemExit("--dfr runs the distilled flow; TeaCache does not apply.")
+        if args.cfg_scale is not None or args.stg_scale is not None:
+            raise SystemExit("--dfr runs the distilled flow (no CFG / STG); drop --cfg-scale / --stg-scale.")
+        if args.temporal_upscalings and relay is not None:
+            raise SystemExit("--temporal-upscalings does not support --segment (Prompt Relay).")
+        if args.temporal_upscalings and _build_tile_count_config(args) is not None:
+            raise SystemExit("--temporal-upscalings does not support --tile-frames / --tile-spatial.")
+        if args.spatial_upscalings == 2 and relay is not None:
+            raise SystemExit("--spatial-upscalings 2 does not support --segment (Prompt Relay).")
+        if args.spatial_upscalings == 2 and _build_tile_count_config(args) is not None:
+            raise SystemExit("--spatial-upscalings 2 does not support --tile-frames / --tile-spatial.")
+        if args.negative_prompt is not None:
+            raise SystemExit("--dfr runs the distilled flow (no CFG); drop --negative-prompt.")
+    else:
+        if args.detailing_lora != DEFAULT_DETAILING_LORA:
+            raise SystemExit("--detailing-lora only applies with --dfr.")
+        if args.spatial_upscalings != 1:
+            raise SystemExit("--spatial-upscalings only applies with --dfr.")
+        if args.temporal_upscalings:
+            raise SystemExit("--temporal-upscalings only applies with --dfr.")
+        if args.temporal_upsampler_path is not None:
+            raise SystemExit("--temporal-upsampler-path only applies with --dfr.")
+    if args.distilled and args.negative_prompt is not None:
+        raise SystemExit(
+            "--distilled has no CFG; --negative-prompt requires --one-stage, --two-stage or --two-stages-hq."
+        )
+
+    if args.one_stage:
+        from ltx_pipelines_mlx.ti2vid_one_stage import TI2VidOneStagePipeline
+
+        if not args.quiet:
+            print("Mode: One-Stage Dev (Euler + CFG at full resolution)")
+            print(f"  Model: {args.model}")
+
+        pipe = TI2VidOneStagePipeline(
+            model_dir=args.model,
+            gemma_model_id=args.gemma,
+            low_memory=True,
+            low_ram_streaming=getattr(args, "low_ram", False),
+            dev_transformer=args.dev_transformer,
+            tile_count=_build_tile_count_config(args),
+        )
+        pipe.verbose = not args.quiet
+        pipe.stepwise = _build_stepwise(args)
+        pipe.generate_audio = not args.no_audio
+        pipe.video_decoder = args.video_decoder
+        pipe.diffvae_tile = tuple(args.diffvae_tile) if args.diffvae_tile else None
+        if lora_paths:
+            pipe._pending_loras = lora_paths
+        kwargs: dict = dict(
+            prompt=prompt,
+            output_path=args.output,
+            height=args.height,
+            width=args.width,
+            num_frames=_resolve_num_frames_arg(args),
+            frame_rate=args.frame_rate,
+            seed=args.seed,
+            images=args.images,
+            generated_keyframes=args.num_generated_keyframes,
+        )
+        # The dev one-stage pipeline uses `num_steps` (single sampler), not stage1/stage2.
+        if args.stage1_steps is not None:
+            kwargs["num_steps"] = args.stage1_steps
+        elif args.steps is not None:
+            kwargs["num_steps"] = args.steps
+        if args.cfg_scale is not None:
+            kwargs["cfg_scale"] = args.cfg_scale
+        if args.stg_scale is not None:
+            kwargs["stg_scale"] = args.stg_scale
+        if relay is not None:
+            kwargs["prompt_relay"] = relay
+        if args.negative_prompt is not None:
+            kwargs["negative_prompt"] = args.negative_prompt
+        pipe.generate_and_save(**kwargs)
+
+    elif args.dfr:
+        from ltx_pipelines_mlx.dfr import DFRPipeline
+
+        if not args.quiet:
+            print("Mode: DFR (half-res + keyframe slots -> detailing IC-LoRA at full res)")
+            print(f"  Model: {args.model}")
+            print(f"  Detailing LoRA: {args.detailing_lora}")
+            if args.spatial_upscalings == 2:
+                print("  Spatial upscalings: 2 (H/4 stage 1, H/2 stage 2 + rounds, full-res epilogue)")
+            if args.temporal_upscalings:
+                out_fps = args.frame_rate * 2**args.temporal_upscalings
+                print(f"  Temporal upscalings: {args.temporal_upscalings} ({out_fps:g} fps out)")
+
+        pipe = DFRPipeline(
+            model_dir=args.model,
+            gemma_model_id=args.gemma,
+            low_memory=True,
+            low_ram_streaming=getattr(args, "low_ram", False),
+            tile_count=_build_tile_count_config(args),
+            detailing_lora=args.detailing_lora,
+            spatial_upscalings=args.spatial_upscalings,
+            temporal_upscalings=args.temporal_upscalings,
+            temporal_upsampler_path=args.temporal_upsampler_path,
+        )
+        pipe.verbose = not args.quiet
+        pipe.stepwise = _build_stepwise(args)
+        pipe.generate_audio = not args.no_audio
+        pipe.video_decoder = args.video_decoder
+        pipe.diffvae_tile = tuple(args.diffvae_tile) if args.diffvae_tile else None
+        if lora_paths:
+            pipe._pending_loras = lora_paths
+        kwargs: dict = dict(
+            prompt=prompt,
+            output_path=args.output,
+            height=args.height,
+            width=args.width,
+            num_frames=_resolve_num_frames_arg(args),
+            frame_rate=args.frame_rate,
+            seed=args.seed,
+            images=args.images,
+        )
+        if args.stage1_steps is not None:
+            kwargs["stage1_steps"] = args.stage1_steps
+        if args.stage2_steps is not None:
+            kwargs["stage2_steps"] = args.stage2_steps
+        if relay is not None:
+            kwargs["prompt_relay"] = relay
+        pipe.generate_and_save(**kwargs)
+
+    elif args.distilled:
+        from ltx_pipelines_mlx.distilled import DistilledPipeline
+
+        if not args.quiet:
+            print("Mode: Distilled Two-Stage (half-res + upscale + distilled refine)")
+            print(f"  Model: {args.model}")
+
+        pipe = DistilledPipeline(
+            model_dir=args.model,
+            gemma_model_id=args.gemma,
+            low_memory=True,
+            low_ram_streaming=getattr(args, "low_ram", False),
+            tile_count=_build_tile_count_config(args),
+        )
+        pipe.verbose = not args.quiet
+        pipe.stepwise = _build_stepwise(args)
+        pipe.generate_audio = not args.no_audio
+        pipe.video_decoder = args.video_decoder
+        pipe.diffvae_tile = tuple(args.diffvae_tile) if args.diffvae_tile else None
+        if lora_paths:
+            pipe._pending_loras = lora_paths
+        kwargs: dict = dict(
+            prompt=prompt,
+            output_path=args.output,
+            height=args.height,
+            width=args.width,
+            num_frames=_resolve_num_frames_arg(args),
+            frame_rate=args.frame_rate,
+            seed=args.seed,
+            images=args.images,
+            generated_keyframes=args.num_generated_keyframes,
+        )
+        if args.stage1_steps is not None:
+            kwargs["stage1_steps"] = args.stage1_steps
+        if args.stage2_steps is not None:
+            kwargs["stage2_steps"] = args.stage2_steps
+        if relay is not None:
+            kwargs["prompt_relay"] = relay
+        pipe.generate_and_save(**kwargs)
+
+    elif args.two_stages_hq or args.two_stage:
+        if args.two_stages_hq:
+            from ltx_pipelines_mlx.ti2vid_two_stages_hq import TI2VidTwoStagesHQPipeline as PipeClass
+
+            mode_name = "HQ Two-Stage (res_2s + CFG + distilled LoRA)"
+        else:
+            from ltx_pipelines_mlx.ti2vid_two_stages import TI2VidTwoStagesPipeline as PipeClass
+
+            mode_name = "Two-Stage (Euler + CFG + distilled LoRA)"
+
+        if not args.quiet:
+            print(f"Mode: {mode_name}")
+            print(f"  Model: {args.model}")
+
+        pipe = PipeClass(
+            model_dir=args.model,
+            gemma_model_id=args.gemma,
+            low_memory=True,
+            low_ram_streaming=getattr(args, "low_ram", False),
+            dev_transformer=args.dev_transformer,
+            distilled_lora=args.distilled_lora,
+            distilled_lora_strength=args.distilled_lora_strength,
+            tile_count=_build_tile_count_config(args),
+        )
+        pipe.verbose = not args.quiet
+        pipe.stepwise = _build_stepwise(args)
+        pipe.generate_audio = not args.no_audio
+        pipe.video_decoder = args.video_decoder
+        pipe.diffvae_tile = tuple(args.diffvae_tile) if args.diffvae_tile else None
+        if lora_paths:
+            pipe._pending_loras = lora_paths
+        # two-stage / HQ accept the upstream-iso multi-image conditioning list.
+        # Pass the list through; the legacy single-image path is handled inside
+        # the pipeline (image=None when images is set).
+        kwargs: dict = dict(
+            prompt=prompt,
+            output_path=args.output,
+            height=args.height,
+            width=args.width,
+            num_frames=_resolve_num_frames_arg(args),
+            frame_rate=args.frame_rate,
+            seed=args.seed,
+            images=args.images,
+            generated_keyframes=args.num_generated_keyframes,
+        )
+        if args.stage1_steps is not None:
+            kwargs["stage1_steps"] = args.stage1_steps
+        if args.stage2_steps is not None:
+            kwargs["stage2_steps"] = args.stage2_steps
+        if args.cfg_scale is not None:
+            kwargs["cfg_scale"] = args.cfg_scale
+        if args.stg_scale is not None:
+            kwargs["stg_scale"] = args.stg_scale
+        if args.enable_teacache:
+            kwargs["enable_teacache"] = True
+            if args.teacache_thresh is not None:
+                kwargs["teacache_thresh"] = args.teacache_thresh
+        if relay is not None:
+            kwargs["prompt_relay"] = relay
+        if args.negative_prompt is not None:
+            kwargs["negative_prompt"] = args.negative_prompt
+        pipe.generate_and_save(**kwargs)
+
+    else:
+        raise SystemExit(
+            "generate requires one of --one-stage, --two-stage, --two-stages-hq, --distilled, --dfr. "
+            "Each maps to an upstream pipeline class:\n"
+            "  --one-stage : TI2VidOneStagePipeline (dev + CFG, full target res)\n"
+            "  --two-stage : TI2VidTwoStagesPipeline (dev + CFG, half-res + upscale, recommended)\n"
+            "  --two-stages-hq        : TI2VidTwoStagesHQPipeline (res_2s + CFG, half-res + upscale)\n"
+            "  --distilled : DistilledPipeline (distilled half-res + upscale, fastest)\n"
+            "  --dfr       : DFRPipeline (LTX 2.5 packs, detailing IC-LoRA at full res)"
+        )
+
+    _print_result(args.output, t0, args.quiet)
+
+
+# =============================================================================
+# Audio-to-Video
+# =============================================================================
+
+
+def _cmd_a2v(args: argparse.Namespace) -> None:
+    """Generate video from audio + text prompt."""
+    t0 = time.time()
+
+    from ltx_pipelines_mlx.a2vid_two_stage import A2VidPipelineTwoStage as PipeClass
+
+    if not args.quiet:
+        print("Mode: Audio-to-Video (Euler + CFG)")
+        print(f"Audio: {args.audio}")
+        print(f"  Model: {args.model}")
+
+    pipe = PipeClass(
+        model_dir=args.model,
+        gemma_model_id=args.gemma,
+        low_ram_streaming=getattr(args, "low_ram", False),
+    )
+    pipe.verbose = not args.quiet
+    pipe.stepwise = _build_stepwise(args)
+    kwargs: dict = dict(
+        prompt=args.prompt,
+        output_path=args.output,
+        audio_path=args.audio,
+        height=args.height,
+        width=args.width,
+        num_frames=args.frames,
+        frame_rate=args.frame_rate,
+        seed=args.seed,
+        images=args.images,
+        audio_start_time=args.audio_start,
+    )
+    if args.stage1_steps is not None:
+        kwargs["stage1_steps"] = args.stage1_steps
+    if args.stage2_steps is not None:
+        kwargs["stage2_steps"] = args.stage2_steps
+    if args.cfg_scale is not None:
+        kwargs["cfg_scale"] = args.cfg_scale
+    if args.stg_scale is not None:
+        kwargs["stg_scale"] = args.stg_scale
+    if args.negative_prompt is not None:
+        kwargs["negative_prompt"] = args.negative_prompt
+    if args.enable_teacache:
+        kwargs["enable_teacache"] = True
+        if args.teacache_thresh is not None:
+            kwargs["teacache_thresh"] = args.teacache_thresh
+    pipe.generate_and_save(**kwargs)
+
+    _print_result(args.output, t0, args.quiet)
+
+
+# =============================================================================
+# Retake
+# =============================================================================
+
+
+def _cmd_retake(args: argparse.Namespace) -> None:
+    """Regenerate a time segment of an existing video."""
+    t0 = time.time()
+
+    from ltx_pipelines_mlx.retake import RetakePipeline
+
+    if not args.quiet:
+        print("Mode: Retake")
+        print(f"Video: {args.video}, frames {args.start}-{args.end}")
+
+    pipe = RetakePipeline(
+        model_dir=args.model,
+        gemma_model_id=args.gemma,
+        low_ram_streaming=getattr(args, "low_ram", False),
+    )
+    pipe.verbose = not args.quiet
+    pipe.stepwise = _build_stepwise(args)
+    kwargs: dict = dict(
+        prompt=args.prompt,
+        video_path=args.video,
+        start_frame=args.start,
+        end_frame=args.end,
+        seed=args.seed,
+        regenerate_audio=not args.no_regen_audio,
+    )
+    if args.steps is not None:
+        kwargs["num_steps"] = args.steps
+    if args.cfg_scale is not None:
+        kwargs["cfg_scale"] = args.cfg_scale
+    if args.stg_scale is not None:
+        kwargs["stg_scale"] = args.stg_scale
+    if args.negative_prompt is not None:
+        kwargs["negative_prompt"] = args.negative_prompt
+    video_latent, audio_latent = pipe.retake_from_video(**kwargs)
+
+    _decode_and_save(pipe, video_latent, audio_latent, args)
+    _print_result(args.output, t0, args.quiet)
+
+
+# =============================================================================
+# Extend
+# =============================================================================
+
+
+def _cmd_extend(args: argparse.Namespace) -> None:
+    """Add frames before or after an existing video."""
+    t0 = time.time()
+
+    from ltx_pipelines_mlx.retake import RetakePipeline
+
+    if not args.quiet:
+        print(f"Mode: Extend ({args.direction})")
+        print(f"Video: {args.video}, +{args.extend_frames} latent frames")
+
+    pipe = RetakePipeline(
+        model_dir=args.model,
+        gemma_model_id=args.gemma,
+        low_ram_streaming=getattr(args, "low_ram", False),
+    )
+    pipe.verbose = not args.quiet
+    pipe.stepwise = _build_stepwise(args)
+    kwargs: dict = dict(
+        prompt=args.prompt,
+        video_path=args.video,
+        extend_frames=args.extend_frames,
+        direction=args.direction,
+        seed=args.seed,
+    )
+    if args.steps is not None:
+        kwargs["num_steps"] = args.steps
+    if args.cfg_scale is not None:
+        kwargs["cfg_scale"] = args.cfg_scale
+    if args.stg_scale is not None:
+        kwargs["stg_scale"] = args.stg_scale
+    if args.negative_prompt is not None:
+        kwargs["negative_prompt"] = args.negative_prompt
+    video_latent, audio_latent = pipe.extend_from_video(**kwargs)
+
+    _decode_and_save(pipe, video_latent, audio_latent, args)
+    _print_result(args.output, t0, args.quiet)
+
+
+# =============================================================================
+# Keyframe interpolation
+# =============================================================================
+
+
+def _cmd_keyframe(args: argparse.Namespace) -> None:
+    """Interpolate between two keyframe images."""
+    t0 = time.time()
+
+    from ltx_pipelines_mlx.keyframe_interpolation import KeyframeInterpolationPipeline
+
+    if not args.quiet:
+        print("Mode: Keyframe Interpolation (two-stage)")
+        print(f"Start: {args.start}, End: {args.end}")
+
+    last_pixel_frame = args.frames - 1
+
+    pipe = KeyframeInterpolationPipeline(
+        model_dir=args.model,
+        gemma_model_id=args.gemma,
+        low_ram_streaming=getattr(args, "low_ram", False),
+        dev_transformer=args.dev_transformer,
+        distilled_lora=args.distilled_lora,
+        distilled_lora_strength=args.lora_strength,
+    )
+    pipe.verbose = not args.quiet
+    pipe.stepwise = _build_stepwise(args)
+    # Build guider params (defaults match reference LTX_2_3_PARAMS)
+    from ltx_core_mlx.components.guiders import MultiModalGuiderParams
+
+    cfg = args.cfg_scale if args.cfg_scale is not None else 3.0
+    stg = args.stg_scale if args.stg_scale is not None else 1.0
+    video_gp = MultiModalGuiderParams(
+        cfg_scale=cfg,
+        stg_scale=stg,
+        rescale_scale=0.7,
+        modality_scale=3.0,
+        stg_blocks=[28],
+    )
+    audio_gp = MultiModalGuiderParams(
+        cfg_scale=7.0,
+        stg_scale=stg,
+        rescale_scale=0.7,
+        modality_scale=3.0,
+        stg_blocks=[28],
+    )
+
+    pipe.generate_and_save(
+        prompt=args.prompt,
+        output_path=args.output,
+        keyframe_images=[args.start, args.end],
+        keyframe_indices=[0, last_pixel_frame],
+        keyframe_strengths=[args.start_strength, args.end_strength],
+        height=args.height,
+        width=args.width,
+        num_frames=args.frames,
+        frame_rate=args.frame_rate,
+        seed=args.seed,
+        stage1_steps=args.stage1_steps,
+        stage2_steps=args.stage2_steps,
+        cfg_scale=cfg,
+        negative_prompt=args.negative_prompt,
+        video_guider_params=video_gp,
+        audio_guider_params=audio_gp,
+    )
+    _print_result(args.output, t0, args.quiet)
+
+
+# =============================================================================
+# IC-LoRA
+# =============================================================================
+
+
+def _cmd_ic_lora(args: argparse.Namespace) -> None:
+    """Generate video with IC-LoRA control conditioning."""
+    t0 = time.time()
+
+    from ltx_pipelines_mlx.ic_lora import ICLoraPipeline
+
+    # Parse --lora pairs into (path, strength) tuples
+    lora_paths = [(path, float(strength)) for path, strength in args.lora]
+
+    # Parse --video-conditioning pairs
+    video_conditioning = [(path, float(strength)) for path, strength in args.video_conditioning]
+
+    if not args.quiet:
+        if args.single_stage:
+            topology = "single-stage full-res"
+        elif args.upsample_only and args.refine_steps:
+            topology = f"upsample + {args.refine_steps}-step control-aware refine (half-res gen + 2x upsample)"
+        elif args.upsample_only:
+            topology = "upsample-only (half-res gen + 2x upsample, no refine)"
+        else:
+            topology = "two-stage"
+        print(f"Mode: IC-LoRA ({topology})")
+        for path, strength in lora_paths:
+            print(f"  LoRA: {path} (strength={strength})")
+        for path, strength in video_conditioning:
+            print(f"  Control: {path} (strength={strength})")
+
+    pipe = ICLoraPipeline(
+        model_dir=args.model,
+        lora_paths=lora_paths,
+        gemma_model_id=args.gemma,
+        low_memory=True,
+        low_ram_streaming=getattr(args, "low_ram", False),
+        dev_transformer=getattr(args, "dev_transformer", None),
+        distilled_lora=getattr(args, "distilled_lora", None),
+        distilled_lora_strength=getattr(args, "distilled_lora_strength", 0.5),
+    )
+    pipe.verbose = not args.quiet
+    pipe.stepwise = _build_stepwise(args)
+
+    if not args.quiet and pipe.dev_mode:
+        # _effective_lora_paths resolves + validates the distilled LoRA (raises
+        # early if missing) and returns it appended after the task IC-LoRA(s).
+        # A missing --dev-transformer already hard-fails in the constructor.
+        for path, strength in pipe._effective_lora_paths()[len(lora_paths) :]:
+            print(f"  Distilled LoRA (dev mode): {path} (strength={strength})")
+
+    pipe.generate_and_save(
+        prompt=args.prompt,
+        output_path=args.output,
+        video_conditioning=video_conditioning,
+        height=args.height,
+        width=args.width,
+        num_frames=args.frames,
+        frame_rate=args.frame_rate,
+        seed=args.seed,
+        stage1_steps=args.stage1_steps,
+        stage2_steps=args.stage2_steps,
+        images=args.images,
+        conditioning_attention_strength=args.conditioning_strength,
+        skip_stage_2=args.skip_stage_2,
+        single_stage=args.single_stage,
+        upsample_only=args.upsample_only,
+        refine_steps=args.refine_steps,
+    )
+    _print_result(args.output, t0, args.quiet)
+
+
+def _cmd_lipdub(args: argparse.Namespace) -> None:
+    """Lip-dub a reference video: re-generate visuals matching its audio."""
+    t0 = time.time()
+
+    from ltx_pipelines_mlx.lipdub import LipDubPipeline
+
+    lora_paths = [(path, float(strength)) for path, strength in args.lora]
+    if len(lora_paths) != 1:
+        raise SystemExit("lipdub: exactly one --lora is required (the lip-dub IC-LoRA).")
+
+    if not args.quiet:
+        print("Mode: LipDub (two-stage, distilled + IC-LoRA + audio reference)")
+        print(f"  Reference video: {args.reference_video}")
+        print(f"  IC-LoRA: {lora_paths[0][0]} (strength={lora_paths[0][1]})")
+
+    pipe = LipDubPipeline(
+        model_dir=args.model,
+        lora_paths=lora_paths,
+        gemma_model_id=args.gemma,
+        low_ram_streaming=getattr(args, "low_ram", False),
+    )
+    pipe.verbose = not args.quiet
+    pipe.stepwise = _build_stepwise(args)
+    pipe.generate_and_save(
+        prompt=args.prompt,
+        output_path=args.output,
+        reference_video_path=args.reference_video,
+        height=args.height,
+        width=args.width,
+        reference_strength=args.reference_strength,
+        seed=args.seed,
+        stage1_steps=args.stage1_steps,
+        stage2_steps=args.stage2_steps,
+    )
+    _print_result(args.output, t0, args.quiet)
+
+
+def _cmd_hdr_ic_lora(args: argparse.Namespace) -> None:
+    """Generate HDR video via IC-LoRA + LogC3 inverse decompression."""
+    t0 = time.time()
+
+    from ltx_pipelines_mlx.hdr_ic_lora import HDRICLoraPipeline
+
+    lora_paths = [(path, float(strength)) for path, strength in args.lora]
+    video_conditioning = [(path, float(strength)) for path, strength in (args.video_conditioning or [])]
+
+    if not args.quiet:
+        mode_suffix = "T2V" if not video_conditioning else "V2V"
+        print(f"Mode: HDR IC-LoRA (two-stage, LogC3, {mode_suffix})")
+        for path, strength in lora_paths:
+            print(f"  LoRA: {path} (strength={strength})")
+        for path, strength in video_conditioning:
+            print(f"  Control: {path} (strength={strength})")
+
+    pipe = HDRICLoraPipeline(
+        model_dir=args.model,
+        lora_paths=lora_paths,
+        gemma_model_id=args.gemma,
+        low_memory=True,
+        low_ram_streaming=getattr(args, "low_ram", False),
+    )
+    pipe.verbose = not args.quiet
+    pipe.stepwise = _build_stepwise(args)
+
+    pipe.generate_and_save(
+        prompt=args.prompt,
+        output_path=args.output,
+        video_conditioning=video_conditioning,
+        height=args.height,
+        width=args.width,
+        num_frames=args.frames,
+        frame_rate=args.frame_rate,
+        seed=args.seed,
+        stage1_steps=args.stage1_steps,
+        stage2_steps=args.stage2_steps,
+        images=args.images,
+        conditioning_attention_strength=args.conditioning_strength,
+        skip_stage_2=args.skip_stage_2,
+    )
+    _print_result(args.output, t0, args.quiet)
+
+
+# =============================================================================
+# Shared helpers
+# =============================================================================
+
+
+def _decode_and_save(
+    pipe: object,
+    video_latent: object,
+    audio_latent: object,
+    args: argparse.Namespace,
+) -> None:
+    """Decode latents and save to file."""
+    from ltx_core_mlx.utils.memory import aggressive_cleanup
+
+    # Free DiT + text encoder to make room for decoders
+    if hasattr(pipe, "low_memory") and pipe.low_memory:
+        pipe.dit = None
+        pipe.text_encoder = None
+        pipe.feature_extractor = None
+        pipe._loaded = False
+        aggressive_cleanup()
+
+    # Load decoders on-demand and decode+save. The source frame rate was
+    # recorded by _encode_source_video; _decode_and_save_video requires it
+    # (keyword-only since the v0.14.0 frame_rate audit).
+    if pipe.source_frame_rate is None:
+        raise RuntimeError("source_frame_rate was never recorded; encode the source video first")
+    pipe._load_decoders()
+    pipe._decode_and_save_video(video_latent, audio_latent, args.output, frame_rate=pipe.source_frame_rate)
+
+
+def _guard_enhance_not_gemma4(gemma_path: str) -> None:
+    """Raise a clear error if ``gemma_path`` is a local LTX-2.5 (Gemma 4) pack.
+
+    ``enhance`` / ``--enhance-prompt`` load via ``GemmaLanguageModel`` (mlx-lm,
+    Gemma 3 only). A Gemma 4 pack path would otherwise reach ``mlx_lm.load()``
+    and fail with an obscure architecture-mismatch error deep in mlx-lm.
+    HuggingFace repo IDs (the common case, e.g. the default
+    ``mlx-community/gemma-3-12b-it-4bit``) never resolve as an existing local
+    path, so this is a no-op for them.
+    """
+    from pathlib import Path
+
+    from ltx_core_mlx.text_encoders.gemma.encoders.encoder_configurator import select_text_encoder
+
+    path = Path(gemma_path)
+    if path.exists() and select_text_encoder(path) == "gemma4":
+        raise NotImplementedError(
+            f"enhance is not supported for LTX-2.5 (Gemma 4) packs yet: {gemma_path!r}. "
+            "Pass a Gemma 3 checkpoint for --gemma (e.g. the default "
+            "mlx-community/gemma-3-12b-it-4bit)."
+        )
+
+
+def _maybe_enhance_prompt(args: argparse.Namespace) -> str:
+    """Enhance prompt if --enhance-prompt is set."""
+    prompt = args.prompt
+    if not getattr(args, "enhance_prompt", False):
+        return prompt
+
+    from ltx_core_mlx.text_encoders.gemma.encoders.base_encoder import GemmaLanguageModel
+    from ltx_core_mlx.utils.memory import aggressive_cleanup
+
+    _guard_enhance_not_gemma4(args.gemma)
+
+    if not args.quiet:
+        print("Enhancing prompt...")
+    gemma = GemmaLanguageModel()
+    gemma.load(args.gemma)
+    if getattr(args, "image", None):
+        prompt = gemma.enhance_i2v(prompt, seed=args.seed)
+    else:
+        prompt = gemma.enhance_t2v(prompt, seed=args.seed)
+    if not args.quiet:
+        print(f"Enhanced: {prompt[:200]}...")
+    del gemma
+    aggressive_cleanup()
+    return prompt
+
+
+def _print_result(output: str, t0: float, quiet: bool) -> None:
+    """Print generation result."""
+    elapsed = time.time() - t0
+    if not quiet:
+        print(f"\nSaved to: {output}")
+        print(f"Time: {elapsed:.1f}s")
+
+
+def _cmd_train(args: argparse.Namespace) -> None:
+    """Train a LoRA or full model from a YAML config."""
+    try:
+        from ltx_trainer_mlx.config import LtxTrainerConfig
+        from ltx_trainer_mlx.trainer import LtxvTrainer
+    except ImportError:
+        print("Error: ltx-trainer-mlx is not installed.")
+        print("Install it with: uv pip install -e 'packages/ltx-trainer[all]'")
+        sys.exit(1)
+
+    from pathlib import Path
+
+    import yaml
+
+    config_path = Path(args.config)
+    if not config_path.exists():
+        print(f"Error: Config file not found: {config_path}")
+        sys.exit(1)
+
+    with open(config_path) as f:
+        raw_config = yaml.safe_load(f)
+
+    config = LtxTrainerConfig(**raw_config)
+
+    if getattr(args, "low_ram", False):
+        # Gradient checkpointing: recompute transformer blocks in the backward
+        # pass to cap activation memory (lets the dev model backprop fit on 64 GB).
+        config.optimization.enable_gradient_checkpointing = True
+        print("Low-RAM training: gradient checkpointing enabled.")
+
+    trainer = LtxvTrainer(config)
+    # When stdout isn't a TTY (nohup / redirect), the rich progress bar suppresses
+    # itself and shows nothing. Disable it so the per-step logger lines fire instead,
+    # giving redirected/background runs a readable loss trace.
+    saved_path, stats = trainer.train(disable_progress_bars=not sys.stdout.isatty())
+
+    print("\nTraining complete!")
+    print(f"  Weights saved to: {saved_path}")
+    print(f"  Total time: {stats.total_time_seconds / 60:.1f} min")
+    print(f"  Speed: {stats.steps_per_second:.2f} steps/s")
+    print(f"  Peak memory: {stats.peak_memory_gb:.1f} GB")
+
+
+def _cmd_preprocess(args: argparse.Namespace) -> None:
+    """Preprocess videos into latents + conditions for training."""
+    try:
+        from ltx_trainer_mlx.preprocess import preprocess_dataset
+    except ImportError:
+        print("Error: ltx-trainer-mlx is not installed.")
+        print("Install it with: uv pip install -e 'packages/ltx-trainer[all]'")
+        sys.exit(1)
+
+    preprocess_dataset(
+        videos_dir=args.videos,
+        output_dir=args.output,
+        model_dir=args.model,
+        gemma_model_id=args.gemma,
+        target_height=args.height,
+        target_width=args.width,
+        max_frames=args.max_frames,
+        captions_dir=args.captions,
+        caption_ext=args.caption_ext,
+        with_audio=args.with_audio,
+        frame_rate=args.frame_rate,
+    )
+
+
+def _cmd_slice(args: argparse.Namespace) -> None:
+    """Slice long videos into normalized training clips."""
+    try:
+        from ltx_trainer_mlx.slice_clips import slice_videos
+    except ImportError:
+        print("Error: ltx-trainer-mlx is not installed.")
+        print("Install it with: uv pip install -e 'packages/ltx-trainer[all]'")
+        sys.exit(1)
+
+    slice_videos(
+        sources=args.sources,
+        out_dir=args.output,
+        interval=args.interval,
+        timecodes_file=args.timecodes,
+        res=args.res,
+        fps=args.fps,
+        fit=args.fit,
+        min_length=args.min_length,
+        max_clips=args.max_clips,
+        sample=args.sample,
+        skip_start=args.skip_start,
+        skip_end=args.skip_end,
+        caption_template=args.caption_template,
+        crf=args.crf,
+    )
+
+
+def _cmd_enhance(args: argparse.Namespace) -> None:
+    """Enhance a prompt using Gemma."""
+    from ltx_core_mlx.text_encoders.gemma.encoders.base_encoder import GemmaLanguageModel
+
+    _guard_enhance_not_gemma4(args.gemma)
+
+    print("Loading Gemma...")
+    gemma = GemmaLanguageModel()
+    gemma.load(args.gemma)
+
+    if args.mode == "t2v":
+        enhanced = gemma.enhance_t2v(args.prompt, seed=args.seed)
+    else:
+        enhanced = gemma.enhance_i2v(args.prompt, seed=args.seed)
+
+    print(f"\nOriginal: {args.prompt}")
+    print(f"\nEnhanced: {enhanced}")
+
+
+def _cmd_info(args: argparse.Namespace) -> None:
+    """Show model info and memory estimate."""
+    from pathlib import Path
+
+    from huggingface_hub import snapshot_download
+
+    model_dir = Path(args.model)
+    if not model_dir.exists():
+        try:
+            model_dir = Path(snapshot_download(args.model))
+        except Exception as e:
+            print(f"Could not find or download model: {args.model}")
+            print(f"  {e}")
+            sys.exit(1)
+
+    print(f"Model: {args.model}")
+    print(f"Path:  {model_dir}")
+    print()
+
+    safetensor_files = sorted(model_dir.glob("*.safetensors"))
+    if not safetensor_files:
+        print("  No .safetensors files found.")
+        return
+
+    total_bytes = 0
+    for f in safetensor_files:
+        size = f.stat().st_size
+        total_bytes += size
+        print(f"  {f.name:<45s} {size / 1024**2:>8.1f} MB")
+
+    total_mb = total_bytes / 1024**2
+    total_gb = total_mb / 1024
+    print(f"  {'─' * 55}")
+    print(f"  {'Total':<45s} {total_mb:>8.1f} MB ({total_gb:.1f} GB)")
+    print(f"  Estimated RAM: ~{total_gb * 1.3:.0f} GB (model + inference overhead)")
+
+    json_files = sorted(model_dir.glob("*.json"))
+    if json_files:
+        print(f"\n  Config files: {', '.join(f.name for f in json_files)}")
+
+    upsampler_files = [f for f in safetensor_files if "upscaler" in f.name or "upsampler" in f.name]
+    if upsampler_files:
+        print(f"\n  Upsamplers: {', '.join(f.stem for f in upsampler_files)}")
+
+
+if __name__ == "__main__":
+    main()

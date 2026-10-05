@@ -1,0 +1,52 @@
+{
+  "schema_version": "minimuv-skill-conversion/v1",
+  "request_id": "example-four-modes",
+  "capability_snapshot_id": "example-capabilities-v1",
+  "source_snapshot_id": "example-original-source-v1",
+  "status": "draft",
+  "package": {
+    "format": "minimuv-skill/v1",
+    "name": "faithful-creative-notes",
+    "version": "1.0.0",
+    "description": "辅助视频、图像、音乐的忠实提示词整理与长视频故事分镜，不执行生成操作。",
+    "kind": "knowledge-only",
+    "bindings": [
+      {
+        "task": "prompt-enhancement", "mode": "video", "behavior": "faithful",
+        "output_contract": "enhancement-json/v1", "target_models": ["*"],
+        "instructions": "仅整理原文已有的主体、动作、时间顺序和镜头关系。原文没有运镜时不补充运镜，不新增声音或电影风格。不承诺参考媒体能力。最终仅输出 keywords 和 optimized_prompt，关键词3～8个且每项不超过120字符，提示词不超过4000字符，使用原文语言。",
+        "evidence": [{"file_id": "source-skill", "excerpt": "视频：当用户提供动作与运镜要求时，按主体、动作、时间顺序、镜头关系整理，不新增动作或镜头。"}]
+      },
+      {
+        "task": "prompt-enhancement", "mode": "image", "behavior": "faithful",
+        "output_contract": "enhancement-json/v1", "target_models": ["*"],
+        "instructions": "仅整理已有的主体、构图、光线和材质，不新增画风、颜色或物体。区分静态画面与视频运动过程，不擅自改变用户意图。最终仅输出 keywords 和 optimized_prompt，关键词3～8个且每项不超过120字符，提示词不超过4000字符，使用原文语言。",
+        "evidence": [{"file_id": "source-skill", "excerpt": "图像：将用户已有的主体、构图、光线和材质描述分组，避免把运动过程当作静态画面要求。"}]
+      },
+      {
+        "task": "prompt-enhancement", "mode": "music", "behavior": "faithful",
+        "output_contract": "enhancement-json/v1", "target_models": ["*"],
+        "instructions": "区分原文已有的风格、情绪、乐器和人声要求。不把器乐改成演唱，不生成歌词，不假称分析参考音频。最终仅输出 keywords 和 optimized_prompt，关键词3～8个且每项不超过120字符，提示词不超过4000字符，使用原文语言。",
+        "evidence": [{"file_id": "source-skill", "excerpt": "音乐：区分用户已有的风格、情绪、乐器与人声要求；器乐要求不能改成演唱。"}]
+      },
+      {
+        "task": "storyboard", "mode": "long-video", "behavior": "story-adaptation",
+        "output_contract": "storyboard-json/v1", "target_models": ["*"],
+        "instructions": "按故事时间顺序拆分单一可拍动作，保留人物、场景、情节和结尾。相关镜头复述已有角色和场景特征，不保证视觉连续性。仅输出 shots，数量等于 shot_count 且1～48。每镜仅含 title、prompt、duration、music_prompt；标题1～120字符，两种提示词各1～4000字符，时长仅5、8、10或15秒。配乐描述器乐情绪，不添加歌词。使用故事语言。",
+        "evidence": [{"file_id": "source-skill", "excerpt": "分镜：按故事时间顺序拆成单一可拍动作，在相关镜头复述已有角色与场景特征，配乐描述情绪而非歌词。"}]
+      }
+    ]
+  },
+  "report": {
+    "summary": "保留四类独立文字知识，删除外部执行流程，适配当前任务输出合同。",
+    "removed": [
+      {
+        "code": "execution",
+        "reason": "v1 不运行外部脚本、不自动保存或生成作品。",
+        "evidence": {"file_id": "source-skill", "excerpt": "原工具流程要求：调用外部生成脚本并自动保存作品。"}
+      }
+    ],
+    "warnings": ["这是合成规范示例，未经过真实本地模型转换或作品质量对照；安装仍需独立审阅。"],
+    "blockers": []
+  }
+}

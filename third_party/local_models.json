@@ -1,0 +1,89 @@
+{
+  "runtime_sources": {
+    "mflux": {
+      "repository": "https://github.com/filipstrand/mflux",
+      "commit": "04fc1011f19c3e8be43145c0baf2972478ebdc0f",
+      "license": "MIT",
+      "version": "0.21.0"
+    },
+    "ltx_2_mlx": {
+      "repository": "https://github.com/dgrauet/ltx-2-mlx",
+      "commit": "b2b813df18a58dcd11c7d38df399cb92cdc7f395",
+      "license": "MIT",
+      "version": "0.15.12"
+    },
+    "mlx_yue": {
+      "repository": "https://github.com/vanch007/mlx-Yue",
+      "commit": "9253ed133343406947bde7b67d43c7a63fb39d99",
+      "license": "Apache-2.0 (code); YuE2 weights CC BY-NC 4.0"
+    }
+  },
+  "models": {
+    "flux2-klein-4b": {
+      "repository": "black-forest-labs/FLUX.2-klein-4B",
+      "revision": "e7b7dc27f91deacad38e78976d1f2b499d76a294",
+      "directory": "FLUX.2-klein-4B",
+      "exclude": [
+        "*.jpg",
+        "flux-2-klein-4b.safetensors"
+      ]
+    },
+    "z-image-turbo": {
+      "repository": "Tongyi-MAI/Z-Image-Turbo",
+      "revision": "f332072aa78be7aecdf3ee76d5c247082da564a6",
+      "directory": "Z-Image-Turbo",
+      "exclude": [
+        "assets/*"
+      ]
+    },
+    "ltx-2.3-distilled-q4": {
+      "repository": "dgrauet/ltx-2.3-mlx-q4",
+      "revision": "56a5866d638ecfe37c54d348e88938235185c2d4",
+      "directory": "ltx-2.3-mlx-q4",
+      "exclude": [
+        "transformer-dev*",
+        "transformer-distilled.safetensors",
+        "*lora*",
+        "spatial_upscaler_x1*",
+        "temporal_upscaler*"
+      ]
+    },
+    "ltx-2.3-distilled-q8": {
+      "repository": "dgrauet/ltx-2.3-mlx-q8",
+      "revision": "6671a7572a530862d1d60ce393b5d93491e3f76b",
+      "directory": "ltx-2.3-mlx-q8",
+      "exclude": [
+        "transformer-dev*",
+        "transformer-distilled.safetensors",
+        "*lora*",
+        "spatial_upscaler_x1*",
+        "temporal_upscaler*"
+      ]
+    },
+    "gemma-3-12b-it-4bit": {
+      "repository": "mlx-community/gemma-3-12b-it-4bit",
+      "revision": "86cc6a8dedbc456dd0e4af01a9d09f396f77e558",
+      "directory": "gemma-3-12b-it-4bit",
+      "exclude": []
+    },
+    "yue2-3b-8bit": {
+      "repository": "vanch007/mlx-Yue2-3B",
+      "revision": "fa66d203dd56d7e033e05ee8b32269768984c4cc",
+      "directory": "mlx-Yue2-3B",
+      "exclude": [
+        ".gitattributes"
+      ],
+      "strict_tree": true
+    },
+    "yue2-vae": {
+      "repository": "m-a-p/YuE2-Vae",
+      "revision": "95535e72a97bc0f09b8ada125d26b4009428c0e8",
+      "directory": "YuE2-Vae",
+      "exclude": [
+        "assets/*",
+        ".gitattributes"
+      ],
+      "strict_tree": true
+    }
+  }
+}

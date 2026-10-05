@@ -5,6 +5,8 @@ __pycache__/
 *.log
 out/
 settings.json
+/system_prompts.json
+/skill_license_reviews.json
 
 # AOCI agent host integration (machine-bound; do not commit)
 .mcp.json

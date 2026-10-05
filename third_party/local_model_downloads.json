@@ -1,0 +1,101 @@
+{
+  "flux2-klein-4b": {
+    "revision": "e7b7dc27f91deacad38e78976d1f2b499d76a294",
+    "files": {
+      ".gitattributes": 1580, "LICENSE.md": 9584, "README.md": 9991,
+      "model_index.json": 446, "scheduler/scheduler_config.json": 486,
+      "text_encoder/config.json": 1536, "text_encoder/generation_config.json": 214,
+      "text_encoder/model-00001-of-00002.safetensors": 4967215360,
+      "text_encoder/model-00002-of-00002.safetensors": 3077766632,
+      "text_encoder/model.safetensors.index.json": 32855,
+      "tokenizer/added_tokens.json": 707, "tokenizer/chat_template.jinja": 4168,
+      "tokenizer/merges.txt": 1671853, "tokenizer/special_tokens_map.json": 613,
+      "tokenizer/tokenizer.json": 11422654, "tokenizer/tokenizer_config.json": 5404,
+      "tokenizer/vocab.json": 2776833, "transformer/config.json": 541,
+      "transformer/diffusion_pytorch_model.safetensors": 7751109744,
+      "vae/config.json": 821, "vae/diffusion_pytorch_model.safetensors": 168120878
+    }
+  },
+  "z-image-turbo": {
+    "revision": "f332072aa78be7aecdf3ee76d5c247082da564a6",
+    "files": {
+      ".gitattributes": 2187, "README.md": 13684, "model_index.json": 467,
+      "scheduler/scheduler_config.json": 173, "text_encoder/config.json": 726,
+      "text_encoder/generation_config.json": 239,
+      "text_encoder/model-00001-of-00003.safetensors": 3957900840,
+      "text_encoder/model-00002-of-00003.safetensors": 3987450520,
+      "text_encoder/model-00003-of-00003.safetensors": 99630640,
+      "text_encoder/model.safetensors.index.json": 32819,
+      "tokenizer/merges.txt": 1671853, "tokenizer/tokenizer.json": 11422654,
+      "tokenizer/tokenizer_config.json": 9732, "tokenizer/vocab.json": 2776833,
+      "transformer/config.json": 473,
+      "transformer/diffusion_pytorch_model-00001-of-00003.safetensors": 9973693184,
+      "transformer/diffusion_pytorch_model-00002-of-00003.safetensors": 9973714824,
+      "transformer/diffusion_pytorch_model-00003-of-00003.safetensors": 4672282880,
+      "transformer/diffusion_pytorch_model.safetensors.index.json": 48969,
+      "vae/config.json": 805, "vae/diffusion_pytorch_model.safetensors": 167666902
+    }
+  },
+  "ltx-2.3-distilled-q4": {
+    "revision": "56a5866d638ecfe37c54d348e88938235185c2d4",
+    "files": {
+      "LICENSE": 21399, "README.md": 2977,
+      "audio_vae.safetensors": 106509048, "config.json": 951,
+      "connector.safetensors": 6344495512, "embedded_config.json": 7234,
+      "quantize_config.json": 100, "spatial_upscaler_x2_v1_1.safetensors": 995745061,
+      "spatial_upscaler_x2_v1_1_config.json": 275, "split_model.json": 1835,
+      "transformer-distilled-1.1.safetensors": 11322002285,
+      "vae_decoder.safetensors": 814349531, "vae_encoder.safetensors": 637885319,
+      "vocoder.safetensors": 258313851
+    }
+  },
+  "ltx-2.3-distilled-q8": {
+    "revision": "6671a7572a530862d1d60ce393b5d93491e3f76b",
+    "files": {
+      "LICENSE": 21399, "README.md": 2977,
+      "audio_vae.safetensors": 106509048, "config.json": 951,
+      "connector.safetensors": 6344495512, "embedded_config.json": 7234,
+      "quantize_config.json": 100, "spatial_upscaler_x2_v1_1.safetensors": 995745061,
+      "spatial_upscaler_x2_v1_1_config.json": 275, "split_model.json": 1835,
+      "transformer-distilled-1.1.safetensors": 20597189549,
+      "vae_decoder.safetensors": 814349531, "vae_encoder.safetensors": 637885319,
+      "vocoder.safetensors": 258313851
+    }
+  },
+  "gemma-3-12b-it-4bit": {
+    "revision": "86cc6a8dedbc456dd0e4af01a9d09f396f77e558",
+    "files": {
+      ".gitattributes": 1570, "README.md": 945, "added_tokens.json": 35,
+      "chat_template.json": 1615, "config.json": 1141, "generation_config.json": 192,
+      "model-00001-of-00002.safetensors": 5367455313,
+      "model-00002-of-00002.safetensors": 2661219935,
+      "model.safetensors.index.json": 108605, "preprocessor_config.json": 570,
+      "processor_config.json": 70, "special_tokens_map.json": 662,
+      "tokenizer.json": 33384568, "tokenizer.model": 4689074,
+      "tokenizer_config.json": 1157007
+    }
+  },
+  "yue2-3b-8bit": {
+    "revision": "fa66d203dd56d7e033e05ee8b32269768984c4cc",
+    "files": {
+      "LICENSE": 20309, "README.md": 3262,
+      "THIRD_PARTY_NOTICES.md": 793, "ar-bf16.safetensors": 4331951136,
+      "ar-8bit.safetensors": 2656158264,
+      "config.json": 959, "conversion.json": 3784,
+      "licenses/SnakeBeta-NVIDIA-MIT.txt": 1076,
+      "licenses/stable-audio-tools-MIT.txt": 1069,
+      "nar-bf16.safetensors": 2929490456, "qwen.tiktoken": 2561218
+    }
+  },
+  "yue2-vae": {
+    "revision": "95535e72a97bc0f09b8ada125d26b4009428c0e8",
+    "files": {
+      "LICENSE": 20309, "README.md": 8975,
+      "THIRD_PARTY_NOTICES.md": 793, "config.json": 1378,
+      "licenses/SnakeBeta-NVIDIA-MIT.txt": 1076,
+      "licenses/stable-audio-tools-MIT.txt": 1069,
+      "model.safetensors": 530512720, "modeling_vae.py": 25265,
+      "weights_manifest.json": 178
+    }
+  }
+}

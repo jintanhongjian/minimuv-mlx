@@ -1,0 +1,26 @@
+{
+  "schema_version": "minimuv-skill-request/v1",
+  "trusted_context": {
+    "request_id": "example-four-modes",
+    "capability_snapshot_id": "example-capabilities-v1",
+    "source_snapshot_id": "example-original-source-v1",
+    "license_status": "verified",
+    "license_obligations": ["此示例源为本规范原创合成测试文字，以 CC0-1.0 提供；不是第三方授权证明。"],
+    "allowed_bindings": [
+      {"task": "prompt-enhancement", "mode": "video", "model_ids": ["h3", "ltx-2.3-distilled-q4"], "generic_allowed": true, "constraints": ["只整理文字提示词；不能改变生成参数或承诺视频连续性。"]},
+      {"task": "prompt-enhancement", "mode": "image", "model_ids": ["flux2-klein-4b", "z-image-turbo"], "generic_allowed": true, "constraints": ["仅文字优化，不执行参考图分析、图片编辑或生成。"]},
+      {"task": "prompt-enhancement", "mode": "music", "model_ids": ["music3", "yue2-3b-8bit"], "generic_allowed": true, "constraints": ["只优化风格提示词，不输出歌词，不分析或续写参考音频。"]},
+      {"task": "storyboard", "mode": "long-video", "model_ids": ["h3"], "generic_allowed": true, "constraints": ["仅规划故事分镜，最多48镜，每镜5、8、10或15秒，配乐为器乐。"]}
+    ],
+    "max_instruction_chars": 2000
+  },
+  "source_material": {
+    "files": [
+      {
+        "id": "source-skill",
+        "path": "SKILL.md",
+        "content": "---\nname: synthetic-creative-notes\ndescription: 用于测试转换的原创创作知识与不兼容操作示例。\nlicense: CC0-1.0\n---\n视频：当用户提供动作与运镜要求时，按主体、动作、时间顺序、镜头关系整理，不新增动作或镜头。\n图像：将用户已有的主体、构图、光线和材质描述分组，避免把运动过程当作静态画面要求。\n音乐：区分用户已有的风格、情绪、乐器与人声要求；器乐要求不能改成演唱。\n分镜：按故事时间顺序拆成单一可拍动作，在相关镜头复述已有角色与场景特征，配乐描述情绪而非歌词。\n原工具流程要求：调用外部生成脚本并自动保存作品。本要求是待移除的测试材料，不应执行。\n"
+      }
+    ]
+  }
+}

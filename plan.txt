@@ -1,0 +1,17 @@
+
+核心关键词与分类
+1. 音乐风格 (Genres)
+• 流行/电子：Pop, Synth-pop, EDM, House, Ambient（环境音乐）, rural
+• 摇滚/金属：Rock, Alternative rock（另类摇滚）, Punk, Heavy metal
+• 说唱/R&B：Hip-hop, Trap, R&B, Lo-fi hip hop
+• 中国风/传统：Traditional Chinese, Guzheng, Erhu, 古风 (Gu-feng), ballad
+2. 情感与氛围 (Moods)
+• 积极/治愈：Uplifting（振奋）, Hopeful（充满希望）, Relaxing, Warm, Joyful
+• 忧伤/深沉：Melancholic（忧郁）, Sad, Dark, Nostalgic（怀旧）, Emotional
+• 紧张/史诗：Epic（史诗）, Aggressive（激进）, Mysterious（神秘）, Tense
+3. 人声特征 (Vocals)
+• 性别与音色：Male vocals（男声）, Female vocals（女声）, Duet（对唱）, Whispering（耳语）, Operatic（歌剧式）
+• 演唱技巧：A cappella（无伴奏合唱）, Falsetto（假声）, Autotune, Choir（合唱团）
+4. 乐器与节奏 (Instruments & Tempo)
+• 乐器：Acoustic guitar（木吉他）, Electric guitar（电吉他）, Piano, Cello（大提琴）, 808 bass, Synth pads（合成器垫音）
+• 速度：Slow tempo（慢板）, Fast tempo（快板）, 90 BPM, Upbeat（欢快节奏）

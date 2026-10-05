@@ -1,0 +1,14 @@
+{
+  "schema_version": "minimuv-skill-conversion/v1",
+  "request_id": "example-license-unknown",
+  "capability_snapshot_id": "example-capabilities-v1",
+  "source_snapshot_id": "example-original-source-v1",
+  "status": "blocked",
+  "package": null,
+  "report": {
+    "summary": "对应授权状态 unknown 的输入变体；源内容可分析，但不能产出待安装知识包。",
+    "removed": [],
+    "warnings": [],
+    "blockers": [{"code": "license-unknown", "reason": "宿主尚未核实授权，源文字自称许可不构成批准。"}]
+  }
+}

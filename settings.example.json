@@ -1,4 +1,14 @@
 {
+  "output_directory": "~/.cache/minimax-h3-mlx/outputs",
+  "gemma_path": "~/.omlx/models/pipenetwork/gemma-3-12b-it-4bit",
+  "models": {
+    "h3": {"enabled": true, "name": "MiniMax H3 · 4-bit", "model_path": "~/.omlx/models/pipenetwork/MiniMax-H3-FL2VA-MLX-Serve-4bit"},
+    "hidream": {"enabled": true, "name": "HiDream-O1 · Q6", "model_path": "~/.omlx/models/mlx-community/HiDream-O1-Image-Dev-mlx-q6"},
+    "flux2-klein-4b": {"enabled": true, "name": "FLUX.2 Klein 4B", "model_path": "~/.omlx/models/pipenetwork/FLUX.2-klein-4B"},
+    "z-image-turbo": {"enabled": true, "name": "Z-Image-Turbo", "model_path": "~/.omlx/models/pipenetwork/Z-Image-Turbo"},
+    "ltx-2.3-distilled-q4": {"enabled": true, "name": "LTX 2.3 Distilled 1.1 · Q4", "model_path": "~/.omlx/models/pipenetwork/ltx-2.3-mlx-q4"},
+    "ltx-2.3-distilled-q8": {"enabled": true, "name": "LTX 2.3 Distilled 1.1 · Q8", "model_path": "~/.omlx/models/pipenetwork/ltx-2.3-mlx-q8"}
+  },
   "video": {
     "model_path": "~/.omlx/models/pipenetwork/MiniMax-H3-FL2VA-MLX-Serve-4bit",
     "service_url": "http://127.0.0.1:11234",

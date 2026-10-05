@@ -15,7 +15,21 @@
           <span class="brand-copy"><strong>MINIMUV</strong><span>LOCAL STUDIO</span></span>
         </a>
         <div class="topbar-right">
+          <label class="theme-picker">
+            <span data-i18n="theme">主题</span>
+            <select id="theme" aria-label="主题">
+              <option value="amber" data-i18n="themeAmber">琥珀夜色</option>
+              <option value="ocean" data-i18n="themeOcean">深海蓝</option>
+              <option value="forest" data-i18n="themeForest">森林绿</option>
+              <option value="violet" data-i18n="themeViolet">暮光紫</option>
+              <option value="paper" data-i18n="themePaper">暖纸白</option>
+              <option value="sky" data-i18n="themeSky">晴空蓝</option>
+              <option value="mint" data-i18n="themeMint">薄荷绿</option>
+              <option value="rose" data-i18n="themeRose">樱花粉</option>
+            </select>
+          </label>
           <button id="settings-open" class="settings-open" type="button" data-i18n="settingsButton" aria-label="Settings">设置</button>
+          <button id="prompts-open" class="settings-open" type="button" data-prompt-i18n="title">提示词设置</button>
           <span class="local-pill"><span class="live-dot"></span><span data-i18n="localOnly">本地运行 · 私密创作</span></span>
           <label class="language-picker">
             <span class="sr-only" data-i18n="language">语言</span>
@@ -50,9 +64,16 @@
           </div>
           <p class="settings-note" data-i18n="settingsPrivacy">仅支持本机服务地址；不保存 API 密钥。设置保存在项目目录的 settings.json。</p>
           <fieldset class="settings-group">
+            <legend data-i18n="settingsStorage">输出与模型选项</legend>
+            <label for="settings-output-directory" data-i18n="settingsOutputDirectory">输出保存文件夹</label>
+            <input id="settings-output-directory" type="text" autocomplete="off" required>
+            <p class="settings-field-note" data-i18n="settingsMigrationNote">更改目录会复制并校验现有结果及项目，保留原文件备份。新目录必须为空。</p>
+            <div id="settings-model-options"></div>
+            <label for="settings-gemma-path" data-i18n="settingsGemmaPath">共用 Gemma 编码器目录</label>
+            <input id="settings-gemma-path" type="text" autocomplete="off" required>
+          </fieldset>
+          <fieldset id="settings-h3-service" class="settings-group">
             <legend data-i18n="settingsVideo">视频生成 · MiniMax H3</legend>
-            <label for="settings-video-path" data-i18n="settingsModelPath">模型目录</label>
-            <input id="settings-video-path" type="text" autocomplete="off" required>
             <label for="settings-video-url" data-i18n="settingsServiceUrl">本机服务地址</label>
             <input id="settings-video-url" type="text" inputmode="url" autocomplete="url" required>
             <label for="settings-video-model" data-i18n="settingsModelIdOptional">模型 ID（可选，留空自动检测）</label>
@@ -60,16 +81,12 @@
             <label for="settings-video-params" data-i18n="settingsVideoParams">额外 API 参数（JSON 对象）</label>
             <textarea id="settings-video-params" class="settings-json" spellcheck="false" rows="3"></textarea>
           </fieldset>
-          <fieldset class="settings-group">
+          <fieldset id="settings-hidream-notice" class="settings-group">
             <legend data-i18n="settingsImage">图像生成 · HiDream</legend>
-            <label for="settings-image-path" data-i18n="settingsModelPath">模型目录</label>
-            <input id="settings-image-path" type="text" autocomplete="off" required>
             <p class="settings-field-note" data-i18n="settingsLocalRunner">使用本机 Python 推理程序；此模型通过本地目录加载，不使用 HTTP 服务地址。</p>
           </fieldset>
-          <fieldset class="settings-group">
+          <fieldset id="settings-music3-notice" class="settings-group">
             <legend data-i18n="settingsMusic">音乐生成 · Music3</legend>
-            <label for="settings-music-path" data-i18n="settingsModelPath">模型目录</label>
-            <input id="settings-music-path" type="text" autocomplete="off" required>
             <p class="settings-field-note" data-i18n="settingsLocalRunner">使用本机 Python 推理程序；此模型通过本地目录加载，不使用 HTTP 服务地址。</p>
           </fieldset>
           <fieldset class="settings-group">
@@ -86,6 +103,36 @@
             <button id="settings-cancel" type="button" data-i18n="settingsCancel">取消</button>
             <button id="settings-save" type="submit" data-i18n="settingsSave">保存设置</button>
           </div>
+        </form>
+      </dialog>
+
+      <dialog id="prompts-dialog" class="settings-dialog prompts-dialog" aria-labelledby="prompts-title">
+        <form id="prompts-form">
+          <div class="settings-heading">
+            <h2 id="prompts-title" data-prompt-i18n="title">提示词设置</h2>
+            <button id="prompts-close" class="settings-close" type="button" aria-label="Close">×</button>
+          </div>
+          <p class="settings-note" data-prompt-i18n="intro"></p>
+          <fieldset id="prompts-controls" class="prompts-controls" disabled>
+            <div class="settings-group">
+              <label for="prompts-profile" data-prompt-i18n="profile"></label>
+              <select id="prompts-profile"></select>
+              <p id="prompts-profile-note" class="settings-field-note"></p>
+            </div>
+            <div id="prompts-fields" class="settings-group"></div>
+            <details class="prompts-preview">
+              <summary data-prompt-i18n="preview"></summary>
+              <p class="settings-field-note" data-prompt-i18n="previewNote"></p>
+              <pre id="prompts-preview"></pre>
+            </details>
+            <p class="settings-field-note" data-prompt-i18n="contract"></p>
+            <div class="settings-actions">
+              <button id="prompts-reset" type="button" data-prompt-i18n="reset"></button>
+              <button id="prompts-cancel" type="button" data-prompt-i18n="cancel"></button>
+              <button id="prompts-save" type="submit" data-prompt-i18n="save"></button>
+            </div>
+          </fieldset>
+          <p id="prompts-status" class="settings-status" role="status" hidden></p>
         </form>
       </dialog>
 
@@ -110,14 +157,21 @@
               <button id="video-mode-button" class="mode-button active" type="button" aria-pressed="true" data-i18n="modeVideo">视频</button>
               <button id="image-mode-button" class="mode-button" type="button" aria-pressed="false" data-i18n="modeImage">图像</button>
               <button id="music-mode-button" class="mode-button" type="button" aria-pressed="false" data-i18n="modeMusic">音乐</button>
+              <button id="workflow-mode-button" class="mode-button" type="button" aria-pressed="false" data-i18n="modeWorkflow">长视频</button>
             </div>
 
             <div id="video-model-section">
+            <label class="field-label" for="video-model-choice" data-i18n="generationModel">生成模型</label>
+            <div class="select-wrap">
+              <select id="video-model-choice"></select>
+              <span class="select-arrow" aria-hidden="true">⌄</span>
+            </div>
             <div id="model-notice" class="model-notice" role="status">
               <span class="notice-icon" aria-hidden="true">!</span>
               <div class="notice-content">
                 <strong id="model-title" data-i18n="checkingModels">正在检查本地模型…</strong>
                 <p id="model-description"></p>
+                <div id="model-download-info" class="model-download-info" hidden></div>
                 <div id="model-links" class="model-links"></div>
                 <button id="load-model-button" class="load-model-button" type="button" hidden data-i18n="loadModel">启动并加载模型</button>
               </div>
@@ -125,28 +179,41 @@
             </div>
 
             <div id="image-model-section" hidden>
+              <label class="field-label" for="image-model-choice" data-i18n="generationModel">生成模型</label>
+              <div class="select-wrap">
+                <select id="image-model-choice"></select>
+                <span class="select-arrow" aria-hidden="true">⌄</span>
+              </div>
               <div id="image-model-notice" class="model-notice" role="status">
                 <span class="notice-icon" aria-hidden="true">!</span>
                 <div class="notice-content">
                   <strong id="image-model-title" data-i18n="imageChecking">正在检查 HiDream 图像模型…</strong>
                   <p id="image-model-description"></p>
-                  <div id="image-model-links" class="model-links"></div>
+                  <div id="image-model-download-info" class="model-download-info" hidden></div>
                 </div>
               </div>
             </div>
 
             <div id="music-model-section" hidden>
+              <label class="field-label" for="music-model-choice" data-i18n="generationModel">生成模型</label>
+              <div class="select-wrap">
+                <select id="music-model-choice"></select>
+                <span class="select-arrow" aria-hidden="true">⌄</span>
+              </div>
               <div id="music-model-notice" class="model-notice" role="status">
                 <span class="notice-icon" aria-hidden="true">!</span>
                 <div class="notice-content">
                   <strong id="music-model-title" data-i18n="musicChecking">正在检查 MiniMax Music3…</strong>
                   <p id="music-model-description"></p>
-                  <div id="music-model-links" class="model-links"></div>
+                  <div id="music-model-download-info" class="model-download-info" hidden></div>
                 </div>
               </div>
             </div>
 
             <form id="generation-form">
+              <p id="history-restore-status" class="workflow-message" role="status" aria-live="polite" hidden></p>
+              <label class="field-label" for="project-name" data-i18n="projectName">项目名称</label>
+              <input id="project-name" name="name" type="text" maxlength="80" autocomplete="off" data-i18n-placeholder="projectNamePlaceholder" placeholder="可选，例如：片头海浪镜头">
               <div class="field-label-row">
                 <label id="prompt-label" class="field-label" for="prompt" data-i18n="promptLabel">描述你想看到的画面</label>
                 <span id="prompt-hint" class="field-hint" data-i18n="promptHint">细节越丰富，画面越生动</span>
@@ -168,8 +235,8 @@
                 </div>
                 <p id="prompt-enhancer-status" class="prompt-enhancer-status" role="status" hidden></p>
                 <div id="prompt-enhancer-result" class="prompt-enhancer-result" hidden>
-                  <strong data-i18n="enhancerKeywords">提取的关键词</strong>
-                  <div id="prompt-enhancer-keywords" class="prompt-enhancer-keywords"></div>
+                  <strong id="prompt-enhancer-keywords-title" data-i18n="enhancerKeywords">提取的关键词</strong>
+                  <ul id="prompt-enhancer-keywords" class="prompt-enhancer-keywords" aria-labelledby="prompt-enhancer-keywords-title"></ul>
                   <label for="prompt-enhancer-output" data-i18n="enhancerOptimizedPrompt">优化后的提示词</label>
                   <textarea id="prompt-enhancer-output" readonly></textarea>
                   <div class="prompt-enhancer-actions">
@@ -180,6 +247,16 @@
               </div>
 
               <div id="video-controls">
+              <div id="video-first-frame">
+                <label class="field-label" for="video-frame" data-i18n="firstFrameTitle">首帧图片</label>
+                <select id="video-frame" data-shot-frame></select>
+                <label class="field-label" for="video-frame-upload" data-i18n="firstFrameUpload">从本地添加图片</label>
+                <input id="video-frame-upload" data-shot-upload type="file" accept="image/png,image/jpeg,image/webp">
+                <p class="field-hint" data-i18n="firstFrameUploadHint">PNG / JPEG / WebP，最多 20 MB、1600 万像素；仅上传到本机。</p>
+                <p data-shot-upload-status class="workflow-message" role="status" aria-live="polite" hidden></p>
+                <p class="workflow-hint" data-i18n="firstFrameHint">选择图片作为镜头起始画面，不只是风格参考。</p>
+                <img data-shot-frame-preview hidden alt="">
+              </div>
               <div class="controls-grid">
                 <div class="field">
                   <label class="field-label" for="duration" data-i18n="duration">时长</label>
@@ -225,29 +302,41 @@
               </div>
 
               <details class="model-settings">
-                <summary data-i18n="modelSettings">本地模型</summary>
+                <summary id="video-model-summary">本地模型</summary>
                 <p id="model-path" class="model-path"></p>
-                <a class="model-source-link" href="https://huggingface.co/pipenetwork/MiniMax-H3-MLX-8bit"
-                  target="_blank" rel="noreferrer" data-i18n="transformerNote">已有的 8-bit transformer 不包含完整生成所需组件 ↗</a>
+                <a id="video-model-source" class="model-source-link"
+                  target="_blank" rel="noreferrer" hidden></a>
               </details>
 
               <div class="compute-note">
                 <span class="compute-icon" aria-hidden="true">◷</span>
-                <p data-i18n="computeNote">H3 生成计算量很大。已启用 4-bit Turbo；5 秒视频约 125 帧，实际耗时取决于设备与系统负载。</p>
+                <p id="video-compute-copy" data-i18n="computeNote">H3 生成计算量很大。已启用 4-bit Turbo；5 秒视频约 125 帧，实际耗时取决于设备与系统负载。</p>
               </div>
               <label class="turbo-toggle"><input id="turbo" type="checkbox" checked><span data-i18n="turboLabel">使用 4-step Turbo LoRA（推荐预览）</span></label>
               </div>
 
               <div id="image-controls" hidden>
+                <div id="local-image-size" class="field" hidden>
+                  <label class="field-label" for="image-size" data-i18n="imageResolution">图像分辨率</label>
+                  <div class="select-wrap">
+                    <select id="image-size">
+                      <option value="512">512 × 512</option>
+                      <option value="768">768 × 768</option>
+                      <option value="1024" selected>1024 × 1024</option>
+                    </select>
+                    <span class="select-arrow" aria-hidden="true">⌄</span>
+                  </div>
+                </div>
                 <div class="field">
                   <label class="field-label" for="image-seed" data-i18n="seed">随机种子</label>
                   <input id="image-seed" type="number" min="0" max="4294967295" value="42">
                 </div>
                 <details class="model-settings">
-                  <summary data-i18n="imageModelSettings">HiDream 本地图像模型</summary>
+                  <summary id="image-model-summary">HiDream 本地图像模型</summary>
                   <p id="image-model-path" class="model-path"></p>
-                  <a class="model-source-link" href="https://huggingface.co/mlx-community/HiDream-O1-Image-Dev-mlx-q6"
-                    target="_blank" rel="noreferrer" data-i18n="imageModelSource">HiDream-O1 Q6 模型卡 ↗</a>
+                  <a id="image-model-source" class="model-source-link"
+                    target="_blank" rel="noreferrer" hidden></a>
+                  <div id="image-model-links" class="model-links"></div>
                 </details>
                 <div class="compute-note">
                   <span class="compute-icon" aria-hidden="true">◷</span>
@@ -256,6 +345,12 @@
               </div>
 
               <div id="music-controls" hidden>
+                <details id="music-quick-settings" class="music-quick-settings">
+                  <summary><span data-i18n="musicQuickTitle">音乐快速设置</span><span class="music-fold-icon" aria-hidden="true"></span></summary>
+                  <p class="workflow-hint" data-i18n="musicQuickHint">点击关键词添加到提示词，再次点击移除。英文关键词用于模型输入；不会更改歌词、人声模式或采样参数。</p>
+                  <div id="music-keyword-groups"></div>
+                  <p id="music-keyword-status" class="workflow-message" role="status" aria-live="polite" hidden></p>
+                </details>
                 <div class="field">
                   <label class="field-label" for="music-lyrics-mode" data-i18n="musicModeLabel">人声模式</label>
                   <div class="select-wrap">
@@ -281,6 +376,9 @@
                         <option value="30" selected>30 s</option>
                         <option value="60">60 s</option>
                         <option value="120">120 s</option>
+                        <option value="180">180 s</option>
+                        <option value="240">240 s</option>
+                        <option value="300">300 s</option>
                       </select>
                       <span class="select-arrow">⌄</span>
                     </div>
@@ -301,14 +399,14 @@
                   </div>
                 </div>
                 <details class="model-settings">
-                  <summary data-i18n="musicModelSettings">MiniMax Music3 本地音乐模型</summary>
+                  <summary id="music-model-summary">本地模型</summary>
                   <p id="music-model-path" class="model-path"></p>
-                  <a class="model-source-link" href="https://huggingface.co/mlx-community/MiniMax-Music3-8bit"
-                    target="_blank" rel="noreferrer" data-i18n="musicModelSource">Music3 8-bit 模型卡 ↗</a>
+                  <a id="music-model-source" class="model-source-link"
+                    target="_blank" rel="noreferrer" hidden></a>
                 </details>
                 <div class="compute-note">
                   <span class="compute-icon" aria-hidden="true">◷</span>
-                  <p data-i18n="musicComputeNote">Music3 8-bit 模型约 14.2 GB；较长曲目会显著增加生成时间。歌词和纯音乐均在本机生成。</p>
+                  <p id="music-compute-copy" data-i18n="musicComputeNote">Music3 8-bit 模型约 14.2 GB；较长曲目会显著增加生成时间。歌词和纯音乐均在本机生成。</p>
                 </div>
               </div>
 
@@ -318,6 +416,112 @@
                 <span class="button-arrow" aria-hidden="true">↗</span>
               </button>
             </form>
+
+            <section id="workflow-panel" class="workflow-panel" hidden aria-labelledby="workflow-title">
+              <div class="workflow-heading">
+                <div>
+                  <div class="section-kicker" data-i18n="workflowKicker">LONG-FORM VIDEO</div>
+                  <h3 id="workflow-title" data-i18n="workflowTitle">分段视频工作流</h3>
+                </div>
+                <span id="workflow-status" class="status-chip" data-i18n="workflowDraft">未保存</span>
+              </div>
+              <p class="workflow-note" data-i18n="workflowNote">先保存并确认分镜，再启动本机串行生成。H3 与 Music3 共用计算资源；运行时独立生成会暂不可用。</p>
+              <details class="model-settings">
+                <summary id="workflow-video-model-summary">本地模型</summary>
+                <p id="workflow-video-model-path" class="model-path"></p>
+                <a id="workflow-video-model-source" class="model-source-link"
+                  target="_blank" rel="noreferrer" hidden></a>
+              </details>
+              <details class="model-settings">
+                <summary id="workflow-music-model-summary">本地模型</summary>
+                <p id="workflow-music-model-path" class="model-path"></p>
+                <a id="workflow-music-model-source" class="model-source-link"
+                  target="_blank" rel="noreferrer" hidden></a>
+              </details>
+              <fieldset class="workflow-soundtrack">
+                <legend data-i18n="storyboardTitle">故事自动分镜</legend>
+                <label class="field-label" for="workflow-story" data-i18n="storyboardStory">故事文本</label>
+                <textarea id="workflow-story" maxlength="30000" rows="6"
+                  data-i18n-placeholder="storyboardPlaceholder"></textarea>
+                <p class="workflow-note" data-i18n="storyboardHint">本机文本模型将故事拆分为可编辑镜头，追加到现有分镜；不会自动开始视频生成。</p>
+                <label class="field-label" for="workflow-text-model" data-i18n="enhancerModelLabel">本地文本模型</label>
+                <div class="select-wrap">
+                  <select id="workflow-text-model" disabled></select>
+                  <span class="select-arrow">⌄</span>
+                </div>
+                <label class="field-label" for="workflow-shot-count" data-i18n="storyboardCount">生成镜头数</label>
+                <input id="workflow-shot-count" type="number" min="1" max="48" value="8">
+                <button id="workflow-plan-story" class="workflow-secondary" type="button" disabled data-i18n="storyboardGenerate">生成并添加分镜</button>
+                <p id="workflow-story-status" class="workflow-message" role="status" aria-live="polite" hidden></p>
+              </fieldset>
+              <div class="field">
+                <label class="field-label" for="workflow-name" data-i18n="workflowName">项目名称</label>
+                <input id="workflow-name" type="text" maxlength="120" value="" placeholder="例如：海边日落旅行短片" data-i18n-placeholder="workflowNamePlaceholder" aria-describedby="workflow-name-hint">
+                <p id="workflow-name-hint" class="field-hint" data-i18n="workflowNameHint">用于识别长视频项目并显示在历史记录中；留空将使用 “Untitled video”，最多 120 字。</p>
+              </div>
+              <div class="field workflow-aspect">
+                <label class="field-label" for="workflow-aspect" data-i18n="aspectRatio">画面比例</label>
+                <div class="select-wrap">
+                  <select id="workflow-aspect">
+                    <option value="16:9" data-i18n="aspectLandscape">16:9 横屏</option>
+                    <option value="9:16" data-i18n="aspectPortrait">9:16 竖屏</option>
+                    <option value="1:1" data-i18n="aspectSquare">1:1 方形</option>
+                    <option value="4:3">4:3</option>
+                    <option value="3:4">3:4</option>
+                  </select>
+                  <span class="select-arrow">⌄</span>
+                </div>
+              </div>
+              <div class="workflow-shot-heading">
+                <strong data-i18n="workflowShots">镜头分镜</strong>
+                <button id="workflow-add-shot" class="workflow-secondary" type="button" data-i18n="workflowAddShot">添加镜头</button>
+              </div>
+              <div id="workflow-shots" class="workflow-shots"></div>
+              <fieldset class="workflow-soundtrack">
+                <legend data-i18n="workflowSoundtrack">配乐</legend>
+                <label class="workflow-check"><input id="workflow-music" type="checkbox" checked>
+                  <span data-i18n="workflowGenerateMusic">为每个分镜独立生成配乐</span></label>
+                <div id="workflow-global-music-wrapper" hidden>
+                  <label class="field-label" for="workflow-music-source" data-i18n="workflowMusicSource">配乐来源</label>
+                  <div class="select-wrap">
+                    <select id="workflow-music-source"></select>
+                    <span class="select-arrow">⌄</span>
+                  </div>
+                  <div id="workflow-global-music-prompt-wrapper">
+                    <label class="field-label" for="workflow-global-music-prompt" data-i18n="workflowGlobalMusicPrompt">整体配乐提示词</label>
+                    <textarea id="workflow-global-music-prompt" maxlength="4000"
+                      data-i18n-placeholder="workflowGlobalMusicPromptPlaceholder"></textarea>
+                  </div>
+                  <label id="workflow-burn-lyrics-wrapper" class="workflow-check" hidden><input id="workflow-burn-lyrics" type="checkbox" checked>
+                    <span data-i18n="workflowBurnLyrics">在视频中嵌入歌词字幕</span></label>
+                </div>
+                <label class="field-label" for="workflow-audio-mix" data-i18n="workflowAudioMix">音轨策略</label>
+                <div class="select-wrap">
+                  <select id="workflow-audio-mix">
+                    <option value="score" data-i18n="workflowScoreOnly">只使用配乐</option>
+                    <option value="mix" data-i18n="workflowMixAudio">配乐混合镜头原声</option>
+                  </select>
+                  <span class="select-arrow">⌄</span>
+                </div>
+              </fieldset>
+              <div class="workflow-actions">
+                <button id="workflow-save" class="workflow-primary" type="button" data-i18n="workflowSave">保存分镜</button>
+                <button id="workflow-start" class="workflow-primary" type="button" hidden data-i18n="workflowStart">确认并开始</button>
+                <button id="workflow-resume" class="workflow-primary" type="button" hidden data-i18n="workflowResume">恢复工作流</button>
+                <button id="workflow-restore" class="workflow-primary" type="button" hidden data-i18n="workflowRestore">恢复并修改</button>
+                <button id="workflow-cancel" class="workflow-secondary" type="button" hidden data-i18n="workflowCancel">取消工作流</button>
+              </div>
+              <p id="workflow-message" class="workflow-message" role="status" aria-live="polite" hidden></p>
+              <div id="workflow-progress" class="workflow-progress"></div>
+              <div class="workflow-list-heading">
+                <strong data-i18n="workflowSaved">已保存的工作流</strong>
+                <div class="workflow-list-actions">
+                  <button id="workflow-new" class="workflow-secondary" type="button" data-i18n="workflowNew">新建</button>
+                  <button id="workflow-refresh" class="workflow-secondary" type="button" data-i18n="workflowRefresh">刷新</button>
+                </div>
+              </div>
+              <div id="workflow-list" class="workflow-list"></div>
+            </section>
           </section>
 
           <section class="panel result-panel">
@@ -359,7 +563,7 @@
               </div>
             </div>
             <div id="log-panel" class="log-panel" hidden>
-              <div class="log-heading"><span data-i18n="generationLog">生成日志</span><span class="log-live"></span></div>
+              <div class="log-heading"><span data-i18n="generationLog">生成日志</span><span class="log-live"></span><span id="job-metrics" class="log-metrics" hidden></span></div>
               <pre id="job-logs"></pre>
             </div>
             <section class="history-panel" aria-labelledby="history-title">
@@ -388,6 +592,44 @@
         </footer>
       </main>
     </div>
+    <template id="workflow-shot-template">
+      <article class="workflow-shot">
+        <div class="workflow-shot-top">
+          <strong data-shot-number></strong>
+          <div class="workflow-shot-actions">
+            <button class="workflow-toggle-shot" type="button" aria-expanded="true">−</button>
+            <button class="workflow-remove-shot" type="button" data-i18n="workflowRemoveShot">移除</button>
+          </div>
+        </div>
+        <label class="field-label" data-i18n="workflowShotTitle" data-shot-title-label>镜头标题</label>
+        <input data-shot-title type="text" maxlength="120" data-i18n-placeholder="workflowShotTitlePlaceholder">
+        <label class="field-label" data-i18n="workflowShotPrompt" data-shot-prompt-label>镜头提示词</label>
+        <textarea data-shot-prompt maxlength="4000" required data-i18n-placeholder="workflowShotPromptPlaceholder"></textarea>
+        <div data-shot-frame-wrapper>
+          <label class="field-label" data-i18n="firstFrameTitle" data-shot-frame-label>首帧图片</label>
+          <select data-shot-frame></select>
+          <label class="field-label" data-shot-upload-label data-i18n="firstFrameUpload">从本地添加图片</label>
+          <input data-shot-upload type="file" accept="image/png,image/jpeg,image/webp">
+          <p class="field-hint" data-i18n="firstFrameUploadHint">PNG / JPEG / WebP，最多 20 MB、1600 万像素；仅上传到本机。</p>
+          <p data-shot-upload-status class="workflow-message" role="status" aria-live="polite" hidden></p>
+          <p class="field-hint" data-i18n="firstFrameHint">选择文生图历史结果作为镜头起始画面，不只是风格参考。</p>
+          <img data-shot-frame-preview hidden alt="" loading="lazy">
+        </div>
+        <label class="field-label" data-i18n="workflowShotDuration" data-shot-duration-label>镜头时长</label>
+        <div class="select-wrap">
+          <select data-shot-duration>
+            <option value="5">5 s</option><option value="8">8 s</option>
+            <option value="10">10 s</option><option value="15">15 s</option>
+          </select>
+          <span class="select-arrow">⌄</span>
+        </div>
+        <div data-shot-music-wrapper>
+          <label class="field-label" data-i18n="workflowMusicPrompt" data-shot-music-label>本镜头配乐提示词</label>
+          <textarea data-shot-music-prompt maxlength="4000" data-i18n-placeholder="workflowMusicPromptPlaceholder"></textarea>
+        </div>
+      </article>
+    </template>
     <script src="/app.js" defer></script>
+    <script src="/prompt-settings.js" defer></script>
   </body>
 </html>

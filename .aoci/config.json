@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "locale": "en-US",
+  "locale": "zh-CN",
   "index_path": "aoci.txt",
   "exclude_dirs": [
     "node_modules",
@@ -43,7 +43,7 @@
   "managed_scope": {
     "version": "managed-scope-policy/v2",
     "profile": "production",
-    "observe_change_policy": "review_required",
+    "observe_change_policy": "informational",
     "approval_mode": "inherit",
     "approval_thresholds": {
       "entry_removal_count": 25,
@@ -125,6 +125,50 @@
         "source": "builtin",
         "created_by": "aoci-init",
         "order": 106,
+        "enabled": true
+      },
+      {
+        "rule_id": "vendored-ltx_2_mlx",
+        "action": "observe",
+        "pattern": "third_party/ltx_2_mlx",
+        "pattern_kind": "directory",
+        "reason": "vendored upstream runtime (ltx_2_mlx); observed, not indexed as project cognition",
+        "source": "user",
+        "created_by": "copilot",
+        "order": 200,
+        "enabled": true
+      },
+      {
+        "rule_id": "vendored-mflux",
+        "action": "observe",
+        "pattern": "third_party/mflux",
+        "pattern_kind": "directory",
+        "reason": "vendored upstream runtime (mflux); observed, not indexed as project cognition",
+        "source": "user",
+        "created_by": "copilot",
+        "order": 201,
+        "enabled": true
+      },
+      {
+        "rule_id": "vendored-mlx_yue",
+        "action": "observe",
+        "pattern": "third_party/mlx_yue",
+        "pattern_kind": "directory",
+        "reason": "vendored upstream runtime (mlx_yue); observed, not indexed as project cognition",
+        "source": "user",
+        "created_by": "copilot",
+        "order": 202,
+        "enabled": true
+      },
+      {
+        "rule_id": "vendored-hidream_o1",
+        "action": "observe",
+        "pattern": "third_party/hidream_o1",
+        "pattern_kind": "directory",
+        "reason": "vendored upstream runtime (hidream_o1); observed, not indexed as project cognition",
+        "source": "user",
+        "created_by": "copilot",
+        "order": 203,
         "enabled": true
       }
     ]
