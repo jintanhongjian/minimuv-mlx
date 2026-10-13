@@ -225,7 +225,9 @@ class SkillContractTests(unittest.TestCase):
         for shots in ([], [shot] * 49):
             with self.subTest(count=len(shots)):
                 self.assertFalse(validator.is_valid({"shots": shots}))
-        for duration in (True, 4, 16, 5.5):
+        for duration in (1, 4, 7, 13, 16, 19, 20):
+            validator.validate({"shots": [{**shot, "duration": duration}]})
+        for duration in (True, 0, 21, 5.5):
             with self.subTest(duration=duration):
                 self.assertFalse(validator.is_valid({"shots": [{**shot, "duration": duration}]}))
         self.assertFalse(validator.is_valid({"shots": [{**shot, "tools": []}]}))

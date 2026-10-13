@@ -7,6 +7,17 @@ out/
 settings.json
 /system_prompts.json
 /skill_license_reviews.json
+/third_party/mv_analysis/.python/
+/third_party/mv_analysis/.cache/
+/third_party/mv_analysis/.torch/
+/third_party/mv_analysis/checkpoints/
+/third_party/beat_this/*.egg-info/
+/third_party/h3_downloads/.state/
+/third_party/mere_run/runtime/
+/third_party/mere_run/.downloads/
+/third_party/mere_run/.cache/
+/third_party/mere_run/.models/
+/third_party/h3_turbo/.models/
 
 # AOCI agent host integration (machine-bound; do not commit)
 .mcp.json

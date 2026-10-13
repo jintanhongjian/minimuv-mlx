@@ -8,6 +8,7 @@ import subprocess
 import unittest
 import wave
 import threading
+from array import array
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 from pathlib import Path
@@ -46,6 +47,56 @@ def fake_boundary_frame(root, workflow_id, video, ffmpeg):
 
 
 class WorkflowManifestTests(unittest.TestCase):
+    def test_shot_mode_round_trips_and_legacy_defaults_remain_continuous(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            payload = make_payload()
+            manifest = workflows.create_workflow(root, payload)
+            self.assertEqual(manifest["shot_mode"], "continuous")
+            payload["shot_mode"] = "independent"
+            saved = workflows.update_workflow(root, manifest["id"], payload)
+            self.assertEqual(saved["shot_mode"], "independent")
+            saved["status"] = "cancelled"
+            workflows.save_workflow(root, saved)
+            restored = workflows.restore_workflow(root, saved["id"])
+            self.assertEqual(restored["shot_mode"], "independent")
+            payload["shot_mode"] = "unknown"
+            with self.assertRaisesRegex(ValueError, "invalid_shot_mode"):
+                workflows.create_workflow(root, payload)
+
+    def test_saved_shot_removal_and_order_follow_explicit_identity(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            payload = make_payload()
+            payload["shots"] = [
+                {**payload["shots"][0], "title": title, "duration": duration}
+                for title, duration in [("A", 5), ("B", 8), ("C", 10)]
+            ]
+            manifest = workflows.create_workflow(root, payload)
+            ids = [shot["id"] for shot in manifest["shots"]]
+            payload["shots"] = [
+                {**payload["shots"][2], "id": ids[2]},
+                {**payload["shots"][0], "id": ids[0]},
+            ]
+            saved = workflows.update_workflow(root, manifest["id"], payload)
+            self.assertEqual([shot["title"] for shot in saved["shots"]], ["C", "A"])
+            self.assertEqual([shot["id"] for shot in saved["shots"]], [ids[2], ids[0]])
+            self.assertEqual(saved["total_duration"], 15)
+            self.assertNotIn(ids[1], [shot["id"] for shot in saved["shots"]])
+            for invalid_id in [ids[2], "unknown"]:
+                bad = {**payload, "shots": [
+                    payload["shots"][0], {**payload["shots"][1], "id": invalid_id}
+                ]}
+                with self.assertRaisesRegex(ValueError, "invalid_shot_id"):
+                    workflows.update_workflow(root, manifest["id"], bad)
+            loaded = workflows.get_workflow(root, manifest["id"])
+            self.assertIsNotNone(loaded)
+            assert loaded is not None
+            self.assertEqual([shot["id"] for shot in loaded["shots"]], [ids[2], ids[0]])
+            payload["shots"].append({**payload["shots"][0], "id": "", "title": "New"})
+            saved = workflows.update_workflow(root, manifest["id"], payload)
+            self.assertNotIn(saved["shots"][2]["id"], ids)
+
     def test_frame_media_and_restore_api_preserve_local_access_rules(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -242,6 +293,137 @@ class WorkflowManifestTests(unittest.TestCase):
                 with self.subTest(invalid=invalid), self.assertRaises(ValueError):
                     workflows.create_workflow(root, invalid)
 
+    def test_thirty_minute_and_shot_limits_are_enforced_when_saved(self):
+        payload = make_payload()
+        payload["model"] = "ltx-2.3-distilled-q4"
+        payload["quality"] = "preview"
+        payload["shots"] = [{**payload["shots"][0], "duration": 1, "steps": 8}] * 1800
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            manifest = workflows.create_workflow(root, payload)
+            self.assertEqual(manifest["total_duration"], 1800)
+            self.assertEqual(len(workflows.get_workflow(root, manifest["id"])["shots"]), 1800)
+            payload["shots"] = payload["shots"] + payload["shots"][:1]
+            with self.assertRaisesRegex(ValueError, "invalid_shots"):
+                workflows.create_workflow(root, payload)
+            payload["shots"] = [{**payload["shots"][0], "duration": 20}] * 91
+            with self.assertRaisesRegex(ValueError, "workflow_too_long"):
+                workflows.create_workflow(root, payload)
+
+    def test_segment_failure_keeps_old_final_and_cleans_owned_parts(self):
+        payload = make_payload()
+        payload["shots"] *= 17
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            manifest = workflows.create_workflow(root, payload)
+            directory = workflows.workflow_directory(root, manifest["id"])
+            final = directory / "final.mp4"
+            final.write_bytes(b"previous final")
+            calls = []
+
+            def assemble(batch_root, batch, paths, music, ffmpeg, ffprobe, **kwargs):
+                calls.append((len(paths), kwargs["audio_offset"], kwargs["lyric_cues"]))
+                if len(calls) == 2:
+                    raise RuntimeError("segment failed")
+                part = workflows.workflow_directory(batch_root, batch["id"]) / "final.mov"
+                part.parent.mkdir(parents=True)
+                part.write_bytes(b"temporary part")
+                return part
+
+            with patch.object(workflows, "workflow_lyric_cues", return_value=[("Across", 79, 82)]), \
+                    patch.object(workflows, "_assemble_workflow_batch", side_effect=assemble), \
+                    self.assertRaisesRegex(RuntimeError, "segment failed"):
+                workflows.assemble_workflow(root, manifest, [Path("source")] * 17, [], "ffmpeg", "ffprobe")
+            self.assertEqual(calls, [(16, 0.0, [("Across", 79.0, 80.0)]),
+                                     (1, 80.0, [("Across", 0, 2.0)])])
+            self.assertEqual(final.read_bytes(), b"previous final")
+            self.assertFalse(list(directory.glob(".assembly-*")))
+
+    @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "FFmpeg tools are required")
+    def test_segmented_scores_keep_global_offset_and_per_shot_order(self):
+        ffmpeg, ffprobe = shutil.which("ffmpeg"), shutil.which("ffprobe")
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            video = root / "source.mp4"
+            subprocess.run([
+                ffmpeg, "-nostdin", "-y", "-loglevel", "error", "-f", "lavfi", "-i",
+                "color=c=blue:s=160x96:r=24:d=5", "-c:v", "libx264", "-preset", "ultrafast",
+                "-pix_fmt", "yuv420p", str(video),
+            ], check=True, capture_output=True, timeout=60)
+            scores = [root / f"score-{i}.wav" for i in range(2)]
+            for path, frequency in zip(scores, (440, 880)):
+                subprocess.run([
+                    ffmpeg, "-nostdin", "-y", "-loglevel", "error", "-f", "lavfi", "-i",
+                    f"sine=frequency={frequency}:sample_rate=48000:duration=5", str(path),
+                ], check=True, capture_output=True, timeout=60)
+            history = root / "history.wav"
+            with wave.open(str(history), "wb") as merged:
+                merged.setparams((1, 2, 48000, 0, "NONE", "not compressed"))
+                for score in scores:
+                    with wave.open(str(score), "rb") as source:
+                        merged.writeframes(source.readframes(source.getnframes()))
+            for strategy in ("per_shot", "global", "history"):
+                with self.subTest(strategy=strategy):
+                    payload = make_payload("music3")
+                    payload["shots"] *= 2
+                    payload["soundtrack"]["strategy"] = "per_shot" if strategy == "per_shot" else "global"
+                    if strategy == "history":
+                        payload["soundtrack"]["music_source_id"] = "4b4e28ba-2fa1-41d2-883f-0016d3cca427"
+                    manifest = workflows.create_workflow(
+                        root, payload, music_source_resolver=lambda _: {
+                            "path": str(history), "lyrics": "First\nSecond", "prompt": "", "duration": 10,
+                        },
+                    )
+                    if strategy == "global":
+                        manifest["soundtrack_segments"] = [{"duration": 5}, {"duration": 5}]
+                    with patch.object(workflows, "ASSEMBLY_BATCH_SHOTS", 1), \
+                            patch.object(workflows.local_models, "video_canvas", return_value=(160, 96)), \
+                            patch.object(workflows, "_assemble_workflow_batch",
+                                         wraps=workflows._assemble_workflow_batch) as batch:
+                        final = workflows.assemble_workflow(
+                            root, manifest, [video, video],
+                            [history] if strategy == "history" else scores, ffmpeg, ffprobe,
+                        )
+                    self.assertEqual([c.kwargs["audio_offset"] for c in batch.call_args_list], [0, 5])
+                    if strategy == "history":
+                        self.assertEqual(batch.call_args_list[1].kwargs["lyric_cues"], [("Second", 0, 5)])
+                    for start, expected in ((1, 440), (7, 880)):
+                        decoded = subprocess.run([
+                            ffmpeg, "-nostdin", "-v", "error", "-ss", str(start), "-i", str(final),
+                            "-t", "0.5", "-vn", "-ac", "1", "-ar", "48000", "-f", "s16le", "-",
+                        ], check=True, capture_output=True, timeout=30)
+                        samples = array("h", decoded.stdout)
+                        frequency = sum(a <= 0 < b for a, b in zip(samples, samples[1:])) / 0.5
+                        self.assertAlmostEqual(frequency, expected, delta=8)
+
+    @unittest.skipUnless(shutil.which("ffmpeg") and shutil.which("ffprobe"), "FFmpeg tools are required")
+    def test_ffmpeg_segmented_full_thirty_minutes_has_exact_frame_count(self):
+        ffmpeg, ffprobe = shutil.which("ffmpeg"), shutil.which("ffprobe")
+        payload = make_payload()
+        payload["shots"] = [{**payload["shots"][0], "duration": 15}] * 120
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            manifest = workflows.create_workflow(root, payload)
+            directory = workflows.workflow_directory(root, manifest["id"])
+            source = directory / "source.mp4"
+            subprocess.run([
+                ffmpeg, "-nostdin", "-y", "-loglevel", "error", "-f", "lavfi", "-i",
+                "color=c=blue:s=64x64:r=24:d=15", "-c:v", "libx264", "-preset", "ultrafast",
+                "-pix_fmt", "yuv420p", str(source),
+            ], check=True, capture_output=True, timeout=60)
+            with patch.object(workflows.local_models, "video_canvas", return_value=(64, 64)):
+                final = workflows.assemble_workflow(root, manifest, [source] * 120, [], ffmpeg, ffprobe)
+            probe = subprocess.run([
+                ffprobe, "-v", "error", "-count_frames", "-show_entries",
+                "format=duration:stream=codec_type,nb_read_frames", "-of", "json", str(final),
+            ], check=True, capture_output=True, text=True, timeout=120)
+            data = json.loads(probe.stdout)
+            self.assertAlmostEqual(float(data["format"]["duration"]), 1800, delta=0.05)
+            video = next(stream for stream in data["streams"] if stream["codec_type"] == "video")
+            self.assertEqual(int(video["nb_read_frames"]), 43200)
+            self.assertTrue(any(stream["codec_type"] == "audio" for stream in data["streams"]))
+            self.assertFalse(list(directory.glob(".assembly-*")))
+
     def test_global_soundtrack_prompt_creates_resumable_duration_limited_segments(self):
         payload = make_payload("music3")
         payload["soundtrack"]["strategy"] = "global"
@@ -376,6 +558,8 @@ class WorkflowManifestTests(unittest.TestCase):
             self.assertEqual(updated["shots"][0]["title"], "Revised opening")
             updated["status"] = "running"
             workflows.save_workflow(root, updated)
+            workflows.mark_workflow_live(manifest["id"], True)
+            self.addCleanup(workflows.mark_workflow_live, manifest["id"], False)
             with self.assertRaisesRegex(ValueError, "workflow_not_editable"):
                 workflows.update_workflow(root, manifest["id"], make_payload())
 
@@ -533,6 +717,8 @@ class WorkflowRunnerTests(unittest.TestCase):
             image_bytes = source.read_bytes()
             payload = make_payload()
             payload["shots"][0]["first_frame_id"] = image_id
+            payload["shot_mode"] = "independent"
+            payload["shots"].append({**payload["shots"][0], "first_frame_id": "", "title": "Cutaway"})
             manifest = workflows.create_workflow(output_root, payload)
             source.unlink()
             generated_requests = []
@@ -584,6 +770,7 @@ class WorkflowRunnerTests(unittest.TestCase):
             self.assertEqual(
                 base64.b64decode(generated_requests[0]["first_frame_image"]), image_bytes
             )
+            self.assertNotIn("first_frame_image", generated_requests[1])
 
     def test_runner_generates_individual_music_with_each_shot_prompt(self):
         with tempfile.TemporaryDirectory() as temp_dir:

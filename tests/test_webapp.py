@@ -15,7 +15,7 @@ from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 from unittest.mock import MagicMock, Mock, patch
 
-from webapp import server
+from webapp import server, workflows
 
 
 class ModelDiscoveryTests(unittest.TestCase):
@@ -98,6 +98,10 @@ class GenerationHistoryTests(unittest.TestCase):
                     })
                     record = json.loads((Path(temp_dir) / kind / f"{item_id}.json").read_text())
                     expected = {key: value for key, value in settings.items() if key != "prompt"}
+                    if kind == "video":
+                        expected["quality"] = "standard"
+                    elif kind == "image":
+                        expected.update(quality="custom", candidate_count=1)
                     self.assertEqual(record["generation"], expected)
                     restored = next(item for item in server._history_items() if item["id"] == item_id)
                     self.assertEqual(restored["generation"], expected)
@@ -351,14 +355,14 @@ class GenerationSettingsTests(unittest.TestCase):
 
     def test_music3_five_minute_duration_boundaries(self):
         for mode in ("lyrics", "instrumental"):
-            for duration in (5, 120, 121, 180, 240, 300):
+            for duration in (1, 5, 37, 119, 120, 121, 180, 240, 299, 300):
                 with self.subTest(mode=mode, duration=duration):
                     settings = server._validate_music_generation({
                         "model": "music3", "prompt": "A song", "lyrics_mode": mode,
                         "lyrics": "[verse] Hello", "duration": duration,
                     })
                     self.assertEqual(settings["duration"], duration)
-            for duration in (4.99, 300.01, float("nan"), float("inf")):
+            for duration in (True, 0.99, 300.01, float("nan"), float("inf")):
                 with self.subTest(mode=mode, duration=duration):
                     with self.assertRaisesRegex(ValueError, "invalid_duration"):
                         server._validate_music_generation({
@@ -528,6 +532,49 @@ class AppSettingsTests(unittest.TestCase):
 
 
 class StoryboardPlanningTests(unittest.TestCase):
+    def test_timing_derives_count_and_requires_exact_division(self):
+        for duration in (5, 8, 10, 15):
+            settings = server._validate_storyboard_request({
+                "story": "Film", "model": "local", "total_duration": duration * 48, "shot_duration": duration,
+            })
+            self.assertEqual(settings["shot_count"], 48)
+        for timing in (
+            {"total_duration": 65, "shot_duration": 8},
+            {"total_duration": 1808, "shot_duration": 8},
+            {"total_duration": True, "shot_duration": 5},
+            {"total_duration": 64, "shot_duration": 8, "shot_count": 2},
+            {"total_duration": 64}, {"shot_duration": 8},
+            {"total_duration": 64.0, "shot_duration": 8},
+        ):
+            with self.subTest(timing=timing), self.assertRaises(ValueError):
+                server._validate_storyboard_request({"story": "Film", "model": "local", **timing})
+
+    def test_timing_is_instructed_and_enforced_on_model_output(self):
+        settings = server._validate_storyboard_request({
+            "story": "Film", "model": "local", "total_duration": 10, "shot_duration": 5,
+        })
+        shot = {"title": "Scene", "prompt": "Film", "music_prompt": "Piano", "duration": 5}
+        with patch.object(server, "_local_text_models", return_value=[{"id": "local"}]), \
+                patch.object(server, "_request_local_text_json", return_value={"shots": [shot, shot]}) as request:
+            self.assertEqual(sum(s["duration"] for s in server._storyboard_with_local_model(settings)["shots"]), 10)
+            self.assertIn("duration exactly 5 seconds", request.call_args.args[1])
+            request.return_value = {"shots": [shot, {**shot, "duration": 8}]}
+            with self.assertRaises(RuntimeError):
+                server._storyboard_with_local_model(settings)
+
+    def test_truncated_text_output_is_rejected_even_when_json_is_complete(self):
+        from unittest.mock import MagicMock
+        response = MagicMock()
+        response.__enter__.return_value.read.return_value = json.dumps({
+            "choices": [{"finish_reason": "length", "message": {"content": '{"shots":[]}'}}]
+        }).encode()
+        with patch.object(server, "urlopen", return_value=response):
+            with self.assertRaisesRegex(RuntimeError, "invalid JSON response"):
+                server._request_local_text_json(
+                    "local", "Instructions", "Story",
+                    text_snapshot={"service_url": "http://127.0.0.1:9000", "api_params": {}},
+                )
+
     def test_validates_long_story_and_requested_count(self):
         story = "A traveller returns home. " * 300
         settings = server._validate_storyboard_request({
@@ -536,7 +583,7 @@ class StoryboardPlanningTests(unittest.TestCase):
         self.assertEqual(settings["story"], story.strip())
         for changed in (
             {"story": ""}, {"story": "x" * 30001},
-            {"shot_count": True}, {"shot_count": 0}, {"shot_count": 49},
+            {"shot_count": True}, {"shot_count": 0}, {"shot_count": 1801},
             {"shot_count": 2.5}, {"model": ""},
         ):
             with self.subTest(changed=changed), self.assertRaises(ValueError):
@@ -562,6 +609,93 @@ class StoryboardPlanningTests(unittest.TestCase):
         self.assertIn("exactly 2", request.call_args.args[1])
         self.assertEqual(request.call_args.args[2], "A traveller returns home.")
         self.assertGreater(request.call_args.kwargs["max_tokens"], 1000)
+
+    def test_thirty_minute_boundary_includes_one_second_ltx_shots(self):
+        for model, duration, count in (
+            ("h3", 5, 360), ("h3", 15, 120),
+            ("ltx-2.3-distilled-q4", 1, 1800),
+        ):
+            with self.subTest(model=model, duration=duration):
+                settings = server._validate_storyboard_request({
+                    "story": "Film", "model": "local", "target_model": model,
+                    "total_duration": 1800, "shot_duration": duration,
+                })
+                self.assertEqual(settings["shot_count"], count)
+        with self.assertRaisesRegex(ValueError, "invalid_storyboard_timing"):
+            server._validate_storyboard_request({
+                "story": "Film", "model": "local", "target_model": "ltx-2.3-distilled-q4",
+                "total_duration": 1801, "shot_duration": 1,
+            })
+
+    def test_plans_bounded_batches_with_continuity_and_exact_schemas(self):
+        calls = []
+
+        def generate(model, instructions, source, **kwargs):
+            batch = kwargs["output_schema"]["properties"]["shots"]
+            count = batch["minItems"]
+            self.assertEqual(count, batch["maxItems"])
+            self.assertLessEqual(count, workflows.STORYBOARD_BATCH_SHOTS)
+            self.assertTrue(kwargs["strict"])
+            self.assertLessEqual(kwargs["max_tokens"], 8192)
+            context = json.loads(source)
+            self.assertEqual(context["total_shots"], 25)
+            self.assertIn("Plan only shots", instructions)
+            if calls:
+                self.assertEqual(context["previous_shots"][-1]["title"], str(len(calls) * 12))
+            calls.append(context)
+            return {"shots": [
+                {"title": str(context["first_shot"] + index), "prompt": "同一角色的故事",
+                 "music_prompt": "Piano", "duration": 5} for index in range(count)
+            ]}
+
+        settings = server._validate_storyboard_request({
+            "story": "同一角色的故事", "model": "local", "total_duration": 125, "shot_duration": 5,
+        })
+        with patch.object(server, "_local_text_models", return_value=[{"id": "local"}]), \
+                patch.object(server, "_request_local_text_json", side_effect=generate):
+            result = server._storyboard_with_local_model(settings)
+        self.assertEqual([shot["title"] for shot in result["shots"]], [str(i) for i in range(1, 26)])
+        self.assertEqual([call["first_shot"] for call in calls], [1, 13, 25])
+
+    def test_later_batch_failure_does_not_return_partial_storyboard(self):
+        shot = {"title": "Scene", "prompt": "Film", "music_prompt": "Piano", "duration": 5}
+        settings = server._validate_storyboard_request({
+            "story": "Film", "model": "local", "total_duration": 65, "shot_duration": 5,
+        })
+        with patch.object(server, "_local_text_models", return_value=[{"id": "local"}]), \
+                patch.object(server, "_request_local_text_json",
+                             side_effect=[{"shots": [shot] * 12}, {"shots": []}]) as request, \
+                self.assertRaisesRegex(RuntimeError, "batch starting at 13"):
+            server._storyboard_with_local_model(settings)
+        self.assertEqual(request.call_count, 2)
+
+    def test_skill_authorization_is_rechecked_before_each_batch(self):
+        shot = {"title": "Scene", "prompt": "Film", "music_prompt": "Piano", "duration": 5}
+        settings = server._validate_storyboard_request({
+            "story": "Film", "model": "local", "total_duration": 65, "shot_duration": 5,
+        })
+        with patch.object(server, "_local_text_models", return_value=[{"id": "local"}]), \
+                patch.object(server, "_skill_creative_input",
+                             side_effect=[("Instructions", "Story", []), RuntimeError("approval changed")]) as resolve, \
+                patch.object(server, "_request_local_text_json", return_value={"shots": [shot] * 12}) as request, \
+                self.assertRaisesRegex(RuntimeError, "approval changed"):
+            server._storyboard_with_local_model(settings)
+        self.assertEqual(resolve.call_count, 2)
+        self.assertEqual(request.call_count, 1)
+
+    def test_large_storyboard_save_has_its_own_bounded_request_budget(self):
+        data = json.dumps({
+            "shots": [{"title": "Scene", "prompt": "x" * 4000, "duration": 5}] * 50,
+            "soundtrack": {"mode": "none"},
+        }).encode()
+        self.assertGreater(len(data), server.MAX_REQUEST_BYTES)
+        handler = Mock(headers={"Content-Length": str(len(data))}, rfile=io.BytesIO(data))
+        self.assertEqual(len(server._read_long_video_payload(handler)["shots"]), 50)
+        with self.assertRaisesRegex(ValueError, "invalid_request_size"):
+            server._read_workflow_payload(handler)
+        handler.headers["Content-Length"] = str(64 * 1024 * 1024 + 1)
+        with self.assertRaisesRegex(ValueError, "invalid_request_size"):
+            server._read_long_video_payload(handler)
 
     def test_rejects_partial_or_malformed_storyboards_without_returning_shots(self):
         shot = {
@@ -604,6 +738,16 @@ class PromptEnhancementTests(unittest.TestCase):
         self.assertEqual(settings, {
             "prompt": "Rainy street at night",
             "mode": "video",
+            "model": "GLM-4.7-Flash-4bit",
+        })
+        mv_settings = server._validate_prompt_enhancement({
+            "prompt": "  Ocean at sunrise  ",
+            "mode": "mv",
+            "model": "GLM-4.7-Flash-4bit",
+        })
+        self.assertEqual(mv_settings, {
+            "prompt": "Ocean at sunrise",
+            "mode": "mv",
             "model": "GLM-4.7-Flash-4bit",
         })
 
@@ -712,6 +856,8 @@ class HiDreamGenerationTests(unittest.TestCase):
             "seed": 12,
             "width": 2048,
             "height": 2048,
+            "quality": "custom",
+            "candidate_count": 1,
         })
 
         for payload in (
@@ -754,13 +900,15 @@ class HiDreamGenerationTests(unittest.TestCase):
                 "--model-path", str(root / "model"),
                 "--prompt", "A red fox", "--width", "2048", "--height", "2048",
                 "--seed", "7", "--num-inference-steps", "28",
+                "--no-snap-resolution",
                 "--output", str(output),
             ]
 
             def start_process(actual_command, **kwargs):
                 self.assertEqual(actual_command, command)
                 output.parent.mkdir(parents=True, exist_ok=True)
-                output.write_bytes(b"\x89PNG\r\n\x1a\nimage")
+                from PIL import Image
+                Image.new("RGB", (2048, 2048)).save(output)
                 return FakeProcess()
 
             previous_active_job = server._active_job_id
@@ -792,7 +940,7 @@ class HiDreamGenerationTests(unittest.TestCase):
 
             self.assertEqual(job["status"], "completed")
             self.assertEqual(job["image_path"], output)
-            self.assertIn("Image generation complete.", job["logs"])
+            self.assertIn("Image generation complete: 1 candidate(s).", job["logs"])
             self.assertEqual(server._public_job(job)["image_url"], f"/api/jobs/{job_id}/image")
 
 
@@ -942,7 +1090,9 @@ class CancellationTests(unittest.TestCase):
 
             def run():
                 try:
-                    server._run_job(job["id"], {}, Path(temp_dir), output)
+                    server._run_job(job["id"], {
+                        "turbo": True, "num_frames": 22, "width": 128, "height": 128,
+                    }, Path(temp_dir), output)
                 finally:
                     exited.set()
 
@@ -980,7 +1130,7 @@ class CancellationTests(unittest.TestCase):
         ), patch.object(server, "_active_job_id", job["id"]), patch.object(
             server, "_load_h3_model", side_effect=RuntimeError("backend exited")
         ):
-            server._run_job(job["id"], {}, Path(temp_dir), Path(temp_dir) / "video.mp4")
+            server._run_job(job["id"], {"turbo": True}, Path(temp_dir), Path(temp_dir) / "video.mp4")
             self.assertEqual(job["status"], "cancelled")
             self.assertEqual(job["error"], "")
             self.assertIsNone(server._active_job_id)
@@ -1011,6 +1161,7 @@ class LocalWebHandlerTests(unittest.TestCase):
         ]
         finished = threading.Event()
         produced = {}
+        generated_settings = {}
 
         def publish(job_id, settings, output_path):
             try:
@@ -1021,6 +1172,7 @@ class LocalWebHandlerTests(unittest.TestCase):
                     server._persist_history(job, [output_path], settings)
                     job["status"] = "completed"
                     produced[job_id] = output_path
+                    generated_settings[job_id] = dict(settings)
                     server._active_job_id = None
             finally:
                 finished.set()
@@ -1051,13 +1203,18 @@ class LocalWebHandlerTests(unittest.TestCase):
                     request = Request(
                         self.base_url + endpoint,
                         data=json.dumps({"prompt": "Saved model project", "model": model,
-                                         "lyrics_mode": "instrumental"}).encode(),
+                                         "lyrics_mode": "instrumental",
+                                         **({"size": 1024, "aspect": "9:16", "width": 576, "height": 1024}
+                                            if kind == "image" else {})}).encode(),
                         headers={"Content-Type": "application/json"}, method="POST",
                     )
                     with urlopen(request, timeout=2) as response:
                         self.assertEqual(response.status, 202)
                         item_id = json.load(response)["job"]["id"]
                     self.assertTrue(finished.wait(2))
+                    if kind == "image":
+                        self.assertEqual((generated_settings[item_id]["width"], generated_settings[item_id]["height"]),
+                                         (576, 1024))
                     self.assertEqual(produced[item_id], Path(temporary) / kind / f"{prefix}-{item_id}.{suffix}")
                     expected[item_id] = (kind, model)
             with urlopen(self.base_url + "/api/history", timeout=2) as response:
@@ -1067,6 +1224,9 @@ class LocalWebHandlerTests(unittest.TestCase):
                 kind, model = expected[item["id"]]
                 default_model = {"video": "h3", "image": "hidream", "music": "music3"}[kind]
                 self.assertEqual(item["generation"].get("model", default_model), model)
+                if kind == "image":
+                    self.assertEqual((item["generation"]["aspect"], item["generation"]["width"], item["generation"]["height"]),
+                                     ("9:16", 576, 1024))
                 url = item["audio_url"] if kind == "music" else item[f"{kind}_url"]
                 with urlopen(self.base_url + url, timeout=2) as response:
                     self.assertEqual(response.read(), b"test generated media")
@@ -1469,12 +1629,14 @@ class LocalWebHandlerTests(unittest.TestCase):
             with urlopen(request) as response:
                 self.assertEqual(response.status, 200)
                 self.assertEqual(json.loads(response.read()), {"shots": [shot]})
-        planner.assert_called_once_with(payload)
+        planner.assert_called_once_with({**payload, "video_model": "h3"})
         create.assert_not_called()
 
     def test_storyboard_api_reports_invalid_story_and_generation_failure(self):
         for payload, status, error in (
             ({"story": "", "model": "local-model", "shot_count": 1}, 400, "invalid_story"),
+            ({"story": "A story", "model": "local-model", "total_duration": 65, "shot_duration": 8},
+             400, "invalid_storyboard_timing"),
             ({"story": "A story", "model": "local-model", "shot_count": 1}, 502, "local_text_generation_failed"),
         ):
             with self.subTest(status=status), patch.object(
@@ -1488,6 +1650,15 @@ class LocalWebHandlerTests(unittest.TestCase):
                     urlopen(request)
                 self.assertEqual(caught.exception.code, status)
                 self.assertEqual(json.loads(caught.exception.read())["error"], error)
+
+    def test_storyboard_api_derives_count_from_timing(self):
+        payload = {"story": "Film", "model": "local-model", "total_duration": 80, "shot_duration": 10}
+        with patch.object(server, "_storyboard_with_local_model", return_value={"shots": []}) as planner:
+            request = Request(f"{self.base_url}/api/storyboards", data=json.dumps(payload).encode(),
+                              headers={"Content-Type": "application/json"}, method="POST")
+            with urlopen(request) as response:
+                self.assertEqual(response.status, 200)
+            planner.assert_called_once_with({**payload, "shot_count": 8, "video_model": "h3"})
 
     def test_lists_local_text_models_and_enhances_prompt(self):
         with patch.object(server, "_local_text_models", return_value=[

@@ -44,7 +44,7 @@ def organize_legacy_outputs(root: Path) -> None:
         return
     moves: dict[Path, Path] = {}
     manifests: list[Path] = []
-    for name in (*HISTORY_DIRECTORIES, "workflows", "long-video"):
+    for name in (*HISTORY_DIRECTORIES, "workflows", "long-video", "mv", "mv-projects"):
         folder = root / name
         if folder.is_symlink():
             raise ValueError(f"output_layout_symlink: {folder}")

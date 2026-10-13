@@ -249,6 +249,37 @@ def patchify_ref_image(pil_image, patch: int = PATCH_SIZE) -> np.ndarray:
     return patchify(arr, patch=patch)                                      # [N, 3*p*p]
 
 
+def load_image_only_processor(model_path):
+    from pathlib import Path
+    from transformers import AutoTokenizer, Qwen3VLProcessor
+    from transformers.models.qwen2_vl.image_processing_pil_qwen2_vl import Qwen2VLImageProcessorPil
+    from transformers.video_processing_utils import BaseVideoProcessor
+
+    class UnsupportedVideoProcessor(BaseVideoProcessor):
+        def preprocess(self, videos, **kwargs):
+            raise ValueError("HiDream accepts images, not video references")
+
+    class ImageOnlyQwenProcessor(Qwen3VLProcessor):
+        def check_argument_for_proper_class(self, argument_name, argument):
+            # Transformers exports a dummy BaseVideoProcessor when torch is absent.
+            if argument_name == "video_processor" and isinstance(argument, UnsupportedVideoProcessor):
+                return BaseVideoProcessor
+            return super().check_argument_for_proper_class(argument_name, argument)
+
+    path = Path(model_path)
+    tokenizer = AutoTokenizer.from_pretrained(path, local_files_only=True)
+    image_processor = Qwen2VLImageProcessorPil.from_pretrained(path, local_files_only=True)
+    template_path = path / "chat_template.jinja"
+    template = template_path.read_text(encoding="utf-8") if template_path.is_file() else tokenizer.chat_template
+    if not template:
+        raise ValueError("HiDream chat template missing")
+    # Qwen3VL requires a video component even for image-only requests.
+    return ImageOnlyQwenProcessor(
+        image_processor=image_processor, tokenizer=tokenizer,
+        video_processor=UnsupportedVideoProcessor(), chat_template=template,
+    )
+
+
 def build_edit_text_sample(
     prompt: str,
     ref_image_paths: Sequence[str],
@@ -282,7 +313,14 @@ def build_edit_text_sample(
     vision_start_token_id = model_config.vision_start_token_id
     spatial_merge_size = model_config.vision_config.spatial_merge_size
 
-    ref_pils = [Image.open(p).convert("RGB") for p in ref_image_paths]
+    if not 1 <= len(ref_image_paths) <= 3:
+        raise ValueError("HiDream editing requires one to three reference images")
+    ref_pils = []
+    for path in ref_image_paths:
+        with Image.open(path) as image:
+            if image.format not in {"PNG", "JPEG", "WEBP"} or image.width * image.height > 16_000_000:
+                raise ValueError("Invalid reference image")
+            ref_pils.append(image.convert("RGB"))
     K = len(ref_pils)
 
     if K == 1:
@@ -334,7 +372,7 @@ def build_edit_text_sample(
     content.append({"type": "text", "text": prompt})
     messages = [{"role": "user", "content": content}]
     template_caption = processor.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-    proc = processor(text=[template_caption], images=ref_pils_vlm, padding="longest", return_tensors="pt")
+    proc = processor(text=[template_caption], images=ref_pils_vlm, padding="longest", return_tensors="np")
 
     input_ids_2 = np.asarray(
         tokenizer.encode(boi_token + tms_token * TIMESTEP_TOKEN_NUM, add_special_tokens=False),

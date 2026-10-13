@@ -19,9 +19,46 @@ test("all thirty prompt editor labels exist in all fourteen languages", () => {
   }
 });
 
+test("all task types and runtime preview explanations are localized", () => {
+  const { keys, labels } = vm.runInContext("({keys:promptTaskKeys,labels:promptTaskTranslations})", context);
+  assert.equal(Object.keys(labels).length, 14);
+  for (const [language, values] of Object.entries(labels)) {
+    assert.equal(values.length, keys.length, language);
+    assert.ok(values.every(value => typeof value === "string" && value.trim()), language);
+  }
+  assert.ok(keys.includes("mv"));
+  assert.ok(keys.includes("mv_storyboard"));
+  assert.ok(keys.includes("skill_conversion"));
+});
+
+test("AI assistant settings and help exist in all fourteen UI languages", () => {
+  const { keys, labels } = vm.runInContext("({keys:promptAssistantKeys,labels:promptAssistantTranslations})", context);
+  assert.equal(Object.keys(labels).length, 14);
+  for (const [locale, values] of Object.entries(labels)) {
+    assert.equal(values.length, keys.length, locale);
+    assert.ok(values.every(value => typeof value === "string" && value.trim()), locale);
+  }
+});
+
+test("assistant preview includes editable instructions and the current UI language", () => {
+  context.config = structuredClone(config);
+  context.config.profiles.assistant.role = "Custom assistant";
+  context.previewContext = {assistant: {language_suffixes: {
+    "zh-CN": "\n\nResponse language: Simplified Chinese (zh-CN)",
+    ja: "\n\nResponse language: Japanese (ja)"
+  }}};
+  for (const locale of ["zh-CN", "ja"]) {
+    const result = vm.runInContext(`compilePromptPreview(config, "assistant", previewContext, "${locale}")`, context);
+    assert.ok(result.startsWith("Custom assistant"));
+    assert.ok(result.includes(context.config.profiles.assistant.rules));
+    assert.ok(result.endsWith(context.previewContext.assistant.language_suffixes[locale]));
+    assert.ok(!result.includes("undefined"));
+  }
+});
+
 test("preview preserves JSON braces and combines shared and mode-specific instructions", () => {
   context.config = config;
-  for (const mode of ["video", "image", "music"]) {
+  for (const mode of ["video", "mv", "image", "music"]) {
     const preview = vm.runInContext(`compilePromptPreview(config, "${mode}")`, context);
     assert.ok(preview.startsWith(config.profiles.enhancement.role));
     assert.ok(preview.endsWith(config.profiles[mode].task));
@@ -31,6 +68,12 @@ test("preview preserves JSON braces and combines shared and mode-specific instru
   assert.ok(storyboard.includes("exactly 8 chronological shots"));
   assert.ok(storyboard.includes('{"shots":['));
   assert.ok(!storyboard.includes("{shot_count}"));
+  assert.ok(vm.runInContext('compilePromptPreview(config, "mv_storyboard")', context)
+    .includes("exactly 8 chronological shots"));
+  const skill = vm.runInContext('compilePromptPreview(config, "skill_conversion", {skill_conversion: {prefix:"CONTRACT\\n", suffix:"\\nSCHEMA"}})', context);
+  assert.ok(skill.startsWith("CONTRACT\n"));
+  assert.ok(skill.endsWith("\nSCHEMA"));
+  assert.ok(skill.includes(config.profiles.skill_conversion.rules));
 });
 
 function editorHarness() {
@@ -100,4 +143,23 @@ test("a failed load from a closed dialog cannot overwrite the reopened status", 
   await first;
   assert.equal(h.node("#prompts-status").textContent, "");
   assert.equal(h.node("#prompts-controls").disabled, false);
+});
+
+test("assistant fields can be edited and restored independently of other profiles", async () => {
+  const h = editorHarness();
+  const opening = h.open();
+  h.reply(0, "Current role");
+  await opening;
+  assert.ok(h.node("#prompts-profile").children.some(option => option.value === "assistant"));
+  h.node("#prompts-profile").value = "assistant";
+  h.node("#prompts-profile").events.change();
+  const input = h.node("#prompts-fields").children[2];
+  input.value = "Custom assistant role";
+  input.events.input();
+  assert.ok(h.node("#prompts-preview").textContent.startsWith("Custom assistant role"));
+  h.node("#prompts-reset").events.click();
+  assert.equal(h.node("#prompts-fields").children[2].value, config.profiles.assistant.role);
+  h.node("#prompts-profile").value = "enhancement";
+  h.node("#prompts-profile").events.change();
+  assert.equal(h.node("#prompts-fields").children[2].value, "Current role");
 });

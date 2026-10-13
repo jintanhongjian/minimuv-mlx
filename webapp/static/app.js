@@ -1,7 +1,7 @@
 const translations = {
   "zh-CN": {
     localOnly: "本地运行 · 私密创作", language: "语言", eyebrow: "本地视频与音频生成",
-    headline: "把想象，<span>变成视听。</span>", introCopy: "用 MiniMax H3 在你的 Mac 上，将文字生成同步的视频与立体声音频。",
+    headline: "把想象，<span>变成视听。</span>", introCopy: "在你的 Mac 上，使用多种本地模型创作视频、图像与音乐。",
     createLabel: "创作工作台", newGeneration: "新建生成", describe: "描述",
     checkingModels: "正在检查本地模型…", modelReady: "H3 模型已就绪", modelMissing: "缺少 H3 基础模型文件",
     modelFoundTransformer: "已检测到本地 8-bit transformer：", modelFoundNone: "未在 ~/.omlx/models 中找到 H3 transformer。",
@@ -30,7 +30,7 @@ const translations = {
   },
   en: {
     localOnly: "LOCAL · PRIVATE", language: "Language", eyebrow: "LOCAL VIDEO + AUDIO GENERATION",
-    headline: "Turn imagination <span>into motion.</span>", introCopy: "Create synchronized video and stereo audio from text with MiniMax H3 on your Mac.",
+    headline: "Turn imagination <span>into motion.</span>", introCopy: "Create videos, images, and music with multiple local models on your Mac.",
     createLabel: "CREATIVE WORKSPACE", newGeneration: "New generation", describe: "DESCRIBE",
     checkingModels: "Checking local models…", modelReady: "H3 model is ready", modelMissing: "H3 base model files are missing",
     modelFoundTransformer: "Local 8-bit transformer detected: ", modelFoundNone: "No H3 transformer found in ~/.omlx/models.",
@@ -59,7 +59,7 @@ const translations = {
   },
   "zh-TW": {
     localOnly: "本機執行 · 私密創作", language: "語言", eyebrow: "本機影片與音訊生成",
-    headline: "把想像，<span>變成視聽。</span>", introCopy: "使用 MiniMax H3 在 Mac 上將文字生成同步影片與立體聲音訊。",
+    headline: "把想像，<span>變成視聽。</span>", introCopy: "在你的 Mac 上，使用多種本機模型創作影片、圖像與音樂。",
     createLabel: "創作工作台", newGeneration: "建立生成", describe: "描述",
     checkingModels: "正在檢查本機模型…", modelReady: "H3 模型已就緒", modelMissing: "缺少 H3 基礎模型檔案",
     modelFoundTransformer: "已偵測到本機 8-bit transformer：", modelFoundNone: "在 ~/.omlx/models 中找不到 H3 transformer。",
@@ -88,7 +88,7 @@ const translations = {
   },
   fr: {
     localOnly: "LOCAL · PRIVÉ", language: "Langue", eyebrow: "GÉNÉRATION VIDÉO + AUDIO LOCALE",
-    headline: "L’imagination <span>prend vie.</span>", introCopy: "Créez une vidéo synchronisée et un son stéréo avec MiniMax H3 sur votre Mac.",
+    headline: "L’imagination <span>prend vie.</span>", introCopy: "Créez des vidéos, des images et de la musique avec plusieurs modèles locaux sur votre Mac.",
     createLabel: "ESPACE CRÉATIF", newGeneration: "Nouvelle génération", describe: "DÉCRIRE",
     checkingModels: "Recherche des modèles locaux…", modelReady: "Modèle H3 prêt", modelMissing: "Fichiers du modèle H3 manquants",
     modelFoundTransformer: "Transformer 8 bits détecté : ", modelFoundNone: "Aucun transformer H3 dans ~/.omlx/models.",
@@ -117,7 +117,7 @@ const translations = {
   },
   de: {
     localOnly: "LOKAL · PRIVAT", language: "Sprache", eyebrow: "LOKALE VIDEO- UND AUDIOGENERIERUNG",
-    headline: "Vorstellungen <span>werden lebendig.</span>", introCopy: "Erzeuge synchronisiertes Video und Stereo-Audio mit MiniMax H3 auf deinem Mac.",
+    headline: "Vorstellungen <span>werden lebendig.</span>", introCopy: "Erstelle Videos, Bilder und Musik mit verschiedenen lokalen Modellen auf deinem Mac.",
     createLabel: "KREATIVWERKSTATT", newGeneration: "Neue Generierung", describe: "BESCHREIBEN",
     checkingModels: "Lokale Modelle werden geprüft…", modelReady: "H3-Modell ist bereit", modelMissing: "H3-Basismodell fehlt",
     modelFoundTransformer: "Lokaler 8-Bit-Transformer erkannt: ", modelFoundNone: "Kein H3-Transformer in ~/.omlx/models gefunden.",
@@ -145,7 +145,7 @@ const translations = {
   },
   ja: {
     localOnly: "ローカル実行 · プライベート", language: "言語", eyebrow: "ローカル動画・音声生成",
-    headline: "想像を、<span>映像に。</span>", introCopy: "Mac 上の MiniMax H3 で、テキストから映像とステレオ音声を生成します。",
+    headline: "想像を、<span>映像に。</span>", introCopy: "Mac 上のさまざまなローカルモデルで、動画・画像・音楽を制作します。",
     createLabel: "クリエイティブワークスペース", newGeneration: "新しい生成", describe: "説明",
     checkingModels: "ローカルモデルを確認中…", modelReady: "H3 モデルの準備完了", modelMissing: "H3 の基本モデルファイルがありません",
     modelFoundTransformer: "ローカル 8-bit transformer を検出: ", modelFoundNone: "~/.omlx/models に H3 transformer が見つかりません。",
@@ -174,7 +174,7 @@ const translations = {
   },
   ko: {
     localOnly: "로컬 실행 · 비공개", language: "언어", eyebrow: "로컬 비디오 및 오디오 생성",
-    headline: "상상을 <span>영상으로.</span>", introCopy: "Mac의 MiniMax H3로 텍스트에서 동기화된 비디오와 스테레오 오디오를 만드세요.",
+    headline: "상상을 <span>영상으로.</span>", introCopy: "Mac에서 다양한 로컬 모델로 동영상, 이미지, 음악을 만드세요.",
     createLabel: "크리에이티브 작업 공간", newGeneration: "새 생성", describe: "설명",
     checkingModels: "로컬 모델 확인 중…", modelReady: "H3 모델 준비 완료", modelMissing: "H3 기본 모델 파일이 없습니다",
     modelFoundTransformer: "로컬 8-bit transformer 감지: ", modelFoundNone: "~/.omlx/models에서 H3 transformer를 찾을 수 없습니다.",
@@ -203,7 +203,7 @@ const translations = {
   },
   es: {
     localOnly: "LOCAL · PRIVADO", language: "Idioma", eyebrow: "GENERACIÓN LOCAL DE VÍDEO Y AUDIO",
-    headline: "La imaginación <span>cobra vida.</span>", introCopy: "Crea vídeo sincronizado y audio estéreo con MiniMax H3 en tu Mac.",
+    headline: "La imaginación <span>cobra vida.</span>", introCopy: "Crea vídeos, imágenes y música con varios modelos locales en tu Mac.",
     createLabel: "ESPACIO CREATIVO", newGeneration: "Nueva generación", describe: "DESCRIBIR",
     checkingModels: "Buscando modelos locales…", modelReady: "Modelo H3 listo", modelMissing: "Faltan archivos del modelo base H3",
     modelFoundTransformer: "Transformer local de 8 bits detectado: ", modelFoundNone: "No se encontró ningún transformer H3 en ~/.omlx/models.",
@@ -232,7 +232,7 @@ const translations = {
   },
   pt: {
     localOnly: "LOCAL · PRIVADO", language: "Idioma", eyebrow: "GERAÇÃO LOCAL DE VÍDEO E ÁUDIO",
-    headline: "A imaginação <span>ganha vida.</span>", introCopy: "Crie vídeo sincronizado e áudio estéreo com MiniMax H3 no seu Mac.",
+    headline: "A imaginação <span>ganha vida.</span>", introCopy: "Crie vídeos, imagens e música com vários modelos locais no seu Mac.",
     createLabel: "ESPAÇO CRIATIVO", newGeneration: "Nova geração", describe: "DESCREVER",
     checkingModels: "Verificando modelos locais…", modelReady: "Modelo H3 pronto", modelMissing: "Arquivos do modelo base H3 ausentes",
     modelFoundTransformer: "Transformer local de 8 bits detectado: ", modelFoundNone: "Nenhum transformer H3 encontrado em ~/.omlx/models.",
@@ -261,7 +261,7 @@ const translations = {
   },
   tr: {
     localOnly: "YEREL · GİZLİ", language: "Dil", eyebrow: "YEREL VİDEO VE SES ÜRETİMİ",
-    headline: "Hayal gücünü <span>canlandır.</span>", introCopy: "Mac'inizde MiniMax H3 ile metinden senkronize video ve stereo ses üretin.",
+    headline: "Hayal gücünü <span>canlandır.</span>", introCopy: "Mac'inizde çeşitli yerel modellerle video, görsel ve müzik oluşturun.",
     createLabel: "YARATICI ALAN", newGeneration: "Yeni üretim", describe: "TANIMLA",
     checkingModels: "Yerel modeller denetleniyor…", modelReady: "H3 modeli hazır", modelMissing: "H3 temel model dosyaları eksik",
     modelFoundTransformer: "Yerel 8 bit transformer bulundu: ", modelFoundNone: "~/.omlx/models içinde H3 transformer bulunamadı.",
@@ -290,7 +290,7 @@ const translations = {
   },
   ar: {
     localOnly: "محلي · خاص", language: "اللغة", eyebrow: "إنشاء الفيديو والصوت محليًا",
-    headline: "حوّل الخيال <span>إلى مشهد.</span>", introCopy: "أنشئ فيديو متزامنًا وصوتًا مجسمًا باستخدام MiniMax H3 على جهاز Mac.",
+    headline: "حوّل الخيال <span>إلى مشهد.</span>", introCopy: "أنشئ فيديو وصورًا وموسيقى باستخدام نماذج محلية متعددة على جهاز Mac.",
     createLabel: "مساحة الإبداع", newGeneration: "إنشاء جديد", describe: "الوصف",
     checkingModels: "جارٍ فحص النماذج المحلية…", modelReady: "نموذج H3 جاهز", modelMissing: "ملفات نموذج H3 الأساسي غير موجودة",
     modelFoundTransformer: "تم العثور على transformer محلي بدقة 8 بت: ", modelFoundNone: "لم يتم العثور على H3 transformer في ~/.omlx/models.",
@@ -319,7 +319,7 @@ const translations = {
   },
   vi: {
     localOnly: "CHẠY CỤC BỘ · RIÊNG TƯ", language: "Ngôn ngữ", eyebrow: "TẠO VIDEO VÀ ÂM THANH CỤC BỘ",
-    headline: "Biến trí tưởng tượng <span>thành hình ảnh.</span>", introCopy: "Tạo video đồng bộ và âm thanh stereo bằng MiniMax H3 trên máy Mac.",
+    headline: "Biến trí tưởng tượng <span>thành hình ảnh.</span>", introCopy: "Sáng tạo video, hình ảnh và âm nhạc bằng nhiều mô hình cục bộ trên máy Mac.",
     createLabel: "KHÔNG GIAN SÁNG TẠO", newGeneration: "Tạo nội dung mới", describe: "MÔ TẢ",
     checkingModels: "Đang kiểm tra mô hình cục bộ…", modelReady: "Mô hình H3 đã sẵn sàng", modelMissing: "Thiếu tệp mô hình H3 cơ sở",
     modelFoundTransformer: "Đã tìm thấy transformer 8-bit cục bộ: ", modelFoundNone: "Không tìm thấy transformer H3 trong ~/.omlx/models.",
@@ -348,7 +348,7 @@ const translations = {
   },
   id: {
     localOnly: "LOKAL · PRIVAT", language: "Bahasa", eyebrow: "PEMBUATAN VIDEO + AUDIO LOKAL",
-    headline: "Ubah imajinasi <span>menjadi nyata.</span>", introCopy: "Buat video tersinkronisasi dan audio stereo dengan MiniMax H3 di Mac Anda.",
+    headline: "Ubah imajinasi <span>menjadi nyata.</span>", introCopy: "Buat video, gambar, dan musik dengan berbagai model lokal di Mac Anda.",
     createLabel: "RUANG KREATIF", newGeneration: "Generasi baru", describe: "DESKRIPSI",
     checkingModels: "Memeriksa model lokal…", modelReady: "Model H3 siap", modelMissing: "File model dasar H3 tidak ditemukan",
     modelFoundTransformer: "Transformer 8-bit lokal terdeteksi: ", modelFoundNone: "Transformer H3 tidak ditemukan di ~/.omlx/models.",
@@ -377,7 +377,7 @@ const translations = {
   },
   ru: {
     localOnly: "ЛОКАЛЬНО · ПРИВАТНО", language: "Язык", eyebrow: "ЛОКАЛЬНАЯ ГЕНЕРАЦИЯ ВИДЕО И АУДИО",
-    headline: "Превратите фантазию <span>в кадр.</span>", introCopy: "Создавайте синхронизированное видео и стереозвук с MiniMax H3 на Mac.",
+    headline: "Превратите фантазию <span>в кадр.</span>", introCopy: "Создавайте видео, изображения и музыку с разными локальными моделями на Mac.",
     createLabel: "ТВОРЧЕСКАЯ СТУДИЯ", newGeneration: "Новая генерация", describe: "ОПИСАНИЕ",
     checkingModels: "Проверка локальных моделей…", modelReady: "Модель H3 готова", modelMissing: "Не найдены файлы базовой модели H3",
     modelFoundTransformer: "Найден локальный 8-битный transformer: ", modelFoundNone: "В ~/.omlx/models не найден transformer H3.",
@@ -599,7 +599,7 @@ const workflowTranslations = {
     loadModel: "启动 MLX-Serve 并加载模型", runtimeDownload: "下载 MLX-Serve ↗",
     modelDownload: "下载完整 4-bit 模型 ↗", modelSettings: "本地模型",
     modelPath: "模型目录：", turboLabel: "使用 4-step Turbo LoRA（推荐预览）",
-    computeNote: "H3 生成计算量很大。Turbo 模式推荐 4–8 步预览；标准模式从 16 步起。5 秒视频约 125 帧，实际耗时取决于设备与系统负载。",
+    computeNote: "视频生成需要较多计算资源，实际耗时取决于所选模型、画质、时长与系统负载。",
     quality: "生成步数", stepsFast: "4 · Turbo 预览", stepsBalanced: "6 · Turbo 均衡", stepsDetailed: "8 · Turbo 细节", stepsStandard: "16 · 标准"
   },
   en: {
@@ -608,7 +608,7 @@ const workflowTranslations = {
     loadModel: "Start MLX-Serve and load model", runtimeDownload: "Download MLX-Serve ↗",
     modelDownload: "Download complete 4-bit model ↗", modelSettings: "Local model",
     modelPath: "Model directory: ", turboLabel: "Use 4-step Turbo LoRA (recommended for previews)",
-    computeNote: "H3 generation is compute-intensive. Turbo previews use 4–8 steps; standard sampling starts at 16. A 5-second video is about 125 frames. Actual time depends on the Mac and system load.",
+    computeNote: "Video generation is compute-intensive. Time depends on the selected model, quality, duration, and system load.",
     quality: "Generation steps", stepsFast: "4 · Turbo preview", stepsBalanced: "6 · Turbo balanced", stepsDetailed: "8 · Turbo detail", stepsStandard: "16 · Standard"
   },
   "zh-TW": {
@@ -617,7 +617,7 @@ const workflowTranslations = {
     loadModel: "啟動 MLX-Serve 並載入模型", runtimeDownload: "下載 MLX-Serve ↗",
     modelDownload: "下載完整 4-bit 模型 ↗", modelSettings: "本機模型",
     modelPath: "模型目錄：", turboLabel: "使用 4-step Turbo LoRA（推薦預覽）",
-    computeNote: "H3 生成需要大量運算。Turbo 預覽建議使用 4–8 步；標準取樣從 16 步起。5 秒影片約 125 幀，實際耗時依裝置與系統負載而異。",
+    computeNote: "影片生成需要較多運算資源，實際耗時取決於所選模型、畫質、時長與系統負載。",
     quality: "生成步數", stepsFast: "4 · Turbo 預覽", stepsBalanced: "6 · Turbo 均衡", stepsDetailed: "8 · Turbo 細節", stepsStandard: "16 · 標準"
   },
   fr: {
@@ -626,7 +626,7 @@ const workflowTranslations = {
     loadModel: "Démarrer MLX-Serve et charger le modèle", runtimeDownload: "Télécharger MLX-Serve ↗",
     modelDownload: "Télécharger le modèle complet 4 bits ↗", modelSettings: "Modèle local",
     modelPath: "Dossier du modèle : ", turboLabel: "Utiliser Turbo LoRA 4 étapes (aperçu recommandé)",
-    computeNote: "La génération H3 est très intensive. Les aperçus Turbo utilisent 4 à 8 étapes ; l’échantillonnage standard commence à 16. Une vidéo de 5 s compte environ 125 images. La durée dépend du Mac et de sa charge.",
+    computeNote: "La génération vidéo demande beaucoup de calcul. La durée dépend du modèle, de la qualité, de la longueur et de la charge du système.",
     quality: "Étapes de génération", stepsFast: "4 · Aperçu Turbo", stepsBalanced: "6 · Turbo équilibré", stepsDetailed: "8 · Détails Turbo", stepsStandard: "16 · Standard"
   },
   de: {
@@ -635,7 +635,7 @@ const workflowTranslations = {
     loadModel: "MLX-Serve starten und Modell laden", runtimeDownload: "MLX-Serve herunterladen ↗",
     modelDownload: "Vollständiges 4-Bit-Modell herunterladen ↗", modelSettings: "Lokales Modell",
     modelPath: "Modellordner: ", turboLabel: "4-Step-Turbo-LoRA verwenden (Vorschau empfohlen)",
-    computeNote: "Die H3-Generierung ist rechenintensiv. Turbo-Vorschauen verwenden 4–8 Schritte; Standard-Sampling beginnt bei 16. Ein 5-Sekunden-Video hat etwa 125 Frames. Die Dauer hängt von Mac und Systemlast ab.",
+    computeNote: "Videogenerierung ist rechenintensiv. Die Zeit hängt von Modell, Qualität, Videolänge und Systemlast ab.",
     quality: "Generierungsschritte", stepsFast: "4 · Turbo-Vorschau", stepsBalanced: "6 · Turbo ausgewogen", stepsDetailed: "8 · Turbo-Details", stepsStandard: "16 · Standard"
   },
   ja: {
@@ -644,7 +644,7 @@ const workflowTranslations = {
     loadModel: "MLX-Serve を起動してモデルをロード", runtimeDownload: "MLX-Serve をダウンロード ↗",
     modelDownload: "完全な 4-bit モデルをダウンロード ↗", modelSettings: "ローカルモデル",
     modelPath: "モデルフォルダー：", turboLabel: "4-step Turbo LoRA を使用（プレビュー推奨）",
-    computeNote: "H3 の生成には多くの計算が必要です。Turbo プレビューは 4～8 ステップ、標準サンプリングは 16 ステップからです。5 秒動画は約 125 フレームで、時間は Mac と負荷によって変わります。",
+    computeNote: "動画生成には多くの計算資源が必要です。所要時間はモデル、画質、動画の長さ、システム負荷によって変わります。",
     quality: "生成ステップ", stepsFast: "4 · Turbo プレビュー", stepsBalanced: "6 · Turbo バランス", stepsDetailed: "8 · Turbo 詳細", stepsStandard: "16 · 標準"
   },
   ko: {
@@ -653,7 +653,7 @@ const workflowTranslations = {
     loadModel: "MLX-Serve 시작 및 모델 로드", runtimeDownload: "MLX-Serve 다운로드 ↗",
     modelDownload: "완전한 4-bit 모델 다운로드 ↗", modelSettings: "로컬 모델",
     modelPath: "모델 폴더: ", turboLabel: "4-step Turbo LoRA 사용 (미리보기 권장)",
-    computeNote: "H3 생성은 계산량이 많습니다. Turbo 미리보기는 4~8단계, 표준 샘플링은 16단계부터 사용합니다. 5초 영상은 약 125프레임이며 실제 시간은 Mac과 시스템 부하에 따라 다릅니다.",
+    computeNote: "동영상 생성에는 많은 연산이 필요합니다. 시간은 모델, 화질, 영상 길이 및 시스템 부하에 따라 달라집니다.",
     quality: "생성 단계", stepsFast: "4 · Turbo 미리보기", stepsBalanced: "6 · Turbo 균형", stepsDetailed: "8 · Turbo 디테일", stepsStandard: "16 · 표준"
   },
   es: {
@@ -662,7 +662,7 @@ const workflowTranslations = {
     loadModel: "Iniciar MLX-Serve y cargar el modelo", runtimeDownload: "Descargar MLX-Serve ↗",
     modelDownload: "Descargar el modelo completo de 4 bits ↗", modelSettings: "Modelo local",
     modelPath: "Carpeta del modelo: ", turboLabel: "Usar Turbo LoRA de 4 pasos (recomendado para vistas previas)",
-    computeNote: "La generación H3 requiere mucho cálculo. Las vistas Turbo usan 4–8 pasos; el muestreo estándar empieza en 16. Un vídeo de 5 s tiene unos 125 fotogramas. El tiempo depende del Mac y su carga.",
+    computeNote: "Generar vídeo requiere mucho cálculo. El tiempo depende del modelo, la calidad, la duración y la carga del sistema.",
     quality: "Pasos de generación", stepsFast: "4 · Vista previa Turbo", stepsBalanced: "6 · Turbo equilibrado", stepsDetailed: "8 · Detalle Turbo", stepsStandard: "16 · Estándar"
   },
   pt: {
@@ -671,7 +671,7 @@ const workflowTranslations = {
     loadModel: "Iniciar MLX-Serve e carregar o modelo", runtimeDownload: "Baixar MLX-Serve ↗",
     modelDownload: "Baixar o modelo completo de 4 bits ↗", modelSettings: "Modelo local",
     modelPath: "Pasta do modelo: ", turboLabel: "Usar Turbo LoRA de 4 etapas (recomendado para prévias)",
-    computeNote: "A geração H3 exige muito processamento. As prévias Turbo usam 4–8 etapas; a amostragem padrão começa em 16. Um vídeo de 5 s tem cerca de 125 quadros. O tempo depende do Mac e da carga do sistema.",
+    computeNote: "A geração de vídeo exige muito processamento. O tempo depende do modelo, da qualidade, da duração e da carga do sistema.",
     quality: "Etapas de geração", stepsFast: "4 · Prévia Turbo", stepsBalanced: "6 · Turbo equilibrado", stepsDetailed: "8 · Detalhe Turbo", stepsStandard: "16 · Padrão"
   },
   tr: {
@@ -680,7 +680,7 @@ const workflowTranslations = {
     loadModel: "MLX-Serve'i başlat ve modeli yükle", runtimeDownload: "MLX-Serve'i indir ↗",
     modelDownload: "Tam 4 bit modeli indir ↗", modelSettings: "Yerel model",
     modelPath: "Model dizini: ", turboLabel: "4 adımlı Turbo LoRA kullan (önizleme önerilir)",
-    computeNote: "H3 üretimi yoğun hesaplama gerektirir. Turbo önizlemeleri 4–8 adım kullanır; standart örnekleme 16 adımdan başlar. 5 saniyelik video yaklaşık 125 kare içerir. Süre Mac'e ve sistem yüküne bağlıdır.",
+    computeNote: "Video üretimi yoğun hesaplama gerektirir. Süre modele, kaliteye, video uzunluğuna ve sistem yüküne bağlıdır.",
     quality: "Üretim adımları", stepsFast: "4 · Turbo önizleme", stepsBalanced: "6 · Dengeli Turbo", stepsDetailed: "8 · Turbo ayrıntı", stepsStandard: "16 · Standart"
   },
   ar: {
@@ -689,7 +689,7 @@ const workflowTranslations = {
     loadModel: "بدء MLX-Serve وتحميل النموذج", runtimeDownload: "تنزيل MLX-Serve ↗",
     modelDownload: "تنزيل نموذج 4 بت الكامل ↗", modelSettings: "النموذج المحلي",
     modelPath: "مجلد النموذج: ", turboLabel: "استخدام Turbo LoRA بأربع خطوات (موصى به للمعاينة)",
-    computeNote: "يتطلب توليد H3 حسابات كثيفة. تستخدم معاينات Turbo من 4 إلى 8 خطوات، ويبدأ التوليد القياسي من 16 خطوة. يضم فيديو 5 ثوانٍ نحو 125 إطاراً. يعتمد الوقت على الجهاز وحمل النظام.",
+    computeNote: "يتطلب توليد الفيديو موارد حسابية كبيرة. يعتمد الوقت على النموذج والجودة ومدة الفيديو وحمل النظام.",
     quality: "خطوات التوليد", stepsFast: "4 · معاينة Turbo", stepsBalanced: "6 · Turbo متوازن", stepsDetailed: "8 · تفاصيل Turbo", stepsStandard: "16 · قياسي"
   },
   vi: {
@@ -698,7 +698,7 @@ const workflowTranslations = {
     loadModel: "Khởi động MLX-Serve và tải mô hình", runtimeDownload: "Tải MLX-Serve ↗",
     modelDownload: "Tải mô hình 4-bit đầy đủ ↗", modelSettings: "Mô hình cục bộ",
     modelPath: "Thư mục mô hình: ", turboLabel: "Dùng Turbo LoRA 4 bước (khuyên dùng để xem trước)",
-    computeNote: "Tạo nội dung H3 cần nhiều tính toán. Bản xem trước Turbo dùng 4–8 bước; chế độ chuẩn bắt đầu từ 16 bước. Video 5 giây có khoảng 125 khung hình. Thời gian tùy Mac và tải hệ thống.",
+    computeNote: "Tạo video cần nhiều tài nguyên tính toán. Thời gian phụ thuộc vào mô hình, chất lượng, độ dài video và tải hệ thống.",
     quality: "Số bước tạo", stepsFast: "4 · Xem trước Turbo", stepsBalanced: "6 · Turbo cân bằng", stepsDetailed: "8 · Turbo chi tiết", stepsStandard: "16 · Tiêu chuẩn"
   },
   id: {
@@ -707,7 +707,7 @@ const workflowTranslations = {
     loadModel: "Jalankan MLX-Serve dan muat model", runtimeDownload: "Unduh MLX-Serve ↗",
     modelDownload: "Unduh model 4-bit lengkap ↗", modelSettings: "Model lokal",
     modelPath: "Direktori model: ", turboLabel: "Gunakan Turbo LoRA 4 langkah (disarankan untuk pratinjau)",
-    computeNote: "Generasi H3 membutuhkan komputasi besar. Pratinjau Turbo memakai 4–8 langkah; sampling standar dimulai dari 16. Video 5 detik sekitar 125 frame. Waktu bergantung pada Mac dan beban sistem.",
+    computeNote: "Pembuatan video membutuhkan banyak komputasi. Waktu bergantung pada model, kualitas, durasi, dan beban sistem.",
     quality: "Langkah generasi", stepsFast: "4 · Pratinjau Turbo", stepsBalanced: "6 · Turbo seimbang", stepsDetailed: "8 · Detail Turbo", stepsStandard: "16 · Standar"
   },
   ru: {
@@ -716,7 +716,7 @@ const workflowTranslations = {
     loadModel: "Запустить MLX-Serve и загрузить модель", runtimeDownload: "Скачать MLX-Serve ↗",
     modelDownload: "Скачать полную модель 4 бит ↗", modelSettings: "Локальная модель",
     modelPath: "Папка модели: ", turboLabel: "Использовать Turbo LoRA на 4 шага (рекомендуется для предпросмотра)",
-    computeNote: "Генерация H3 требует больших вычислений. Для предпросмотра Turbo нужно 4–8 шагов, стандартная выборка начинается с 16. В 5-секундном видео около 125 кадров. Время зависит от Mac и нагрузки.",
+    computeNote: "Генерация видео требует значительных вычислений. Время зависит от модели, качества, длительности видео и нагрузки системы.",
     quality: "Шаги генерации", stepsFast: "4 · Turbo предпросмотр", stepsBalanced: "6 · Сбалансированный Turbo", stepsDetailed: "8 · Детали Turbo", stepsStandard: "16 · Стандарт"
   }
 };
@@ -836,6 +836,55 @@ const musicTranslations = {
   }
 };
 
+const imageLongEdgeTranslations = {
+  "zh-CN": "图像分辨率（长边像素）", en: "Image resolution (long edge pixels)",
+  "zh-TW": "圖片解析度（長邊像素）", fr: "Résolution (pixels du grand côté)",
+  de: "Auflösung (Pixel der langen Seite)", ja: "画像解像度（長辺ピクセル）",
+  ko: "이미지 해상도 (긴 변 픽셀)", es: "Resolución (píxeles del lado largo)",
+  pt: "Resolução (pixels do lado maior)", tr: "Çözünürlük (uzun kenar piksel)",
+  ar: "دقة الصورة (بكسلات الضلع الأطول)", vi: "Độ phân giải (pixel cạnh dài)",
+  id: "Resolusi (piksel sisi panjang)", ru: "Разрешение (пиксели длинной стороны)"
+};
+const imageQualityKeys = [
+  "imageQuality", "imageQualityPreview", "imageQualityStandard", "imageQualityHigh",
+  "imageQualityCustom", "imageCandidates", "imageNativeResolution", "imageCandidate",
+  "imageTurnaround", "imageTurnaroundEnable", "imageTurnaroundHint",
+  "turnaroundFront", "turnaroundSide", "turnaroundBack"
+];
+const imageQualityTranslations = {
+  "zh-CN": ["图像质量", "快速预览", "标准质量", "高质量", "自定义", "候选图片数量", "模型原生训练分辨率", "候选图", "人物三视图快捷设置", "一次生成正面、侧面和背面三张人物图", "画面描述中只写人物本身，不要写“三视图”或“正面、侧面、背面”；系统会固定生成三张独立全身图，每张只有一个人物，分别为正面、侧面和背面；结果可直接选入视频、长视频和 MV 的人物参考图片。", "正面", "侧面", "背面"],
+  en: ["Image quality", "Quick preview", "Standard", "High quality", "Custom", "Candidate images", "Model-native training resolution", "Candidate", "Character turnaround shortcut", "Generate front, side, and back character views at once", "Describe only the character itself; do not ask for \"three views\" or \"front, side, back\". Three separate full-body images are always produced, each showing a single character in the front, side, and back view. The set can be selected directly in video, long-video, and MV character references.", "Front", "Side", "Back"],
+  "zh-TW": ["圖像品質", "快速預覽", "標準品質", "高品質", "自訂", "候選圖片數量", "模型原生訓練解析度", "候選圖", "人物三視圖快速設定", "一次生成正面、側面與背面三張人物圖", "畫面描述中只寫人物本身，不要寫「三視圖」或「正面、側面、背面」；系統固定生成三張獨立全身圖，每張只有一個人物，分別為正面、側面與背面；結果可直接用於影片、長影片與 MV 的人物參考。", "正面", "側面", "背面"],
+  fr: ["Qualité d’image", "Aperçu rapide", "Standard", "Haute qualité", "Personnalisée", "Images candidates", "Résolution native d’entraînement", "Candidate", "Raccourci de rotation du personnage", "Générer les vues face, profil et dos", "Décrivez uniquement le personnage, sans demander « trois vues » ni « face, profil, dos ». Trois images plein pied distinctes sont toujours créées, chacune avec un seul personnage en vue de face, de profil et de dos, sélectionnables dans les références vidéo, vidéo longue et MV.", "Face", "Profil", "Dos"],
+  de: ["Bildqualität", "Schnellvorschau", "Standard", "Hohe Qualität", "Benutzerdefiniert", "Bildvarianten", "Native Trainingsauflösung", "Variante", "Figuren-Dreiansicht", "Vorder-, Seiten- und Rückansicht gemeinsam erzeugen", "Beschreiben Sie nur die Figur selbst, ohne „Dreiansicht“ oder „vorne, seitlich, hinten“. Es entstehen immer drei getrennte Ganzkörperbilder mit jeweils einer einzigen Figur in Vorder-, Seiten- und Rückansicht für Video-, Langvideo- und MV-Referenzen.", "Vorne", "Seite", "Hinten"],
+  ja: ["画像品質", "クイックプレビュー", "標準", "高品質", "カスタム", "候補画像数", "モデル本来の学習解像度", "候補", "人物三面図クイック設定", "正面・側面・背面を一括生成", "説明には人物そのものだけを書き、「三面図」や「正面・側面・背面」とは書かないでください。常に全身画像3枚を個別に生成し、各画像には1人だけが正面・側面・背面で描かれ、動画・長編動画・MVの人物参照で直接選択できます。", "正面", "側面", "背面"],
+  ko: ["이미지 품질", "빠른 미리보기", "표준", "고품질", "사용자 지정", "후보 이미지 수", "모델 기본 학습 해상도", "후보", "캐릭터 3면도 빠른 설정", "정면·측면·후면 이미지 동시 생성", "설명에는 인물 자체만 적고 \"3면도\"나 \"정면, 측면, 후면\"은 적지 마세요. 항상 전신 이미지 3장을 따로 생성하며 각 이미지에는 한 명만 정면, 측면, 후면으로 나타나고 영상, 장편 영상, MV 인물 참조에서 선택할 수 있습니다.", "정면", "측면", "후면"],
+  es: ["Calidad de imagen", "Vista rápida", "Estándar", "Alta calidad", "Personalizada", "Imágenes candidatas", "Resolución nativa de entrenamiento", "Candidata", "Atajo de vistas del personaje", "Generar frente, perfil y espalda", "Describe solo al personaje; no pidas «tres vistas» ni «frente, perfil, espalda». Siempre se crean tres imágenes de cuerpo entero separadas, cada una con un solo personaje de frente, de perfil y de espalda, para referencias de vídeo, vídeo largo y MV.", "Frente", "Perfil", "Espalda"],
+  pt: ["Qualidade da imagem", "Prévia rápida", "Padrão", "Alta qualidade", "Personalizada", "Imagens candidatas", "Resolução nativa de treino", "Candidata", "Atalho de vistas do personagem", "Gerar frente, perfil e costas", "Descreva apenas o personagem; não peça «três vistas» nem «frente, perfil, costas». São sempre criadas três imagens de corpo inteiro separadas, cada uma com um único personagem de frente, de perfil e de costas, para referências de vídeo, vídeo longo e MV.", "Frente", "Perfil", "Costas"],
+  tr: ["Görüntü kalitesi", "Hızlı önizleme", "Standart", "Yüksek kalite", "Özel", "Aday görseller", "Modelin doğal eğitim çözünürlüğü", "Aday", "Karakter üç görünüm kısayolu", "Ön, yan ve arka görünümü birlikte üret", "Açıklamaya yalnızca karakterin kendisini yazın; «üç görünüm» veya «ön, yan, arka» yazmayın. Her zaman üç ayrı tam boy görsel üretilir ve her görselde tek bir karakter ön, yan ve arka görünümde yer alır; video, uzun video ve MV referanslarında seçilebilir.", "Ön", "Yan", "Arka"],
+  ar: ["جودة الصورة", "معاينة سريعة", "قياسية", "جودة عالية", "مخصصة", "الصور المرشحة", "دقة التدريب الأصلية للنموذج", "مرشح", "اختصار مناظر الشخصية الثلاثة", "توليد الأمام والجانب والخلف معًا", "صف الشخصية نفسها فقط، ولا تطلب «ثلاثة مناظر» أو «الأمام والجانب والخلف». تُنشأ دائمًا ثلاث صور منفصلة لكامل الجسم، تحتوي كل منها على شخصية واحدة فقط من الأمام والجانب والخلف، ويمكن اختيارها في مراجع الفيديو والفيديو الطويل وMV.", "الأمام", "الجانب", "الخلف"],
+  vi: ["Chất lượng ảnh", "Xem nhanh", "Tiêu chuẩn", "Chất lượng cao", "Tùy chỉnh", "Số ảnh ứng viên", "Độ phân giải huấn luyện gốc", "Ứng viên", "Thiết lập nhanh ba góc nhân vật", "Tạo đồng thời mặt trước, bên và sau", "Chỉ mô tả bản thân nhân vật, đừng yêu cầu «ba góc nhìn» hay «mặt trước, bên, sau». Hệ thống luôn tạo ba ảnh toàn thân riêng biệt, mỗi ảnh chỉ có một nhân vật ở góc trước, bên và sau, dùng cho tham chiếu video, video dài và MV.", "Mặt trước", "Mặt bên", "Mặt sau"],
+  id: ["Kualitas gambar", "Pratinjau cepat", "Standar", "Kualitas tinggi", "Kustom", "Gambar kandidat", "Resolusi pelatihan asli model", "Kandidat", "Pintasan tiga tampak karakter", "Buat tampak depan, samping, dan belakang", "Jelaskan hanya karakternya; jangan minta «tiga tampak» atau «depan, samping, belakang». Selalu dibuat tiga gambar seluruh badan terpisah, masing-masing hanya berisi satu karakter dari depan, samping, dan belakang, untuk referensi video, video panjang, dan MV.", "Depan", "Samping", "Belakang"],
+  ru: ["Качество изображения", "Быстрый просмотр", "Стандарт", "Высокое качество", "Своя настройка", "Число вариантов", "Исходное обучающее разрешение", "Вариант", "Быстрая трёхвидовая модель персонажа", "Создать вид спереди, сбоку и сзади", "Описывайте только самого персонажа, не указывайте «три вида» или «спереди, сбоку, сзади». Всегда создаются три отдельные полнофигурные картинки, на каждой только один персонаж — спереди, сбоку и сзади — для видео, длинного видео и MV.", "Спереди", "Сбоку", "Сзади"]
+};
+const storyboardTimingKeys = ["storyboardTotalDuration", "storyboardShotDuration", "storyboardDurationHint", "storyboardTimingInvalid"];
+const storyboardTimingTranslations = {
+  en: ["Total video duration (seconds)", "Duration per shot (seconds)", "Total must be divisible by shot duration; max 1800 shots. Applies only to newly added shots, excluding existing shots.", "Use whole seconds, divide the total exactly by 5, 8, 10 or 15 seconds per shot, and stay within 1800 shots."],
+  "zh-CN": ["视频总长（秒）", "每个分镜时长（秒）", "总长须能整除单镜头时长，最多1800个镜头；仅计算本次新增分镜，不包含已有镜头。", "请输入整数秒，总长须能被每镜头5、8、10或15秒整除，且镜头数不超过1800。"],
+  "zh-TW": ["影片總長（秒）", "每個分鏡時長（秒）", "總長須能整除單鏡頭時長，最多1800個鏡頭；僅計算本次新增分鏡，不包含已有鏡頭。", "請輸入整數秒，總長須能被每鏡頭5、8、10或15秒整除，且鏡頭數不超過1800。"],
+  fr: ["Durée totale (secondes)", "Durée par plan (secondes)", "Total divisible par la durée d’un plan ; 1800 plans maximum. Uniquement les nouveaux plans.", "Utilisez des secondes entières, un total divisible par 5, 8, 10 ou 15 secondes par plan, et au plus 1800 plans."],
+  de: ["Gesamtdauer (Sekunden)", "Dauer pro Szene (Sekunden)", "Gesamtdauer muss durch die Szenendauer teilbar sein; höchstens 1800 neue Szenen, ohne vorhandene.", "Ganze Sekunden und exakt durch 5, 8, 10 oder 15 Sekunden pro Szene teilbar; höchstens 1800 Szenen."],
+  ja: ["動画の合計時間（秒）", "各ショットの時間（秒）", "合計時間はショット時間で割り切れる必要があります。最大1800ショット。既存分を除く追加分のみ。", "整数秒で指定し、各ショット5・8・10・15秒で合計を割り切り、1800ショット以内にしてください。"],
+  ko: ["영상 총 길이 (초)", "장면당 길이 (초)", "총 길이는 장면 길이로 나누어떨어져야 합니다. 새 장면 최대 1800개, 기존 장면 제외.", "정수 초를 입력하고 장면당 5, 8, 10, 15초로 정확히 나누어 최대 1800개로 설정하세요."],
+  es: ["Duración total (segundos)", "Duración por plano (segundos)", "Total divisible por la duración del plano; máximo 1800 planos nuevos, sin los existentes.", "Use segundos enteros y un total divisible por 5, 8, 10 o 15 segundos por plano; máximo 1800 planos."],
+  pt: ["Duração total (segundos)", "Duração por cena (segundos)", "Total divisível pela duração da cena; máximo 1800 cenas novas, excluindo as existentes.", "Use segundos inteiros e total divisível por 5, 8, 10 ou 15 segundos por cena; máximo 1800 cenas."],
+  tr: ["Toplam video süresi (saniye)", "Sahne başına süre (saniye)", "Toplam sahne süresine tam bölünmeli; mevcutlar hariç en fazla 1800 yeni sahne.", "Tam saniye kullanın; toplamı sahne başına 5, 8, 10 veya 15 saniyeye tam bölün ve 1800 sahneyi aşmayın."],
+  ar: ["مدة الفيديو الإجمالية (ثوانٍ)", "مدة كل مشهد (ثوانٍ)", "يجب أن تقبل المدة القسمة على مدة المشهد؛ 1800 مشهدًا جديدًا كحد أقصى، دون المشاهد الحالية.", "استخدم ثوانٍ صحيحة ومجموعًا يقبل القسمة على 5 أو 8 أو 10 أو 15 ثانية للمشهد، وبحد أقصى 1800 مشهدًا."],
+  vi: ["Tổng thời lượng video (giây)", "Thời lượng mỗi cảnh (giây)", "Tổng phải chia hết cho thời lượng cảnh; tối đa 1800 cảnh mới, không tính cảnh hiện có.", "Dùng giây nguyên, tổng chia hết cho 5, 8, 10 hoặc 15 giây mỗi cảnh và không quá 1800 cảnh."],
+  id: ["Durasi total video (detik)", "Durasi tiap adegan (detik)", "Total harus habis dibagi durasi adegan; maksimal 1800 adegan baru, tidak termasuk yang ada.", "Gunakan detik bulat, total habis dibagi 5, 8, 10 atau 15 detik per adegan dan maksimal 1800 adegan."],
+  ru: ["Общая длительность (секунды)", "Длительность сцены (секунды)", "Длительность должна делиться на длину сцены; максимум 1800 новых сцен, без существующих.", "Используйте целые секунды и сумму, кратную 5, 8, 10 или 15 секундам на сцену; максимум 1800 сцен."]
+};
+
 const storyboardTranslations = {
   "zh-CN": {
     modeWorkflow: "长视频", workflowKicker: "长视频分段工作流", workflowTitle: "分镜与生成",
@@ -860,7 +909,7 @@ const storyboardTranslations = {
     workflowStatusDraft: "待确认", workflowNoItems: "还没有保存的工作流。", workflowOutput: "下载成片",
     workflowShot: "镜头", workflowMusicSegment: "配乐片段", workflowMusicProgress: "配乐",
     workflowBusy: "工作流运行期间无法启动独立生成。",
-    workflowTooManyShots: "最多支持 48 个镜头。", workflowFailed: "工作流失败：", workflowServerError: "无法读取工作流。"
+    workflowTooManyShots: "最多支持 1800 个镜头。", workflowFailed: "工作流失败：", workflowServerError: "无法读取工作流。"
   },
   en: {
     modeWorkflow: "Long video", workflowKicker: "LONG-FORM VIDEO WORKFLOW", workflowTitle: "Storyboard & generation",
@@ -885,7 +934,7 @@ const storyboardTranslations = {
     workflowStatusDraft: "Draft", workflowNoItems: "No saved workflows yet.", workflowOutput: "Download final video",
     workflowShot: "Shot", workflowMusicSegment: "Score segment", workflowMusicProgress: "Music",
     workflowBusy: "Standalone generation is unavailable while a workflow runs.",
-    workflowTooManyShots: "A workflow can contain at most 48 shots.", workflowFailed: "Workflow failed: ", workflowServerError: "Could not load workflows."
+    workflowTooManyShots: "A workflow can contain at most 1800 shots.", workflowFailed: "Workflow failed: ", workflowServerError: "Could not load workflows."
   },
   "zh-TW": {
     modeWorkflow: "長影片", workflowKicker: "長影片分段工作流程", workflowTitle: "分鏡與生成",
@@ -910,7 +959,7 @@ const storyboardTranslations = {
     workflowStatusDraft: "草稿", workflowNoItems: "尚無已儲存的工作流程。", workflowOutput: "下載成片",
     workflowShot: "鏡頭", workflowMusicSegment: "配樂片段", workflowMusicProgress: "配樂",
     workflowBusy: "工作流程執行期間無法啟動獨立生成。",
-    workflowTooManyShots: "最多支援 48 個鏡頭。", workflowFailed: "工作流程失敗：", workflowServerError: "無法讀取工作流程。"
+    workflowTooManyShots: "最多支援 1800 個鏡頭。", workflowFailed: "工作流程失敗：", workflowServerError: "無法讀取工作流程。"
   },
   fr: {
     modeWorkflow: "Long métrage", workflowKicker: "WORKFLOW VIDÉO LONGUE", workflowTitle: "Storyboard et génération",
@@ -935,7 +984,7 @@ const storyboardTranslations = {
     workflowStatusDraft: "Brouillon", workflowNoItems: "Aucun workflow enregistré.", workflowOutput: "Télécharger la vidéo finale",
     workflowShot: "Plan", workflowMusicSegment: "Segment musical", workflowMusicProgress: "Musique",
     workflowBusy: "La génération indépendante est indisponible pendant le workflow.",
-    workflowTooManyShots: "48 plans maximum.", workflowFailed: "Échec du workflow : ", workflowServerError: "Impossible de charger les workflows."
+    workflowTooManyShots: "1800 plans maximum.", workflowFailed: "Échec du workflow : ", workflowServerError: "Impossible de charger les workflows."
   },
   de: {
     modeWorkflow: "Langvideo", workflowKicker: "LANGVIDEO-WORKFLOW", workflowTitle: "Storyboard und Generierung",
@@ -960,7 +1009,7 @@ const storyboardTranslations = {
     workflowStatusDraft: "Entwurf", workflowNoItems: "Noch keine gespeicherten Workflows.", workflowOutput: "Finales Video herunterladen",
     workflowShot: "Aufnahme", workflowMusicSegment: "Musikabschnitt", workflowMusicProgress: "Musik",
     workflowBusy: "Einzelgenerierung ist während des Workflows nicht verfügbar.",
-    workflowTooManyShots: "Maximal 48 Aufnahmen.", workflowFailed: "Workflow fehlgeschlagen: ", workflowServerError: "Workflows konnten nicht geladen werden."
+    workflowTooManyShots: "Maximal 1800 Aufnahmen.", workflowFailed: "Workflow fehlgeschlagen: ", workflowServerError: "Workflows konnten nicht geladen werden."
   },
   ja: {
     modeWorkflow: "長編動画", workflowKicker: "長編動画ワークフロー", workflowTitle: "絵コンテと生成",
@@ -985,7 +1034,7 @@ const storyboardTranslations = {
     workflowStatusDraft: "下書き", workflowNoItems: "保存済みのワークフローはありません。", workflowOutput: "完成動画をダウンロード",
     workflowShot: "ショット", workflowMusicSegment: "音楽セグメント", workflowMusicProgress: "音楽",
     workflowBusy: "ワークフロー実行中は個別生成できません。",
-    workflowTooManyShots: "ショットは最大48個です。", workflowFailed: "ワークフロー失敗：", workflowServerError: "読み込めませんでした。"
+    workflowTooManyShots: "ショットは最大1800個です。", workflowFailed: "ワークフロー失敗：", workflowServerError: "読み込めませんでした。"
   },
   ko: {
     modeWorkflow: "장편 영상", workflowKicker: "장편 영상 워크플로", workflowTitle: "스토리보드 및 생성",
@@ -1010,7 +1059,7 @@ const storyboardTranslations = {
     workflowStatusDraft: "초안", workflowNoItems: "저장된 워크플로가 없습니다.", workflowOutput: "최종 영상 다운로드",
     workflowShot: "샷", workflowMusicSegment: "음악 구간", workflowMusicProgress: "음악",
     workflowBusy: "워크플로 실행 중에는 개별 생성을 사용할 수 없습니다.",
-    workflowTooManyShots: "샷은 최대 48개까지 가능합니다.", workflowFailed: "워크플로 실패: ", workflowServerError: "워크플로를 불러올 수 없습니다."
+    workflowTooManyShots: "샷은 최대 1800개까지 가능합니다.", workflowFailed: "워크플로 실패: ", workflowServerError: "워크플로를 불러올 수 없습니다."
   },
   es: {
     modeWorkflow: "Vídeo largo", workflowKicker: "FLUJO DE VÍDEO LARGO", workflowTitle: "Storyboard y generación",
@@ -1035,7 +1084,7 @@ const storyboardTranslations = {
     workflowStatusDraft: "Borrador", workflowNoItems: "Aún no hay flujos guardados.", workflowOutput: "Descargar vídeo final",
     workflowShot: "Plano", workflowMusicSegment: "Segmento musical", workflowMusicProgress: "Música",
     workflowBusy: "La generación independiente no está disponible durante el flujo.",
-    workflowTooManyShots: "Se permiten hasta 48 planos.", workflowFailed: "Error en el flujo: ", workflowServerError: "No se pudieron cargar los flujos."
+    workflowTooManyShots: "Se permiten hasta 1800 planos.", workflowFailed: "Error en el flujo: ", workflowServerError: "No se pudieron cargar los flujos."
   },
   pt: {
     modeWorkflow: "Vídeo longo", workflowKicker: "FLUXO DE VÍDEO LONGO", workflowTitle: "Storyboard e geração",
@@ -1060,7 +1109,7 @@ const storyboardTranslations = {
     workflowStatusDraft: "Rascunho", workflowNoItems: "Ainda não há fluxos salvos.", workflowOutput: "Baixar vídeo final",
     workflowShot: "Cena", workflowMusicSegment: "Trecho musical", workflowMusicProgress: "Música",
     workflowBusy: "A geração independente fica indisponível durante o fluxo.",
-    workflowTooManyShots: "São permitidas até 48 cenas.", workflowFailed: "Falha no fluxo: ", workflowServerError: "Não foi possível carregar os fluxos."
+    workflowTooManyShots: "São permitidas até 1800 cenas.", workflowFailed: "Falha no fluxo: ", workflowServerError: "Não foi possível carregar os fluxos."
   },
   tr: {
     modeWorkflow: "Uzun video", workflowKicker: "UZUN VİDEO İŞ AKIŞI", workflowTitle: "Storyboard ve üretim",
@@ -1085,7 +1134,7 @@ const storyboardTranslations = {
     workflowStatusDraft: "Taslak", workflowNoItems: "Henüz kaydedilmiş iş akışı yok.", workflowOutput: "Son videoyu indir",
     workflowShot: "Sahne", workflowMusicSegment: "Müzik bölümü", workflowMusicProgress: "Müzik",
     workflowBusy: "İş akışı çalışırken bağımsız üretim kullanılamaz.",
-    workflowTooManyShots: "En fazla 48 sahne desteklenir.", workflowFailed: "İş akışı başarısız: ", workflowServerError: "İş akışları yüklenemedi."
+    workflowTooManyShots: "En fazla 1800 sahne desteklenir.", workflowFailed: "İş akışı başarısız: ", workflowServerError: "İş akışları yüklenemedi."
   },
   ar: {
     modeWorkflow: "فيديو طويل", workflowKicker: "سير عمل الفيديو الطويل", workflowTitle: "لوحة المشاهد والتوليد",
@@ -1110,7 +1159,7 @@ const storyboardTranslations = {
     workflowStatusDraft: "مسودة", workflowNoItems: "لا توجد مسارات عمل محفوظة بعد.", workflowOutput: "تنزيل الفيديو النهائي",
     workflowShot: "لقطة", workflowMusicSegment: "مقطع موسيقي", workflowMusicProgress: "الموسيقى",
     workflowBusy: "لا يتوفر التوليد المستقل أثناء سير العمل.",
-    workflowTooManyShots: "الحد الأقصى 48 لقطة.", workflowFailed: "فشل سير العمل: ", workflowServerError: "تعذر تحميل مسارات العمل."
+    workflowTooManyShots: "الحد الأقصى 1800 لقطة.", workflowFailed: "فشل سير العمل: ", workflowServerError: "تعذر تحميل مسارات العمل."
   },
   vi: {
     modeWorkflow: "Video dài", workflowKicker: "QUY TRÌNH VIDEO DÀI", workflowTitle: "Storyboard và tạo video",
@@ -1135,7 +1184,7 @@ const storyboardTranslations = {
     workflowStatusDraft: "Bản nháp", workflowNoItems: "Chưa có quy trình nào được lưu.", workflowOutput: "Tải video cuối",
     workflowShot: "Cảnh", workflowMusicSegment: "Đoạn nhạc", workflowMusicProgress: "Nhạc",
     workflowBusy: "Không thể tạo độc lập khi quy trình đang chạy.",
-    workflowTooManyShots: "Tối đa 48 cảnh.", workflowFailed: "Quy trình thất bại: ", workflowServerError: "Không thể tải quy trình."
+    workflowTooManyShots: "Tối đa 1800 cảnh.", workflowFailed: "Quy trình thất bại: ", workflowServerError: "Không thể tải quy trình."
   },
   id: {
     modeWorkflow: "Video panjang", workflowKicker: "ALUR KERJA VIDEO PANJANG", workflowTitle: "Storyboard dan generasi",
@@ -1160,7 +1209,7 @@ const storyboardTranslations = {
     workflowStatusDraft: "Draf", workflowNoItems: "Belum ada alur yang disimpan.", workflowOutput: "Unduh video akhir",
     workflowShot: "Adegan", workflowMusicSegment: "Segmen musik", workflowMusicProgress: "Musik",
     workflowBusy: "Generasi mandiri tidak tersedia saat alur berjalan.",
-    workflowTooManyShots: "Maksimal 48 adegan.", workflowFailed: "Alur gagal: ", workflowServerError: "Alur tidak dapat dimuat."
+    workflowTooManyShots: "Maksimal 1800 adegan.", workflowFailed: "Alur gagal: ", workflowServerError: "Alur tidak dapat dimuat."
   },
   ru: {
     modeWorkflow: "Длинное видео", workflowKicker: "РАБОЧИЙ ПРОЦЕСС ДЛИННОГО ВИДЕО", workflowTitle: "Раскадровка и генерация",
@@ -1185,9 +1234,137 @@ const storyboardTranslations = {
     workflowStatusDraft: "Черновик", workflowNoItems: "Сохранённых процессов пока нет.", workflowOutput: "Скачать итоговое видео",
     workflowShot: "Кадр", workflowMusicSegment: "Музыкальный фрагмент", workflowMusicProgress: "Музыка",
     workflowBusy: "Отдельная генерация недоступна во время рабочего процесса.",
-    workflowTooManyShots: "Максимум 48 кадров.", workflowFailed: "Ошибка процесса: ", workflowServerError: "Не удалось загрузить процессы."
+    workflowTooManyShots: "Максимум 1800 кадров.", workflowFailed: "Ошибка процесса: ", workflowServerError: "Не удалось загрузить процессы."
   }
 };
+
+for (const [language, [up, down]] of Object.entries({
+  "zh-CN": ["上移分镜", "下移分镜"], "zh-TW": ["上移分鏡", "下移分鏡"],
+  en: ["Move shot up", "Move shot down"], fr: ["Monter le plan", "Descendre le plan"],
+  de: ["Aufnahme nach oben", "Aufnahme nach unten"], ja: ["ショットを上へ", "ショットを下へ"],
+  ko: ["샷 위로 이동", "샷 아래로 이동"], es: ["Subir plano", "Bajar plano"],
+  pt: ["Mover cena para cima", "Mover cena para baixo"],
+  tr: ["Sahneyi yukarı taşı", "Sahneyi aşağı taşı"],
+  ar: ["نقل اللقطة لأعلى", "نقل اللقطة لأسفل"], vi: ["Chuyển cảnh lên", "Chuyển cảnh xuống"],
+  id: ["Pindahkan adegan ke atas", "Pindahkan adegan ke bawah"],
+  ru: ["Переместить кадр вверх", "Переместить кадр вниз"]
+})) {
+  Object.assign(workflowTranslations[language], {workflowMoveUp: up, workflowMoveDown: down});
+}
+
+const workflowStageKeys = ["workflowVideos", "workflowAssemble", "workflowPostScore",
+  "workflowGenerateShot", "workflowRegenerateShot", "workflowStagesHint", "workflowNeedShots",
+  "workflowNeedAssembly", "workflowNeedGlobal", "workflowAuto"];
+for (const [lang, values] of Object.entries({
+  "zh-CN": ["仅生成分镜视频", "合并分镜视频", "添加全局配乐", "生成此镜头", "重新生成此镜头", "生成并预览分镜，编辑后单镜重生成，再合成和全局配乐；全自动仍可用。", "请先生成所有分镜视频。", "请先合并分镜视频。", "请关闭逐镜配乐，选择全局配乐。", "全自动：视频、配乐、合成"],
+  "zh-TW": ["僅生成分鏡影片", "合併分鏡影片", "加入全局配樂", "生成此鏡頭", "重新生成此鏡頭", "生成並預覽分鏡，編輯後單鏡重生成，再合成和全局配樂；全自動仍可用。", "請先生成所有分鏡影片。", "請先合併分鏡影片。", "請關閉逐鏡配樂，選擇全局配樂。", "全自動：影片、配樂、合成"],
+  en: ["Generate shots only", "Assemble shots", "Add global soundtrack", "Generate this shot", "Regenerate this shot", "Preview shots, edit and regenerate individually, then assemble and score. Full automation remains available.", "Generate all shots first.", "Assemble shots first.", "Disable per-shot music and select a global soundtrack.", "Automatic: video, music & assembly"],
+  fr: ["Générer les plans seuls", "Assembler les plans", "Ajouter la musique globale", "Générer ce plan", "Régénérer ce plan", "Prévisualisez et modifiez les plans, puis assemblez et ajoutez la musique. Le mode automatique reste disponible.", "Générez tous les plans.", "Assemblez les plans d’abord.", "Désactivez la musique par plan et choisissez la musique globale.", "Automatique : vidéo, musique et montage"],
+  de: ["Nur Aufnahmen erzeugen", "Aufnahmen zusammenfügen", "Globale Musik hinzufügen", "Diese Aufnahme erzeugen", "Diese Aufnahme neu erzeugen", "Aufnahmen prüfen, bearbeiten und einzeln neu erzeugen, dann zusammenfügen und vertonen. Automatik bleibt verfügbar.", "Zuerst alle Aufnahmen erzeugen.", "Zuerst Aufnahmen zusammenfügen.", "Musik pro Aufnahme deaktivieren und globale Musik wählen.", "Automatisch: Video, Musik und Montage"],
+  ja: ["ショットのみ生成", "ショットを結合", "全体の音楽を追加", "このショットを生成", "このショットを再生成", "ショットを確認・編集・再生成し、結合して音楽を追加。全自動も利用できます。", "先に全ショットを生成してください。", "先にショットを結合してください。", "ショット別の音楽をオフにして全体の音楽を選択してください。", "全自動：動画・音楽・結合"],
+  ko: ["샷 영상만 생성", "샷 영상 합치기", "전체 음악 추가", "이 샷 생성", "이 샷 다시 생성", "샷을 미리 보고 편집·재생성한 뒤 합치고 음악을 추가하세요. 전체 자동도 지원합니다.", "먼저 모든 샷을 생성하세요.", "먼저 샷을 합치세요.", "샷별 음악을 끄고 전체 음악을 선택하세요.", "전체 자동: 영상·음악·합성"],
+  es: ["Generar solo planos", "Combinar planos", "Añadir música global", "Generar este plano", "Regenerar este plano", "Revisa, edita y regenera cada plano; después combina y añade música. El modo automático sigue disponible.", "Genera todos los planos primero.", "Combina los planos primero.", "Desactiva la música por plano y elige música global.", "Automático: vídeo, música y montaje"],
+  pt: ["Gerar apenas cenas", "Combinar cenas", "Adicionar música global", "Gerar esta cena", "Gerar esta cena novamente", "Veja, edite e gere cada cena novamente; depois combine e adicione música. O modo automático continua disponível.", "Gere todas as cenas primeiro.", "Combine as cenas primeiro.", "Desative a música por cena e escolha música global.", "Automático: vídeo, música e montagem"],
+  tr: ["Yalnızca sahneleri üret", "Sahneleri birleştir", "Genel müzik ekle", "Bu sahneyi üret", "Bu sahneyi yeniden üret", "Sahneleri önizleyin, düzenleyip yeniden üretin; sonra birleştirip müzik ekleyin. Otomatik mod korunur.", "Önce tüm sahneleri üretin.", "Önce sahneleri birleştirin.", "Sahne müziğini kapatıp genel müzik seçin.", "Otomatik: video, müzik ve birleştirme"],
+  ar: ["توليد اللقطات فقط", "دمج اللقطات", "إضافة موسيقى عامة", "توليد هذه اللقطة", "إعادة توليد هذه اللقطة", "عاين اللقطات وعدّلها وأعد توليدها منفردة، ثم ادمجها وأضف الموسيقى. يبقى الوضع التلقائي متاحاً.", "ولّد كل اللقطات أولاً.", "ادمج اللقطات أولاً.", "أوقف موسيقى كل لقطة واختر الموسيقى العامة.", "تلقائي: الفيديو والموسيقى والدمج"],
+  vi: ["Chỉ tạo video từng cảnh", "Ghép các cảnh", "Thêm nhạc toàn bộ", "Tạo cảnh này", "Tạo lại cảnh này", "Xem trước, chỉnh sửa và tạo lại từng cảnh, rồi ghép và thêm nhạc. Vẫn có chế độ tự động.", "Hãy tạo tất cả cảnh trước.", "Hãy ghép các cảnh trước.", "Tắt nhạc từng cảnh và chọn nhạc toàn bộ.", "Tự động: video, nhạc và ghép"],
+  id: ["Buat video adegan saja", "Gabungkan adegan", "Tambah musik global", "Buat adegan ini", "Buat ulang adegan ini", "Pratinjau, edit dan buat ulang tiap adegan, lalu gabungkan dan tambah musik. Mode otomatis tetap tersedia.", "Buat semua adegan terlebih dahulu.", "Gabungkan adegan terlebih dahulu.", "Matikan musik per adegan dan pilih musik global.", "Otomatis: video, musik dan penggabungan"],
+  ru: ["Создать только кадры", "Объединить кадры", "Добавить общую музыку", "Создать этот кадр", "Пересоздать этот кадр", "Проверьте, измените и пересоздайте кадры, затем объедините и добавьте музыку. Автоматический режим сохранён.", "Сначала создайте все кадры.", "Сначала объедините кадры.", "Отключите музыку по кадрам и выберите общую музыку.", "Автоматически: видео, музыка и монтаж"]
+})) {
+  workflowStageKeys.forEach((key, index) => {workflowTranslations[lang][key] = values[index];});
+}
+
+const workflowModeKeys = ["workflowShotMode", "workflowIndependent", "workflowContinuous",
+  "workflowModeHint"];
+const workflowModeTranslations = {
+  "zh-CN": ["镜头生成模式", "独立镜头（推荐）", "连续镜头（尾帧衔接）", "独立镜头使用各自首帧，不继承上一镜尾帧；连续模式保留旧行为。"],
+  "zh-TW": ["鏡頭生成模式", "獨立鏡頭（推薦）", "連續鏡頭（尾幀銜接）", "獨立鏡頭使用各自首幀，不繼承上一鏡尾幀；連續模式保留舊行為。"],
+  en: ["Shot generation mode", "Independent shots (recommended)", "Continuous shots (tail-frame chaining)", "Independent shots use their own opening images, not the previous tail frame. Continuous mode preserves legacy behavior."],
+  fr: ["Mode des plans", "Plans indépendants (recommandé)", "Plans continus (image finale)", "Chaque plan utilise sa propre image initiale. Le mode continu conserve le comportement précédent."],
+  de: ["Aufnahmemodus", "Unabhängige Aufnahmen (empfohlen)", "Fortlaufend (letztes Bild)", "Unabhängige Aufnahmen nutzen eigene Startbilder. Fortlaufend erhält das bisherige Verhalten."],
+  ja: ["ショット生成モード", "独立ショット（推奨）", "連続ショット（末尾フレーム）", "独立ショットは各自の開始画像を使用します。連続モードは従来の動作を保持します。"],
+  ko: ["샷 생성 모드", "독립 샷 (권장)", "연속 샷 (마지막 프레임)", "독립 샷은 자체 시작 이미지를 사용합니다. 연속 모드는 기존 동작을 유지합니다."],
+  es: ["Modo de tomas", "Tomas independientes (recomendado)", "Tomas continuas (último fotograma)", "Las tomas independientes usan sus propias imágenes iniciales. El modo continuo mantiene el comportamiento anterior."],
+  pt: ["Modo de cenas", "Cenas independentes (recomendado)", "Cenas contínuas (quadro final)", "Cenas independentes usam suas próprias imagens iniciais. O modo contínuo mantém o comportamento anterior."],
+  tr: ["Çekim modu", "Bağımsız çekimler (önerilen)", "Sürekli çekimler (son kare)", "Bağımsız çekimler kendi başlangıç görüntülerini kullanır. Sürekli mod eski davranışı korur."],
+  ar: ["وضع اللقطات", "لقطات مستقلة (موصى به)", "لقطات متصلة (الإطار الأخير)", "تستخدم اللقطات المستقلة صور البداية الخاصة بها. يحافظ الوضع المتصل على السلوك السابق."],
+  vi: ["Chế độ cảnh", "Cảnh độc lập (khuyến nghị)", "Cảnh liên tục (khung cuối)", "Cảnh độc lập dùng ảnh đầu riêng. Chế độ liên tục giữ hành vi cũ."],
+  id: ["Mode adegan", "Adegan mandiri (disarankan)", "Adegan berkelanjutan (bingkai akhir)", "Adegan mandiri memakai gambar awal sendiri. Mode berkelanjutan mempertahankan perilaku lama."],
+  ru: ["Режим кадров", "Независимые сцены (рекомендуется)", "Непрерывные сцены (последний кадр)", "Независимые сцены используют свои начальные изображения. Непрерывный режим сохраняет прежнее поведение."]
+};
+for (const [lang, values] of Object.entries(workflowModeTranslations)) {
+  workflowModeKeys.forEach((key, index) => { workflowTranslations[lang][key] = values[index]; });
+}
+
+const storyboardReplacementTranslations = {
+  "zh-CN": ["生成并替换分镜", "已替换分镜，保留第一镜首帧。请检查并保存。", "生成会替换全部分镜，保留第一镜首帧；不会自动生成视频。", "数量为替换后的总镜头数；总长须整除单镜头时长，最多1800镜。 总长最多30分钟（1800秒），分批规划。", "当前模型可能无法完成此规模或格式的分镜。请更换文本模型，或减少分镜数量、缩短故事后重试；原分镜未改动。"],
+  "zh-TW": ["生成並替換分鏡", "已替換分鏡，保留第一鏡首幀。請檢查並儲存。", "替換全部分鏡並保留第一鏡首幀；不會自動生成影片。", "數量為替換後總鏡頭數；總長須整除單鏡時長，最多1800鏡。 總長最多30分鐘（1800秒），分批規劃。", "模型可能無法完成此規模或格式。請更換文字模型或減少鏡頭、縮短故事重試；原分鏡未變。"],
+  en: ["Generate & replace shots", "Shots replaced; first opening frame retained. Review and save.", "Replaces all shots, retaining the first opening frame. No automatic video generation.", "Count is the final total; duration must divide evenly into at most 1800 shots. Maximum 30 minutes (1800 seconds); planning runs in batches.", "This model may not support this output size or format. Switch text models, reduce shots or shorten the story and retry. Existing shots are unchanged."],
+  fr: ["Générer et remplacer", "Plans remplacés, première image conservée. Vérifiez et enregistrez.", "Remplace tous les plans, conserve la première image. Ne génère pas de vidéo.", "Nombre final de plans ; durée divisible, 1800 maximum. Maximum 30 minutes (1800 secondes) ; planification par lots.", "Le modèle ne peut peut-être pas produire ce format ou volume. Changez de modèle ou réduisez les plans ou le récit. Plans inchangés."],
+  de: ["Aufnahmen ersetzen", "Aufnahmen ersetzt; erstes Startbild erhalten. Prüfen und speichern.", "Ersetzt alle Aufnahmen, behält erstes Startbild. Kein Videostart.", "Endgültige Anzahl; Dauer muss teilbar sein, maximal 1800. Maximal 30 Minuten (1800 Sekunden); Planung in Gruppen.", "Modell unterstützt Umfang oder Format möglicherweise nicht. Modell wechseln oder Aufnahmen/Geschichte kürzen. Bisherige Aufnahmen unverändert."],
+  ja: ["分鏡を生成して置換", "置換完了。最初の開始画像は保持。確認して保存してください。", "全分鏡を置換し最初の開始画像を保持。動画は自動生成しません。", "置換後の総数。総時間は各時間で割り切れ、最大1800。 合計は最大30分（1800秒）。分割して計画します。", "モデルが規模や形式に対応できない可能性があります。モデル変更、分鏡数削減や物語短縮で再試行。既存分鏡は保持。"],
+  ko: ["샷 생성 및 교체", "교체 완료. 첫 시작 이미지 유지. 확인 후 저장하세요.", "모든 샷 교체, 첫 시작 이미지 유지. 영상 자동 생성 안 함.", "교체 후 총 샷 수. 총 길이는 나누어 떨어져야 하며 최대 1800. 최대 30분(1800초). 나누어 계획합니다.", "모델이 규모나 형식을 처리하지 못할 수 있습니다. 모델 변경 또는 샷 수/이야기 길이를 줄여 재시도하세요. 기존 샷 유지."],
+  es: ["Generar y reemplazar", "Planos reemplazados; primera imagen conservada. Revise y guarde.", "Reemplaza todos los planos conservando la primera imagen. No inicia vídeo.", "Cantidad final; duración divisible, máximo 1800. Máximo 30 minutos (1800 segundos); planificación por lotes.", "El modelo puede no admitir este tamaño o formato. Cambie de modelo o reduzca planos o historia. Planos originales intactos."],
+  pt: ["Gerar e substituir", "Cenas substituídas; primeira imagem mantida. Revise e salve.", "Substitui todas as cenas, mantendo a primeira imagem. Não inicia vídeo.", "Quantidade final; duração divisível, máximo 1800. Máximo 30 minutos (1800 segundos); planejamento em lotes.", "O modelo pode não suportar este tamanho ou formato. Troque o modelo ou reduza cenas ou história. Cenas originais preservadas."],
+  tr: ["Sahneleri üret ve değiştir", "Sahneler değişti; ilk kare korundu. İnceleyip kaydedin.", "Tüm sahneleri değiştirir, ilk kareyi korur. Video başlatmaz.", "Son sahne sayısı; süre tam bölünmeli, en fazla 1800. En fazla 30 dakika (1800 saniye); gruplar halinde planlanır.", "Model boyut veya biçimi desteklemeyebilir. Modeli değiştirin veya sahne/öyküyü azaltın. Eski sahneler değişmedi."],
+  ar: ["إنشاء واستبدال اللقطات", "استُبدلت اللقطات وحُفظت صورة البداية الأولى. راجع واحفظ.", "يستبدل كل اللقطات ويحفظ صورة البداية الأولى. لا يبدأ الفيديو.", "العدد النهائي؛ يجب تقسيم المدة بالتساوي، حتى 1800 لقطة. الحد الأقصى 30 دقيقة (1800 ثانية)؛ تخطيط على دفعات.", "قد لا يدعم النموذج الحجم أو التنسيق. غيّر النموذج أو قلّل اللقطات أو القصة وأعد المحاولة. اللقطات الأصلية محفوظة."],
+  vi: ["Tạo và thay thế cảnh", "Đã thay cảnh, giữ ảnh đầu tiên. Kiểm tra và lưu.", "Thay tất cả cảnh, giữ ảnh mở đầu đầu tiên. Không tự tạo video.", "Số cảnh cuối cùng; thời lượng chia hết, tối đa 1800. Tối đa 30 phút (1800 giây); lập kế hoạch theo từng đợt.", "Mô hình có thể không hỗ trợ quy mô hoặc định dạng. Đổi mô hình hoặc giảm cảnh hay câu chuyện. Cảnh cũ không đổi."],
+  id: ["Buat dan ganti adegan", "Adegan diganti; gambar awal pertama tetap. Tinjau dan simpan.", "Mengganti semua adegan, mempertahankan gambar awal pertama. Tidak memulai video.", "Jumlah akhir; durasi harus terbagi rata, maksimum 1800. Maksimal 30 menit (1800 detik); perencanaan bertahap.", "Model mungkin tidak mendukung ukuran atau format ini. Ganti model atau kurangi adegan atau cerita. Adegan lama tidak berubah."],
+  ru: ["Создать и заменить", "Кадры заменены, первое начальное изображение сохранено. Проверьте и сохраните.", "Заменяет все кадры, сохраняя первое начальное изображение. Видео не запускается.", "Итоговое число; длительность делится поровну, максимум 1800. Максимум 30 минут (1800 секунд); планирование партиями.", "Модель может не поддерживать объём или формат. Смените модель либо сократите кадры или рассказ. Старые кадры сохранены."]
+};
+for (const [language, values] of Object.entries(storyboardReplacementTranslations)) {
+  ["storyboardGenerate", "storyboardAdded", "storyboardHint", "storyboardDurationHint",
+    "storyboardModelLimited"].forEach((key, index) => { storyboardTranslations[language][key] = values[index]; });
+}
+
+const workflowLiveKeys = ["workflowTaskProgress", "workflowElapsed", "workflowRetrying",
+  "workflowPreparing", "workflowAssembling", "workflowVideoStage", "workflowMusicStage",
+  "workflowSoundtrackStage", "workflowRepairHint", "workflowRetryHint", "workflowPollRetry",
+  "workflowWaiting", "workflowSegment"];
+const workflowLiveTranslations = {
+  "zh-CN": ["已完成任务（视频/配乐/合片）", "运行耗时", "等待自动重试", "准备模型", "合片与字幕", "生成分镜", "分镜配乐", "全片配乐", "请根据错误检查该分镜参数、首帧、模型路径、内存和磁盘；修复环境后点“继续工作流”（保留已完成结果），需修改分镜则点“恢复并修改”（创建新草稿，重新生成）。", "自动重试已耗尽。检查服务和网络后点“继续工作流”，已完成结果会保留。", "进度连接中断，正在重新连接；不会重新启动生成。", "等待模型输出日志", "生成分段"],
+  "zh-TW": ["已完成任務（影片/配樂/合片）", "執行耗時", "等待自動重試", "準備模型", "合片與字幕", "生成分鏡", "分鏡配樂", "全片配樂", "依錯誤檢查分鏡參數、首幀、模型路徑、記憶體及磁碟；修復環境後繼續工作流程以保留結果，修改分鏡請恢復並修改建立新草稿重新生成。", "重試已耗盡。檢查服務及網路後繼續工作流程，保留已完成結果。", "進度連線中斷，正在重新連線；不會重新開始生成。", "等待模型輸出日誌", "生成分段"],
+  en: ["Completed tasks (video/music/assembly)", "Elapsed", "Waiting to retry", "Preparing model", "Assembly and subtitles", "Video shot", "Shot music", "Soundtrack", "Check the failed shot settings, first frame, model path, memory and disk. Fix the environment then Resume to keep completed media; Restore and edit creates a new draft that regenerates shots.", "Retries exhausted. Check the service and network, then Resume; completed media is retained.", "Progress connection lost; reconnecting without restarting generation.", "Waiting for model logs", "Generation segment"],
+  fr: ["Tâches terminées (vidéo/musique/montage)", "Durée écoulée", "Nouvelle tentative en attente", "Préparation du modèle", "Montage et sous-titres", "Plan vidéo", "Musique du plan", "Bande-son", "Vérifiez les paramètres du plan, l’image initiale, le modèle, la mémoire et le disque. Corrigez puis reprenez pour conserver les résultats ; restaurer et modifier crée un nouveau brouillon à régénérer.", "Tentatives épuisées. Vérifiez le service et le réseau puis reprenez ; les résultats sont conservés.", "Connexion au suivi perdue ; reconnexion sans relancer la génération.", "En attente des journaux du modèle", "Segment de génération"],
+  de: ["Erledigte Aufgaben (Video/Musik/Montage)", "Laufzeit", "Warten auf Wiederholung", "Modell vorbereiten", "Montage und Untertitel", "Videoszene", "Szenenmusik", "Filmmusik", "Szenenparameter, Startbild, Modellpfad, Speicher und Datenträger prüfen. Nach Korrektur fortsetzen, um Ergebnisse zu behalten; Wiederherstellen und Bearbeiten erstellt einen neu zu generierenden Entwurf.", "Wiederholungen ausgeschöpft. Dienst und Netzwerk prüfen, dann fortsetzen; Ergebnisse bleiben erhalten.", "Fortschrittsverbindung unterbrochen; Wiederverbindung ohne Generierungsneustart.", "Warten auf Modellprotokolle", "Generierungssegment"],
+  ja: ["完了タスク（動画/音楽/結合）", "経過時間", "自動再試行待ち", "モデル準備", "結合と字幕", "映像ショット", "ショット音楽", "サウンドトラック", "失敗したショットの設定、開始画像、モデルパス、メモリ、ディスクを確認してください。環境を修正して再開すると完了結果を保持します。復元して編集すると再生成用の新規下書きを作成します。", "再試行上限に達しました。サービスとネットワークを確認して再開してください。完了結果は保持します。", "進捗接続が切れました。生成を再開始せず再接続します。", "モデルログを待機中", "生成セグメント"],
+  ko: ["완료 작업 (영상/음악/조립)", "경과 시간", "자동 재시도 대기", "모델 준비", "조립 및 자막", "영상 장면", "장면 음악", "전체 음악", "실패 장면 설정, 시작 이미지, 모델 경로, 메모리와 디스크를 확인하세요. 환경 수정 후 재개하면 완료 결과를 유지합니다. 복원 및 편집은 재생성할 새 초안을 만듭니다.", "재시도 한도에 도달했습니다. 서비스와 네트워크 확인 후 재개하세요. 완료 결과는 유지됩니다.", "진행 연결이 끊겼습니다. 생성을 다시 시작하지 않고 재연결합니다.", "모델 로그 대기", "생성 구간"],
+  es: ["Tareas completadas (vídeo/música/montaje)", "Tiempo transcurrido", "Esperando reintento", "Preparando modelo", "Montaje y subtítulos", "Escena de vídeo", "Música de escena", "Banda sonora", "Revise parámetros, imagen inicial, ruta del modelo, memoria y disco. Corrija el entorno y reanude para conservar resultados; restaurar y editar crea un borrador para regenerar.", "Reintentos agotados. Revise servicio y red y reanude; se conservan los resultados.", "Conexión de progreso perdida; reconectando sin reiniciar la generación.", "Esperando registros del modelo", "Segmento de generación"],
+  pt: ["Tarefas concluídas (vídeo/música/montagem)", "Tempo decorrido", "Aguardando nova tentativa", "Preparando modelo", "Montagem e legendas", "Cena de vídeo", "Música da cena", "Trilha sonora", "Verifique parâmetros, imagem inicial, caminho do modelo, memória e disco. Corrija o ambiente e retome para manter resultados; restaurar e editar cria um rascunho para gerar novamente.", "Tentativas esgotadas. Verifique serviço e rede e retome; resultados são mantidos.", "Conexão de progresso perdida; reconectando sem reiniciar a geração.", "Aguardando registros do modelo", "Segmento de geração"],
+  tr: ["Tamamlanan görevler (video/müzik/montaj)", "Geçen süre", "Yeniden deneme bekleniyor", "Model hazırlanıyor", "Montaj ve altyazı", "Video sahnesi", "Sahne müziği", "Film müziği", "Sahne ayarları, ilk kare, model yolu, bellek ve diski kontrol edin. Ortamı düzeltip sürdürerek sonuçları koruyun; geri yükle ve düzenle yeniden üretilecek taslak oluşturur.", "Deneme sınırına ulaşıldı. Hizmet ve ağı kontrol edip sürdürün; sonuçlar korunur.", "İlerleme bağlantısı kesildi; üretimi yeniden başlatmadan bağlanılıyor.", "Model günlükleri bekleniyor", "Üretim bölümü"],
+  ar: ["المهام المكتملة (فيديو/موسيقى/دمج)", "الوقت المنقضي", "بانتظار إعادة المحاولة", "تحضير النموذج", "الدمج والترجمة", "لقطة فيديو", "موسيقى اللقطة", "الموسيقى التصويرية", "تحقق من إعدادات اللقطة والصورة الأولى ومسار النموذج والذاكرة والقرص. أصلح البيئة ثم استأنف لحفظ النتائج؛ الاستعادة والتعديل ينشئان مسودة لإعادة التوليد.", "نفدت المحاولات. تحقق من الخدمة والشبكة ثم استأنف؛ تبقى النتائج المكتملة محفوظة.", "انقطع اتصال التقدم؛ جارٍ الاتصال دون إعادة التوليد.", "بانتظار سجلات النموذج", "جزء التوليد"],
+  vi: ["Tác vụ hoàn tất (video/nhạc/ghép)", "Thời gian chạy", "Đang chờ thử lại", "Chuẩn bị mô hình", "Ghép và phụ đề", "Cảnh video", "Nhạc cảnh", "Nhạc toàn phim", "Kiểm tra tham số cảnh, ảnh đầu, đường dẫn mô hình, bộ nhớ và ổ đĩa. Sửa môi trường rồi tiếp tục để giữ kết quả; khôi phục và sửa tạo bản nháp để tạo lại.", "Đã hết lượt thử lại. Kiểm tra dịch vụ và mạng rồi tiếp tục; kết quả đã xong được giữ.", "Mất kết nối tiến độ; đang kết nối lại, không khởi động tạo lại.", "Đang chờ nhật ký mô hình", "Đoạn tạo"],
+  id: ["Tugas selesai (video/musik/perakitan)", "Waktu berjalan", "Menunggu percobaan ulang", "Menyiapkan model", "Perakitan dan subtitel", "Adegan video", "Musik adegan", "Musik film", "Periksa pengaturan adegan, gambar awal, jalur model, memori dan disk. Perbaiki lingkungan lalu lanjutkan untuk menyimpan hasil; pulihkan dan edit membuat draf untuk dibuat ulang.", "Percobaan habis. Periksa layanan dan jaringan lalu lanjutkan; hasil selesai tetap tersimpan.", "Koneksi progres terputus; menyambung kembali tanpa memulai ulang pembuatan.", "Menunggu log model", "Segmen pembuatan"],
+  ru: ["Завершённые задачи (видео/музыка/сборка)", "Время работы", "Ожидание повтора", "Подготовка модели", "Сборка и субтитры", "Видеокадр", "Музыка кадра", "Саундтрек", "Проверьте параметры кадра, начальное изображение, путь модели, память и диск. Исправьте среду и продолжите с сохранением результатов; восстановление и редактирование создаёт черновик для повторной генерации.", "Попытки исчерпаны. Проверьте службу и сеть, затем продолжите; результаты сохранены.", "Связь с прогрессом потеряна; переподключение без перезапуска генерации.", "Ожидание журналов модели", "Сегмент генерации"]
+};
+for (const [lang, values] of Object.entries(workflowLiveTranslations)) {
+  Object.assign(workflowTranslations[lang],
+    Object.fromEntries(workflowLiveKeys.map((key, index) => [key, values[index]])));
+}
+
+const workflowDeleteKeys = ["workflowClearShots", "workflowClearConfirm", "workflowDelete",
+  "workflowDeleteAll", "workflowKeepMediaHint", "workflowDeleteMedia",
+  "workflowDeleteCancel", "workflowDeleteConfirm", "workflowDeleteActive", "workflowDeleteCount"];
+const workflowDeleteTranslations = {
+  "zh-CN": ["清空分镜", "清空当前草稿的所有分镜？保存后才会更新已保存草稿。", "删除工作流", "删除全部", "默认保留媒体文件在原输出目录；共享历史首帧和配乐不会删除。", "同时删除这些工作流目录中的媒体及生成记录（不可撤销）", "取消", "确认删除", "请先取消运行中的工作流并等待停止，再删除。", "将删除工作流数量："],
+  "zh-TW": ["清空分鏡", "清空目前草稿所有分鏡？儲存後才更新已存草稿。", "刪除工作流程", "刪除全部", "預設保留媒體於原輸出目錄；不刪除共享首幀及配樂。", "同時刪除這些工作流程目錄中的媒體與生成記錄（不可復原）", "取消", "確認刪除", "請先取消執行中的工作流程並等待停止。", "將刪除工作流程數量："],
+  en: ["Clear shots", "Clear all shots in this draft? Saved drafts change only after saving.", "Delete workflow", "Delete all", "Media stays in its original output directory by default. Shared history images and music are not deleted.", "Also delete media and generation records in these workflow directories (irreversible)", "Cancel", "Confirm deletion", "Cancel running workflows and wait for them to stop before deleting.", "Workflows to delete:"],
+  fr: ["Vider les plans", "Vider les plans du brouillon ? Le brouillon enregistré change après sauvegarde.", "Supprimer le workflow", "Tout supprimer", "Les médias restent dans leur dossier par défaut. Images et musiques partagées conservées.", "Supprimer aussi médias et enregistrements dans ces dossiers (irréversible)", "Annuler", "Confirmer", "Annulez les workflows actifs et attendez leur arrêt.", "Workflows à supprimer :"],
+  de: ["Szenen leeren", "Alle Szenen dieses Entwurfs leeren? Änderungen erst nach Speichern.", "Workflow löschen", "Alle löschen", "Medien bleiben standardmäßig im Ausgabeordner. Geteilte Bilder und Musik bleiben erhalten.", "Auch Medien und Generierungsdaten in diesen Ordnern löschen (unwiderruflich)", "Abbrechen", "Löschen bestätigen", "Laufende Workflows abbrechen und auf ihren Stopp warten.", "Zu löschende Workflows:"],
+  ja: ["ショットをクリア", "下書きの全ショットをクリアしますか？保存後に保存済み下書きを更新します。", "ワークフロー削除", "すべて削除", "既定では元の出力フォルダーにメディアを保持します。共有画像と音楽は削除しません。", "対象フォルダーのメディアと生成記録も削除（元に戻せません）", "キャンセル", "削除を確認", "実行中のワークフローをキャンセルし停止を待ってください。", "削除するワークフロー数："],
+  ko: ["장면 비우기", "초안의 모든 장면을 비울까요? 저장 후에 저장된 초안이 변경됩니다.", "워크플로 삭제", "모두 삭제", "기본적으로 원래 출력 폴더에 미디어를 유지합니다. 공유 이미지와 음악은 삭제하지 않습니다.", "해당 폴더의 미디어와 생성 기록도 삭제 (복구 불가)", "취소", "삭제 확인", "실행 중 워크플로를 취소하고 종료될 때까지 기다리세요.", "삭제할 워크플로 수:"],
+  es: ["Vaciar escenas", "¿Vaciar escenas del borrador? El borrador guardado cambia al guardar.", "Eliminar flujo", "Eliminar todos", "Se conservan los medios en su carpeta original. No se borran imágenes ni música compartidas.", "Eliminar también medios y registros en estas carpetas (irreversible)", "Cancelar", "Confirmar", "Cancele los flujos activos y espere a que se detengan.", "Flujos a eliminar:"],
+  pt: ["Limpar cenas", "Limpar cenas do rascunho? O rascunho salvo muda ao salvar.", "Excluir fluxo", "Excluir todos", "Mídia mantida na pasta original por padrão. Imagens e músicas compartilhadas não são excluídas.", "Excluir também mídia e registros nestas pastas (irreversível)", "Cancelar", "Confirmar", "Cancele fluxos ativos e aguarde a parada.", "Fluxos a excluir:"],
+  tr: ["Sahneleri temizle", "Taslak sahneleri temizlensin mi? Kaydedilen taslak ancak kaydedince değişir.", "İş akışını sil", "Tümünü sil", "Medya varsayılan olarak özgün klasörde kalır. Paylaşılan resim ve müzik silinmez.", "Bu klasörlerdeki medya ve üretim kayıtlarını da sil (geri alınamaz)", "İptal", "Silmeyi onayla", "Çalışan iş akışlarını iptal edip durmalarını bekleyin.", "Silinecek iş akışları:"],
+  ar: ["مسح اللقطات", "مسح لقطات المسودة؟ تتغير المسودة المحفوظة بعد الحفظ فقط.", "حذف سير العمل", "حذف الكل", "تبقى الوسائط في المجلد الأصلي افتراضيًا. لا تُحذف الصور والموسيقى المشتركة.", "حذف الوسائط وسجلات التوليد في هذه المجلدات أيضًا (نهائي)", "إلغاء", "تأكيد الحذف", "ألغِ مسارات العمل النشطة وانتظر توقفها.", "مسارات العمل المراد حذفها:"],
+  vi: ["Xóa hết cảnh", "Xóa hết cảnh bản nháp? Bản đã lưu chỉ thay đổi sau khi lưu.", "Xóa quy trình", "Xóa tất cả", "Mặc định giữ tệp trong thư mục gốc. Không xóa ảnh và nhạc dùng chung.", "Xóa cả phương tiện và bản ghi trong các thư mục này (không thể hoàn tác)", "Hủy", "Xác nhận xóa", "Hủy quy trình đang chạy và chờ dừng trước khi xóa.", "Số quy trình cần xóa:"],
+  id: ["Kosongkan adegan", "Kosongkan adegan draf? Draf tersimpan berubah setelah disimpan.", "Hapus alur kerja", "Hapus semua", "Media tetap di folder asli secara default. Gambar dan musik bersama tidak dihapus.", "Hapus juga media dan catatan pembuatan dalam folder ini (permanen)", "Batal", "Konfirmasi", "Batalkan alur aktif dan tunggu berhenti sebelum menghapus.", "Alur yang akan dihapus:"],
+  ru: ["Очистить кадры", "Очистить кадры черновика? Сохранённый черновик изменится после сохранения.", "Удалить процесс", "Удалить все", "Медиа остаются в исходной папке. Общие изображения и музыка не удаляются.", "Также удалить медиа и записи генерации в этих папках (необратимо)", "Отмена", "Подтвердить", "Отмените активные процессы и дождитесь остановки.", "Процессов для удаления:"]
+};
+for (const [lang, values] of Object.entries(workflowDeleteTranslations)) {
+  Object.assign(workflowTranslations[lang],
+    Object.fromEntries(workflowDeleteKeys.map((key, index) => [key, values[index]])));
+}
 
 const imageTranslations = {
   "zh-CN": {
@@ -1598,20 +1775,20 @@ const historyRestoreTranslations = {
 };
 
 const storyTranslations = {
-  "zh-CN": { storyboardTitle: "故事自动分镜", storyboardStory: "故事文本", storyboardPlaceholder: "粘贴完整故事（最多 30,000 字符），包含人物、情节与结尾。", storyboardHint: "本机文本模型生成可编辑镜头并追加到现有分镜；不会自动开始视频生成。", storyboardCount: "生成镜头数", storyboardGenerate: "生成并添加分镜", storyboardGenerating: "正在分析故事并生成分镜…", storyboardAdded: "分镜已添加，请审阅后保存。", storyboardInvalid: "请输入故事（最多 30,000 字符）和有效镜头数，镜头总数不得超过 48。" },
-  en: { storyboardTitle: "Automatic storyboarding", storyboardStory: "Story text", storyboardPlaceholder: "Paste the complete story (up to 30,000 characters), including characters, plot and ending.", storyboardHint: "The local text model appends editable shots; video generation does not start automatically.", storyboardCount: "Number of new shots", storyboardGenerate: "Generate & add shots", storyboardGenerating: "Analyzing story and planning shots…", storyboardAdded: "Shots added. Review and save the storyboard.", storyboardInvalid: "Enter a story (up to 30,000 characters) and a valid shot count; the total cannot exceed 48." },
-  "zh-TW": { storyboardTitle: "故事自動分鏡", storyboardStory: "故事文字", storyboardPlaceholder: "貼上完整故事（最多 30,000 字元），包含人物、情節與結尾。", storyboardHint: "本機文字模型產生可編輯鏡頭並追加至現有分鏡；不會自動開始影片生成。", storyboardCount: "生成鏡頭數", storyboardGenerate: "生成並新增分鏡", storyboardGenerating: "正在分析故事並產生分鏡…", storyboardAdded: "分鏡已新增，請審閱後儲存。", storyboardInvalid: "請輸入故事（最多 30,000 字元）與有效鏡頭數，鏡頭總數不得超過 48。" },
-  fr: { storyboardTitle: "Storyboard automatique", storyboardStory: "Texte du récit", storyboardPlaceholder: "Collez le récit complet (30 000 caractères maximum), personnages, intrigue et fin inclus.", storyboardHint: "Le modèle local ajoute des plans modifiables sans lancer la génération vidéo.", storyboardCount: "Nombre de nouveaux plans", storyboardGenerate: "Créer et ajouter les plans", storyboardGenerating: "Analyse du récit et création des plans…", storyboardAdded: "Plans ajoutés. Vérifiez et enregistrez le storyboard.", storyboardInvalid: "Saisissez un récit (30 000 caractères maximum) et un nombre valide ; 48 plans au total maximum." },
-  de: { storyboardTitle: "Automatisches Storyboard", storyboardStory: "Geschichte", storyboardPlaceholder: "Vollständige Geschichte mit Figuren, Handlung und Ende einfügen (max. 30.000 Zeichen).", storyboardHint: "Das lokale Textmodell fügt bearbeitbare Aufnahmen hinzu, ohne die Videogenerierung zu starten.", storyboardCount: "Anzahl neuer Aufnahmen", storyboardGenerate: "Aufnahmen erstellen und hinzufügen", storyboardGenerating: "Geschichte wird analysiert und geplant…", storyboardAdded: "Aufnahmen hinzugefügt. Storyboard prüfen und speichern.", storyboardInvalid: "Geschichte (max. 30.000 Zeichen) und gültige Anzahl eingeben; insgesamt höchstens 48 Aufnahmen." },
-  ja: { storyboardTitle: "ストーリーの自動絵コンテ", storyboardStory: "ストーリー本文", storyboardPlaceholder: "登場人物、展開、結末を含む全文を入力（最大30,000文字）。", storyboardHint: "ローカルテキストモデルが編集可能なショットを追加します。動画生成は自動開始しません。", storyboardCount: "追加ショット数", storyboardGenerate: "絵コンテを生成して追加", storyboardGenerating: "ストーリーを分析し絵コンテを生成中…", storyboardAdded: "ショットを追加しました。確認して保存してください。", storyboardInvalid: "ストーリー（最大30,000文字）と有効なショット数を入力してください。合計48以下です。" },
-  ko: { storyboardTitle: "스토리 자동 스토리보드", storyboardStory: "스토리 텍스트", storyboardPlaceholder: "인물, 줄거리와 결말을 포함한 전체 스토리(최대 30,000자)를 입력하세요.", storyboardHint: "로컬 텍스트 모델이 편집 가능한 샷을 추가합니다. 영상 생성은 자동 시작하지 않습니다.", storyboardCount: "새 샷 수", storyboardGenerate: "샷 생성 및 추가", storyboardGenerating: "스토리 분석 및 샷 생성 중…", storyboardAdded: "샷이 추가되었습니다. 검토 후 저장하세요.", storyboardInvalid: "스토리(최대 30,000자)와 올바른 샷 수를 입력하세요. 총 48개 이하입니다." },
-  es: { storyboardTitle: "Storyboard automático", storyboardStory: "Texto de la historia", storyboardPlaceholder: "Pega la historia completa (máximo 30.000 caracteres), con personajes, trama y final.", storyboardHint: "El modelo local añade planos editables sin iniciar la generación de vídeo.", storyboardCount: "Número de planos nuevos", storyboardGenerate: "Generar y añadir planos", storyboardGenerating: "Analizando la historia y creando planos…", storyboardAdded: "Planos añadidos. Revisa y guarda el storyboard.", storyboardInvalid: "Introduce una historia (máximo 30.000 caracteres) y una cantidad válida; máximo 48 planos en total." },
-  pt: { storyboardTitle: "Storyboard automático", storyboardStory: "Texto da história", storyboardPlaceholder: "Cole a história completa (até 30.000 caracteres), com personagens, enredo e final.", storyboardHint: "O modelo local adiciona cenas editáveis sem iniciar a geração de vídeo.", storyboardCount: "Número de novas cenas", storyboardGenerate: "Gerar e adicionar cenas", storyboardGenerating: "Analisando a história e criando cenas…", storyboardAdded: "Cenas adicionadas. Revise e salve o storyboard.", storyboardInvalid: "Insira uma história (até 30.000 caracteres) e uma quantidade válida; máximo de 48 cenas no total." },
-  tr: { storyboardTitle: "Otomatik hikâye panosu", storyboardStory: "Hikâye metni", storyboardPlaceholder: "Karakterler, olay örgüsü ve sonuyla tam hikâyeyi yapıştırın (en fazla 30.000 karakter).", storyboardHint: "Yerel metin modeli düzenlenebilir sahneler ekler; video üretimi otomatik başlamaz.", storyboardCount: "Yeni sahne sayısı", storyboardGenerate: "Sahneleri oluştur ve ekle", storyboardGenerating: "Hikâye analiz ediliyor ve sahneler planlanıyor…", storyboardAdded: "Sahneler eklendi. Panoyu inceleyip kaydedin.", storyboardInvalid: "Hikâye (en fazla 30.000 karakter) ve geçerli sayı girin; toplam en fazla 48 sahne." },
-  ar: { storyboardTitle: "تقسيم القصة تلقائيًا", storyboardStory: "نص القصة", storyboardPlaceholder: "ألصق القصة كاملة مع الشخصيات والحبكة والنهاية (حتى 30,000 حرف).", storyboardHint: "يضيف النموذج المحلي لقطات قابلة للتحرير دون بدء إنشاء الفيديو تلقائيًا.", storyboardCount: "عدد اللقطات الجديدة", storyboardGenerate: "إنشاء اللقطات وإضافتها", storyboardGenerating: "جارٍ تحليل القصة وتخطيط اللقطات…", storyboardAdded: "أُضيفت اللقطات. راجع المخطط واحفظه.", storyboardInvalid: "أدخل قصة (حتى 30,000 حرف) وعددًا صحيحًا؛ الحد الإجمالي 48 لقطة." },
-  vi: { storyboardTitle: "Phân cảnh tự động", storyboardStory: "Văn bản câu chuyện", storyboardPlaceholder: "Dán toàn bộ câu chuyện (tối đa 30.000 ký tự), gồm nhân vật, cốt truyện và kết thúc.", storyboardHint: "Mô hình cục bộ thêm các cảnh có thể chỉnh sửa; không tự bắt đầu tạo video.", storyboardCount: "Số cảnh mới", storyboardGenerate: "Tạo và thêm cảnh", storyboardGenerating: "Đang phân tích câu chuyện và tạo cảnh…", storyboardAdded: "Đã thêm cảnh. Hãy kiểm tra và lưu.", storyboardInvalid: "Nhập câu chuyện (tối đa 30.000 ký tự) và số cảnh hợp lệ; tổng không quá 48." },
-  id: { storyboardTitle: "Storyboard otomatis", storyboardStory: "Teks cerita", storyboardPlaceholder: "Tempel cerita lengkap (maksimal 30.000 karakter), termasuk tokoh, alur dan akhir.", storyboardHint: "Model lokal menambahkan adegan yang dapat diedit tanpa memulai generasi video otomatis.", storyboardCount: "Jumlah adegan baru", storyboardGenerate: "Buat dan tambahkan adegan", storyboardGenerating: "Menganalisis cerita dan membuat adegan…", storyboardAdded: "Adegan ditambahkan. Tinjau dan simpan storyboard.", storyboardInvalid: "Masukkan cerita (maksimal 30.000 karakter) dan jumlah yang valid; total maksimal 48 adegan." },
-  ru: { storyboardTitle: "Автоматическая раскадровка", storyboardStory: "Текст истории", storyboardPlaceholder: "Вставьте всю историю (до 30 000 символов), включая героев, сюжет и концовку.", storyboardHint: "Локальная модель добавляет редактируемые кадры, не запуская генерацию видео.", storyboardCount: "Число новых кадров", storyboardGenerate: "Создать и добавить кадры", storyboardGenerating: "Анализ истории и создание кадров…", storyboardAdded: "Кадры добавлены. Проверьте и сохраните раскадровку.", storyboardInvalid: "Введите историю (до 30 000 символов) и допустимое число кадров; максимум 48 в сумме." },
+  "zh-CN": { storyboardTitle: "故事自动分镜", storyboardStory: "故事文本", storyboardPlaceholder: "粘贴完整故事（最多 30,000 字符），包含人物、情节与结尾。", storyboardHint: "本机文本模型生成可编辑镜头并追加到现有分镜；不会自动开始视频生成。", storyboardCount: "生成镜头数", storyboardGenerate: "生成并添加分镜", storyboardGenerating: "正在分析故事并生成分镜…", storyboardAdded: "分镜已添加，请审阅后保存。", storyboardInvalid: "请输入故事（最多 30,000 字符）和有效镜头数，镜头总数不得超过 1800。" },
+  en: { storyboardTitle: "Automatic storyboarding", storyboardStory: "Story text", storyboardPlaceholder: "Paste the complete story (up to 30,000 characters), including characters, plot and ending.", storyboardHint: "The local text model appends editable shots; video generation does not start automatically.", storyboardCount: "Number of new shots", storyboardGenerate: "Generate & add shots", storyboardGenerating: "Analyzing story and planning shots…", storyboardAdded: "Shots added. Review and save the storyboard.", storyboardInvalid: "Enter a story (up to 30,000 characters) and a valid shot count; the total cannot exceed 1800." },
+  "zh-TW": { storyboardTitle: "故事自動分鏡", storyboardStory: "故事文字", storyboardPlaceholder: "貼上完整故事（最多 30,000 字元），包含人物、情節與結尾。", storyboardHint: "本機文字模型產生可編輯鏡頭並追加至現有分鏡；不會自動開始影片生成。", storyboardCount: "生成鏡頭數", storyboardGenerate: "生成並新增分鏡", storyboardGenerating: "正在分析故事並產生分鏡…", storyboardAdded: "分鏡已新增，請審閱後儲存。", storyboardInvalid: "請輸入故事（最多 30,000 字元）與有效鏡頭數，鏡頭總數不得超過 1800。" },
+  fr: { storyboardTitle: "Storyboard automatique", storyboardStory: "Texte du récit", storyboardPlaceholder: "Collez le récit complet (30 000 caractères maximum), personnages, intrigue et fin inclus.", storyboardHint: "Le modèle local ajoute des plans modifiables sans lancer la génération vidéo.", storyboardCount: "Nombre de nouveaux plans", storyboardGenerate: "Créer et ajouter les plans", storyboardGenerating: "Analyse du récit et création des plans…", storyboardAdded: "Plans ajoutés. Vérifiez et enregistrez le storyboard.", storyboardInvalid: "Saisissez un récit (30 000 caractères maximum) et un nombre valide ; 1800 plans au total maximum." },
+  de: { storyboardTitle: "Automatisches Storyboard", storyboardStory: "Geschichte", storyboardPlaceholder: "Vollständige Geschichte mit Figuren, Handlung und Ende einfügen (max. 30.000 Zeichen).", storyboardHint: "Das lokale Textmodell fügt bearbeitbare Aufnahmen hinzu, ohne die Videogenerierung zu starten.", storyboardCount: "Anzahl neuer Aufnahmen", storyboardGenerate: "Aufnahmen erstellen und hinzufügen", storyboardGenerating: "Geschichte wird analysiert und geplant…", storyboardAdded: "Aufnahmen hinzugefügt. Storyboard prüfen und speichern.", storyboardInvalid: "Geschichte (max. 30.000 Zeichen) und gültige Anzahl eingeben; insgesamt höchstens 1800 Aufnahmen." },
+  ja: { storyboardTitle: "ストーリーの自動絵コンテ", storyboardStory: "ストーリー本文", storyboardPlaceholder: "登場人物、展開、結末を含む全文を入力（最大30,000文字）。", storyboardHint: "ローカルテキストモデルが編集可能なショットを追加します。動画生成は自動開始しません。", storyboardCount: "追加ショット数", storyboardGenerate: "絵コンテを生成して追加", storyboardGenerating: "ストーリーを分析し絵コンテを生成中…", storyboardAdded: "ショットを追加しました。確認して保存してください。", storyboardInvalid: "ストーリー（最大30,000文字）と有効なショット数を入力してください。合計1800以下です。" },
+  ko: { storyboardTitle: "스토리 자동 스토리보드", storyboardStory: "스토리 텍스트", storyboardPlaceholder: "인물, 줄거리와 결말을 포함한 전체 스토리(최대 30,000자)를 입력하세요.", storyboardHint: "로컬 텍스트 모델이 편집 가능한 샷을 추가합니다. 영상 생성은 자동 시작하지 않습니다.", storyboardCount: "새 샷 수", storyboardGenerate: "샷 생성 및 추가", storyboardGenerating: "스토리 분석 및 샷 생성 중…", storyboardAdded: "샷이 추가되었습니다. 검토 후 저장하세요.", storyboardInvalid: "스토리(최대 30,000자)와 올바른 샷 수를 입력하세요. 총 1800개 이하입니다." },
+  es: { storyboardTitle: "Storyboard automático", storyboardStory: "Texto de la historia", storyboardPlaceholder: "Pega la historia completa (máximo 30.000 caracteres), con personajes, trama y final.", storyboardHint: "El modelo local añade planos editables sin iniciar la generación de vídeo.", storyboardCount: "Número de planos nuevos", storyboardGenerate: "Generar y añadir planos", storyboardGenerating: "Analizando la historia y creando planos…", storyboardAdded: "Planos añadidos. Revisa y guarda el storyboard.", storyboardInvalid: "Introduce una historia (máximo 30.000 caracteres) y una cantidad válida; máximo 1800 planos en total." },
+  pt: { storyboardTitle: "Storyboard automático", storyboardStory: "Texto da história", storyboardPlaceholder: "Cole a história completa (até 30.000 caracteres), com personagens, enredo e final.", storyboardHint: "O modelo local adiciona cenas editáveis sem iniciar a geração de vídeo.", storyboardCount: "Número de novas cenas", storyboardGenerate: "Gerar e adicionar cenas", storyboardGenerating: "Analisando a história e criando cenas…", storyboardAdded: "Cenas adicionadas. Revise e salve o storyboard.", storyboardInvalid: "Insira uma história (até 30.000 caracteres) e uma quantidade válida; máximo de 1800 cenas no total." },
+  tr: { storyboardTitle: "Otomatik hikâye panosu", storyboardStory: "Hikâye metni", storyboardPlaceholder: "Karakterler, olay örgüsü ve sonuyla tam hikâyeyi yapıştırın (en fazla 30.000 karakter).", storyboardHint: "Yerel metin modeli düzenlenebilir sahneler ekler; video üretimi otomatik başlamaz.", storyboardCount: "Yeni sahne sayısı", storyboardGenerate: "Sahneleri oluştur ve ekle", storyboardGenerating: "Hikâye analiz ediliyor ve sahneler planlanıyor…", storyboardAdded: "Sahneler eklendi. Panoyu inceleyip kaydedin.", storyboardInvalid: "Hikâye (en fazla 30.000 karakter) ve geçerli sayı girin; toplam en fazla 1800 sahne." },
+  ar: { storyboardTitle: "تقسيم القصة تلقائيًا", storyboardStory: "نص القصة", storyboardPlaceholder: "ألصق القصة كاملة مع الشخصيات والحبكة والنهاية (حتى 30,000 حرف).", storyboardHint: "يضيف النموذج المحلي لقطات قابلة للتحرير دون بدء إنشاء الفيديو تلقائيًا.", storyboardCount: "عدد اللقطات الجديدة", storyboardGenerate: "إنشاء اللقطات وإضافتها", storyboardGenerating: "جارٍ تحليل القصة وتخطيط اللقطات…", storyboardAdded: "أُضيفت اللقطات. راجع المخطط واحفظه.", storyboardInvalid: "أدخل قصة (حتى 30,000 حرف) وعددًا صحيحًا؛ الحد الإجمالي 1800 لقطة." },
+  vi: { storyboardTitle: "Phân cảnh tự động", storyboardStory: "Văn bản câu chuyện", storyboardPlaceholder: "Dán toàn bộ câu chuyện (tối đa 30.000 ký tự), gồm nhân vật, cốt truyện và kết thúc.", storyboardHint: "Mô hình cục bộ thêm các cảnh có thể chỉnh sửa; không tự bắt đầu tạo video.", storyboardCount: "Số cảnh mới", storyboardGenerate: "Tạo và thêm cảnh", storyboardGenerating: "Đang phân tích câu chuyện và tạo cảnh…", storyboardAdded: "Đã thêm cảnh. Hãy kiểm tra và lưu.", storyboardInvalid: "Nhập câu chuyện (tối đa 30.000 ký tự) và số cảnh hợp lệ; tổng không quá 1800." },
+  id: { storyboardTitle: "Storyboard otomatis", storyboardStory: "Teks cerita", storyboardPlaceholder: "Tempel cerita lengkap (maksimal 30.000 karakter), termasuk tokoh, alur dan akhir.", storyboardHint: "Model lokal menambahkan adegan yang dapat diedit tanpa memulai generasi video otomatis.", storyboardCount: "Jumlah adegan baru", storyboardGenerate: "Buat dan tambahkan adegan", storyboardGenerating: "Menganalisis cerita dan membuat adegan…", storyboardAdded: "Adegan ditambahkan. Tinjau dan simpan storyboard.", storyboardInvalid: "Masukkan cerita (maksimal 30.000 karakter) dan jumlah yang valid; total maksimal 1800 adegan." },
+  ru: { storyboardTitle: "Автоматическая раскадровка", storyboardStory: "Текст истории", storyboardPlaceholder: "Вставьте всю историю (до 30 000 символов), включая героев, сюжет и концовку.", storyboardHint: "Локальная модель добавляет редактируемые кадры, не запуская генерацию видео.", storyboardCount: "Число новых кадров", storyboardGenerate: "Создать и добавить кадры", storyboardGenerating: "Анализ истории и создание кадров…", storyboardAdded: "Кадры добавлены. Проверьте и сохраните раскадровку.", storyboardInvalid: "Введите историю (до 30 000 символов) и допустимое число кадров; максимум 1800 в сумме." },
 };
 
 const musicQuickKeys = ["musicQuickTitle", "musicQuickHint", "musicQuickGenres", "musicQuickMoods", "musicQuickVocals", "musicQuickRhythm", "musicQuickPop", "musicQuickRock", "musicQuickHip", "musicQuickTraditional", "musicQuickPositive", "musicQuickSad", "musicQuickEpic", "musicQuickVoice", "musicQuickTechnique", "musicQuickInstruments", "musicQuickTempo", "musicQuickLimit"];
@@ -1770,6 +1947,121 @@ const localModelTranslations = {
   id: { generationModel: "Model generasi", imageResolution: "Resolusi gambar", localReady: "Model lokal siap", localMissing: "Model atau runtime belum siap", distilledNote: "Distilasi 1.1: 8 langkah + 3 penyempurnaan, 24 fps, memori rendah. Sisi panjang 512 px; bingkai 8n+1.", localImageNote: "Inferensi MLX lokal 4-bit. Klein: 4 langkah; Z-Image-Turbo: 9.", localModelError: "Model atau runtime lokal belum siap. Periksa instalasi." },
   ru: { generationModel: "Модель генерации", imageResolution: "Разрешение изображения", localReady: "Локальная модель готова", localMissing: "Модель или среда не готова", distilledNote: "Дистилляция 1.1: 8 + 3 шага уточнения, 24 fps, экономия памяти. Длинная сторона 512 px; кадры 8n+1.", localImageNote: "Локальный MLX, 4 бита. Klein: 4 шага; Z-Image-Turbo: 9.", localModelError: "Модель или локальная среда не готова. Проверьте установку." },
 };
+const modelPickerTranslations = {
+  "zh-CN": "模型选择",
+  "zh-TW": "模型選擇",
+  en: "Model selection",
+  fr: "Sélection des modèles",
+  de: "Modellauswahl",
+  ja: "モデル選択",
+  ko: "모델 선택",
+  es: "Selección de modelos",
+  pt: "Seleção de modelos",
+  tr: "Model seçimi",
+  ar: "اختيار النموذج",
+  vi: "Chọn mô hình",
+  id: "Pemilihan model",
+  ru: "Выбор модели",
+};
+const fastH3Translations = {
+  en: "FastH3 VSA Q8: fixed 4 evaluations (5 schedule points), 24 fps, generated audio. Long edge 512/768/1024 px, 32 px grid. Try preview first on 64 GB; higher resolution needs more memory. No extra Turbo LoRA.",
+  "zh-CN": "FastH3 VSA Q8：固定4次模型求值（5个调度点），24 fps，原生音轨。长边512/768/1024像素，32像素对齐。64 GB建议先用预览；更高分辨率增加内存。不可额外叠加Turbo LoRA。",
+  "zh-TW": "FastH3 VSA Q8：固定4次模型求值（5個調度點），24 fps，原生音軌。長邊512/768/1024像素，32像素對齊。64 GB建議先用預覽；更高解析度增加記憶體。不可額外疊加Turbo LoRA。",
+  fr: "FastH3 VSA Q8 : 4 évaluations fixes (5 points), 24 fps, audio généré. Grand côté 512/768/1024 px, grille 32 px. Sur 64 Go, commencer par l’aperçu ; la haute résolution exige plus de mémoire. Sans Turbo LoRA supplémentaire.",
+  de: "FastH3 VSA Q8: feste 4 Auswertungen (5 Punkte), 24 fps, generierter Ton. Lange Seite 512/768/1024 px, Raster 32 px. Bei 64 GB zuerst Vorschau; höhere Auflösung benötigt mehr Speicher. Kein zusätzliches Turbo-LoRA.",
+  ja: "FastH3 VSA Q8：固定4回の評価（5調度点）、24 fps、音声生成。長辺512/768/1024 px、32 px単位。64 GBではまずプレビュー。高解像度はメモリを増加。Turbo LoRAの追加不可。",
+  ko: "FastH3 VSA Q8: 고정 4회 평가(5개 스케줄 지점), 24 fps, 오디오 생성. 긴 변 512/768/1024 px, 32 px 정렬. 64 GB에서는 미리보기부터 시작하세요. 고해상도는 메모리를 더 사용합니다. 추가 Turbo LoRA 금지.",
+  es: "FastH3 VSA Q8: 4 evaluaciones fijas (5 puntos), 24 fps, audio generado. Lado largo 512/768/1024 px, cuadrícula 32 px. En 64 GB, empezar con vista previa; más resolución exige memoria. Sin Turbo LoRA adicional.",
+  pt: "FastH3 VSA Q8: 4 avaliações fixas (5 pontos), 24 fps, áudio gerado. Lado maior 512/768/1024 px, grade 32 px. Em 64 GB, comece pela prévia; mais resolução exige memória. Sem Turbo LoRA adicional.",
+  tr: "FastH3 VSA Q8: sabit 4 değerlendirme (5 nokta), 24 fps, üretilen ses. Uzun kenar 512/768/1024 px, 32 px ızgara. 64 GB için önce önizleme; yüksek çözünürlük daha çok bellek ister. Ek Turbo LoRA yok.",
+  ar: "FastH3 VSA Q8: ‏4 تقييمات ثابتة (5 نقاط)، 24 إطارًا/ث، صوت مولّد. الضلع الأطول 512/768/1024 بكسل، شبكة 32 بكسل. على 64 GB ابدأ بالمعاينة؛ الدقة الأعلى تستهلك ذاكرة أكثر. دون Turbo LoRA إضافي.",
+  vi: "FastH3 VSA Q8: 4 lần đánh giá cố định (5 điểm), 24 fps, âm thanh tạo sẵn. Cạnh dài 512/768/1024 px, lưới 32 px. Với 64 GB hãy xem trước; độ phân giải cao cần thêm bộ nhớ. Không thêm Turbo LoRA.",
+  id: "FastH3 VSA Q8: tetap 4 evaluasi (5 titik), 24 fps, audio dihasilkan. Sisi panjang 512/768/1024 px, kisi 32 px. Pada 64 GB mulai dengan pratinjau; resolusi tinggi perlu lebih banyak memori. Tanpa Turbo LoRA tambahan.",
+  ru: "FastH3 VSA Q8: фиксированные 4 оценки (5 точек), 24 fps, генерация звука. Длинная сторона 512/768/1024 px, сетка 32 px. На 64 GB начните с предпросмотра; высокое разрешение требует больше памяти. Без дополнительного Turbo LoRA."
+};
+const fastH3LimitTranslations = {
+  en: "Text-to-video only. Opening images and continuous shots are unsupported. Clear the image selection and choose independent shots, or switch models.",
+  "zh-CN": "仅支持文本生成视频，不支持首帧图片和连续镜头。请清除图片选择并选择独立镜头，或更换模型。",
+  "zh-TW": "僅支援文字生成影片，不支援首幀圖片及連續鏡頭。請清除圖片選擇並選擇獨立鏡頭，或更換模型。",
+  fr: "Texte vers vidéo uniquement. Images initiales et plans continus non pris en charge. Désélectionnez l’image et choisissez des plans indépendants, ou changez de modèle.",
+  de: "Nur Text-zu-Video. Startbilder und fortlaufende Szenen werden nicht unterstützt. Bildauswahl entfernen und unabhängige Szenen wählen oder Modell wechseln.",
+  ja: "テキスト動画生成のみ。開始画像と連続ショットは非対応。画像選択を解除して独立ショットを選ぶか、モデルを変更してください。",
+  ko: "텍스트로 영상 생성만 지원합니다. 시작 이미지와 연속 장면은 지원하지 않습니다. 이미지 선택을 지우고 독립 장면을 선택하거나 모델을 변경하세요.",
+  es: "Solo texto a vídeo. No admite imágenes iniciales ni planos continuos. Quita la imagen y elige planos independientes, o cambia de modelo.",
+  pt: "Somente texto para vídeo. Não suporta imagens iniciais nem cenas contínuas. Remova a seleção da imagem e escolha cenas independentes, ou mude de modelo.",
+  tr: "Yalnızca metinden video. Başlangıç görüntüsü ve devamlı sahneler desteklenmez. Görüntü seçimini kaldırıp bağımsız sahneleri seçin veya modeli değiştirin.",
+  ar: "نص إلى فيديو فقط. صور البداية واللقطات المتصلة غير مدعومة. ألغِ اختيار الصورة واختر لقطات مستقلة أو غيّر النموذج.",
+  vi: "Chỉ tạo video từ văn bản. Không hỗ trợ ảnh đầu và cảnh liên tục. Bỏ chọn ảnh và chọn cảnh độc lập hoặc đổi mô hình.",
+  id: "Hanya teks ke video. Gambar awal dan adegan berkelanjutan tidak didukung. Hapus pilihan gambar dan pilih adegan independen atau ganti model.",
+  ru: "Только текст в видео. Начальные изображения и непрерывные сцены не поддерживаются. Уберите изображение и выберите независимые сцены или смените модель."
+};
+for (const [language, note] of Object.entries(fastH3Translations)) {
+  localModelTranslations[language].fastH3Note = `${note} ${fastH3LimitTranslations[language]}`;
+  localModelTranslations[language].fastH3Limit = fastH3LimitTranslations[language];
+}
+const ltxQualityTranslations = {
+  en: ["LTX video quality", "Preview · 512", "Standard · 768", "High quality · 1024", "Final long edge 512/768/1024 px, rounded to a 64-pixel grid. 8 draft + 3 refine steps, 24 fps, low-memory mode. Higher resolution costs more time and memory; detail improvement is not guaranteed. Applies to every shot and the final long video."],
+  "zh-CN": ["LTX 视频质量", "预览 · 512", "标准 · 768", "高质量 · 1024", "最终长边512/768/1024像素，画布按64像素对齐。8步初稿+3步细化，24 fps，低内存模式。更高分辨率增加耗时和内存，细节改善不作保证。长视频应用到全部镜头及最终合片。"],
+  "zh-TW": ["LTX 影片品質", "預覽 · 512", "標準 · 768", "高品質 · 1024", "最終長邊512/768/1024像素，畫布按64像素對齊。8步初稿+3步細化，24 fps，低記憶體模式。更高解析度增加時間與記憶體，不保證細節改善。長影片套用至全部鏡頭及合片。"],
+  fr: ["Qualité vidéo LTX", "Aperçu · 512", "Standard · 768", "Haute qualité · 1024", "Grand côté final 512/768/1024 px, grille de 64 px. 8 étapes + 3 finitions, 24 fps, mémoire réduite. Plus de résolution coûte du temps et de la mémoire, sans garantie de détail. Tous les plans et le montage final."],
+  de: ["LTX-Videoqualität", "Vorschau · 512", "Standard · 768", "Hohe Qualität · 1024", "Lange Seite 512/768/1024 px, 64-Pixel-Raster. 8 + 3 Schritte, 24 fps, wenig Speicher. Höhere Auflösung kostet mehr Zeit und Speicher; Details nicht garantiert. Alle Szenen und der fertige Langfilm."],
+  ja: ["LTX 動画品質", "プレビュー · 512", "標準 · 768", "高品質 · 1024", "最終長辺512/768/1024 px、64 px単位。初稿8＋仕上げ3ステップ、24 fps、省メモリ。高解像度ほど時間とメモリが増加し、詳細改善は保証しません。全ショットと長編の合成に適用。"],
+  ko: ["LTX 영상 품질", "미리보기 · 512", "표준 · 768", "고품질 · 1024", "최종 긴 변 512/768/1024 px, 64 px 정렬. 초안 8+보정 3단계, 24 fps, 저메모리. 높은 해상도는 시간과 메모리를 더 쓰며 세부 개선은 보장하지 않습니다. 모든 장면과 최종 긴 영상에 적용."],
+  es: ["Calidad de vídeo LTX", "Vista previa · 512", "Estándar · 768", "Alta calidad · 1024", "Lado largo final 512/768/1024 px, cuadrícula de 64 px. 8+3 pasos, 24 fps, poca memoria. Más resolución exige tiempo y memoria; detalle no garantizado. Todos los planos y el montaje final."],
+  pt: ["Qualidade de vídeo LTX", "Prévia · 512", "Padrão · 768", "Alta qualidade · 1024", "Lado maior final 512/768/1024 px, grade de 64 px. 8+3 passos, 24 fps, pouca memória. Mais resolução exige tempo e memória, sem garantia de detalhe. Todas as cenas e o vídeo final."],
+  tr: ["LTX video kalitesi", "Önizleme · 512", "Standart · 768", "Yüksek kalite · 1024", "Son uzun kenar 512/768/1024 px, 64 px ızgara. 8+3 adım, 24 fps, düşük bellek. Yüksek çözünürlük daha fazla zaman ve bellek ister; ayrıntı garantisi yoktur. Tüm sahneler ve son uzun video."],
+  ar: ["جودة فيديو LTX", "معاينة · 512", "قياسي · 768", "جودة عالية · 1024", "الضلع النهائي الأطول 512/768/1024 بكسل، شبكة 64 بكسل. 8+3 خطوات، 24 إطارًا/ث، ذاكرة منخفضة. الدقة الأعلى تتطلب وقتًا وذاكرة أكثر دون ضمان التفاصيل. لجميع اللقطات والفيديو النهائي."],
+  vi: ["Chất lượng video LTX", "Xem trước · 512", "Tiêu chuẩn · 768", "Chất lượng cao · 1024", "Cạnh dài cuối 512/768/1024 px, lưới 64 px. 8+3 bước, 24 fps, ít bộ nhớ. Độ phân giải cao tốn thời gian và bộ nhớ, không bảo đảm chi tiết. Áp dụng mọi cảnh và video dài cuối."],
+  id: ["Kualitas video LTX", "Pratinjau · 512", "Standar · 768", "Kualitas tinggi · 1024", "Sisi panjang akhir 512/768/1024 px, kisi 64 px. 8+3 langkah, 24 fps, memori rendah. Resolusi tinggi memerlukan waktu dan memori lebih, tanpa jaminan detail. Semua adegan dan video akhir."],
+  ru: ["Качество видео LTX", "Предпросмотр · 512", "Стандарт · 768", "Высокое качество · 1024", "Длинная сторона 512/768/1024 px, сетка 64 px. 8+3 шага, 24 fps, экономия памяти. Высокое разрешение требует больше времени и памяти; детали не гарантированы. Все сцены и итоговое длинное видео."]
+};
+for (const [language, values] of Object.entries(ltxQualityTranslations)) {
+  Object.assign(localModelTranslations[language], {
+    videoQuality: values[0], videoQualityPreview: values[1], videoQualityStandard: values[2],
+    videoQualityHigh: values[3], distilledNote: values[4]
+  });
+}
+const parameterTranslations = {
+  en: ["Enter a whole number from {min} to {max}, within the current model/recipe limits.", "Use whole seconds within the selected video model's range. Total duration must divide evenly by shot duration, with at most 1800 shots. Maximum 30 minutes (1800 seconds); planning runs in batches.", "Describe this shot's subject, setting, action, camera, and lighting."],
+  "zh-CN": ["可输入 {min}–{max} 范围内任意整数，范围由当前模型／配方决定。", "请在所选视频模型范围内输入整秒数；总长须能整除每镜时长，最多1800个镜头。 总长最多30分钟（1800秒），分批规划。", "描述此镜头的主体、场景、动作、运镜与光线。"],
+  "zh-TW": ["可輸入 {min}–{max} 範圍內任意整數，範圍由目前模型／配方決定。", "請在所選影片模型範圍內輸入整秒數；總長須能整除每鏡時長，最多1800個鏡頭。 總長最多30分鐘（1800秒），分批規劃。", "描述此鏡頭的主體、場景、動作、運鏡與光線。"],
+  fr: ["Entrez un entier de {min} à {max}, selon le modèle/la recette.", "Utilisez des secondes entières dans la plage du modèle. La durée totale doit être divisible par celle d'un plan, avec au plus 1800 plans. Maximum 30 minutes (1800 secondes) ; planification par lots.", "Décrivez le sujet, le décor, l'action, la caméra et l'éclairage du plan."],
+  de: ["Geben Sie eine ganze Zahl von {min} bis {max} für das Modell/Rezept ein.", "Ganze Sekunden im Bereich des Videomodells verwenden. Die Gesamtdauer muss durch die Szenendauer teilbar sein; höchstens 1800 Szenen. Maximal 30 Minuten (1800 Sekunden); Planung in Gruppen.", "Beschreiben Sie Motiv, Umgebung, Handlung, Kamera und Licht der Szene."],
+  ja: ["現在のモデル／レシピの範囲内で {min}～{max} の整数を入力できます。", "動画モデルの範囲内で整数秒を入力してください。合計は各ショットの秒数で割り切れ、最大1800ショットです。 合計は最大30分（1800秒）。分割して計画します。", "ショットの被写体、場面、動作、カメラ、照明を記述してください。"],
+  ko: ["현재 모델/레시피에 따라 {min}~{max} 범위의 정수를 입력하세요.", "영상 모델 범위의 정수 초를 사용하세요. 총 길이는 장면 길이로 나누어떨어져야 하며 최대 1800장면입니다. 최대 30분(1800초). 나누어 계획합니다.", "장면의 피사체, 배경, 동작, 카메라와 조명을 설명하세요."],
+  es: ["Introduzca un entero de {min} a {max}, según el modelo/la receta.", "Use segundos enteros dentro del rango del modelo. La duración total debe ser divisible por la de cada plano, con un máximo de 1800 planos. Máximo 30 minutos (1800 segundos); planificación por lotes.", "Describa el sujeto, entorno, acción, cámara e iluminación del plano."],
+  pt: ["Insira um inteiro de {min} a {max}, conforme o modelo/a receita.", "Use segundos inteiros no intervalo do modelo. A duração total deve ser divisível pela de cada cena, com no máximo 1800 cenas. Máximo 30 minutos (1800 segundos); planejamento em lotes.", "Descreva o assunto, cenário, ação, câmera e iluminação da cena."],
+  tr: ["Model/tarif sınırları içinde {min}–{max} arasında bir tam sayı girin.", "Video modelinin aralığında tam saniyeler kullanın. Toplam süre sahne süresine tam bölünmeli; en fazla 1800 sahne olabilir. En fazla 30 dakika (1800 saniye); gruplar halinde planlanır.", "Sahnenin konusu, ortamı, hareketi, kamerası ve ışığını anlatın."],
+  ar: ["أدخل عدداً صحيحاً من {min} إلى {max} ضمن حدود النموذج/الوصفة الحالية.", "استخدم ثواني صحيحة ضمن نطاق نموذج الفيديو. يجب أن تقبل المدة الكلية القسمة على مدة اللقطة، بحد أقصى 1800 لقطة. الحد الأقصى 30 دقيقة (1800 ثانية)؛ تخطيط على دفعات.", "صف موضوع اللقطة والمكان والحركة والكاميرا والإضاءة."],
+  vi: ["Nhập số nguyên từ {min} đến {max} theo giới hạn mô hình/công thức.", "Dùng số giây nguyên trong phạm vi mô hình video. Tổng thời lượng phải chia hết cho thời lượng cảnh, tối đa 1800 cảnh. Tối đa 30 phút (1800 giây); lập kế hoạch theo từng đợt.", "Mô tả chủ thể, bối cảnh, hành động, máy quay và ánh sáng của cảnh."],
+  id: ["Masukkan bilangan bulat {min}–{max} sesuai batas model/resep.", "Gunakan detik bulat dalam rentang model video. Durasi total harus habis dibagi durasi adegan, maksimal 1800 adegan. Maksimal 30 menit (1800 detik); perencanaan bertahap.", "Jelaskan subjek, latar, aksi, kamera, dan pencahayaan adegan."],
+  ru: ["Введите целое число от {min} до {max} в пределах модели/рецепта.", "Используйте целые секунды в диапазоне видеомодели. Общая длительность должна делиться на длительность сцены; не более 1800 сцен. Максимум 30 минут (1800 секунд); планирование партиями.", "Опишите объект, окружение, действие, камеру и освещение сцены."]
+};
+for (const [language, [range, timing, prompt]] of Object.entries(parameterTranslations)) {
+  localModelTranslations[language].parameterRange = range;
+  localModelTranslations[language].workflowShotDuration = translations[language].duration;
+  localModelTranslations[language].workflowShotPromptPlaceholder = prompt;
+  storyboardTimingTranslations[language][3] = timing;
+}
+const videoQualityModelTranslations = {
+  en: ["Video quality", "H3: preview / standard / high use a 512 / 768 / 1024 px short edge with an area cap and 32 px alignment (16:9 approximately 896×512 / 1344×768 / 1792×1024). Standard preserves the original canvas. High is experimental, slower and uses much more memory; quality is not guaranteed. Applies to shots and final assembly."],
+  "zh-CN": ["视频质量", "H3：预览／标准／高质量采用512／768／1024像素短边，限制面积并按32像素对齐（16:9约896×512／1344×768／1792×1024）。标准保持原画布；高质量为实验档，更慢且显著增加内存，不保证效果。应用于全部镜头及合片。"],
+  "zh-TW": ["影片品質", "H3：預覽／標準／高品質採用512／768／1024像素短邊，限制面積並按32像素對齊（16:9約896×512／1344×768／1792×1024）。標準保持原畫布；高品質為實驗檔，更慢且增加記憶體，不保證效果。套用全部鏡頭及合片。"],
+  fr: ["Qualité vidéo", "H3 : côté court 512/768/1024 px, surface limitée, grille 32 px (16:9 ≈ 896×512 / 1344×768 / 1792×1024). Standard conserve la taille initiale. Haute qualité expérimentale : plus lente, plus de mémoire, résultat non garanti. Plans et montage final."],
+  de: ["Videoqualität", "H3: kurze Seite 512/768/1024 px, Flächenlimit, 32-px-Raster (16:9 ≈ 896×512 / 1344×768 / 1792×1024). Standard bleibt unverändert. Hohe Qualität experimentell: langsamer, mehr Speicher, keine Qualitätsgarantie. Szenen und Endfilm."],
+  ja: ["動画品質", "H3：短辺512/768/1024 px、面積制限、32 px単位（16:9 ≈ 896×512 / 1344×768 / 1792×1024）。標準は従来の画面サイズ。高品質は実験的で時間とメモリが増え、効果は保証しません。全ショットと合成に適用。"],
+  ko: ["영상 품질", "H3: 짧은 변 512/768/1024 px, 면적 제한, 32 px 정렬(16:9 ≈ 896×512 / 1344×768 / 1792×1024). 표준은 기존 크기 유지. 고품질은 실험적이며 느리고 메모리를 더 쓰고 효과는 보장하지 않습니다. 장면과 최종 영상에 적용."],
+  es: ["Calidad de vídeo", "H3: lado corto 512/768/1024 px, área limitada, rejilla 32 px (16:9 ≈ 896×512 / 1344×768 / 1792×1024). Estándar conserva el tamaño original. Alta calidad experimental: más lenta y más memoria, sin garantía. Planos y montaje."],
+  pt: ["Qualidade de vídeo", "H3: lado curto 512/768/1024 px, área limitada, grade 32 px (16:9 ≈ 896×512 / 1344×768 / 1792×1024). Padrão mantém o tamanho original. Alta qualidade experimental: mais lenta e mais memória, sem garantia. Cenas e vídeo final."],
+  tr: ["Video kalitesi", "H3: kısa kenar 512/768/1024 px, alan sınırı, 32 px ızgara (16:9 ≈ 896×512 / 1344×768 / 1792×1024). Standart eski boyutu korur. Yüksek kalite deneysel: daha yavaş ve daha çok bellek, garanti yok. Sahneler ve son video."],
+  ar: ["جودة الفيديو", "H3: الضلع القصير 512/768/1024 بكسل، مساحة محدودة، شبكة 32 بكسل (16:9 ≈ 896×512 / 1344×768 / 1792×1024). القياسي يحافظ على الحجم الأصلي. الجودة العالية تجريبية وأبطأ وتستهلك ذاكرة أكثر دون ضمان. اللقطات والفيديو النهائي."],
+  vi: ["Chất lượng video", "H3: cạnh ngắn 512/768/1024 px, giới hạn diện tích, lưới 32 px (16:9 ≈ 896×512 / 1344×768 / 1792×1024). Tiêu chuẩn giữ kích thước cũ. Chất lượng cao thử nghiệm: chậm và tốn bộ nhớ, không bảo đảm. Mọi cảnh và video cuối."],
+  id: ["Kualitas video", "H3: sisi pendek 512/768/1024 px, batas luas, kisi 32 px (16:9 ≈ 896×512 / 1344×768 / 1792×1024). Standar mempertahankan ukuran lama. Kualitas tinggi eksperimental: lebih lambat, lebih banyak memori, tanpa jaminan. Adegan dan video akhir."],
+  ru: ["Качество видео", "H3: короткая сторона 512/768/1024 px, ограничение площади, сетка 32 px (16:9 ≈ 896×512 / 1344×768 / 1792×1024). Стандарт сохраняет прежний размер. Высокое качество экспериментально: медленнее и больше памяти, без гарантии. Сцены и итоговый фильм."]
+};
+for (const [language, values] of Object.entries(videoQualityModelTranslations)) {
+  Object.assign(localModelTranslations[language], {videoQuality: values[0], h3QualityNote: values[1]});
+}
 const musicYueNoteTranslations = {
   en: "YuE2 decides the song length from the lyric sections; duration and steps do not apply. Output 48 kHz, CC BY-NC 4.0.",
   "zh-CN": "YuE2 根据歌词段落决定歌曲时长，不使用时长与步数设置。输出 48 kHz，许可 CC BY-NC 4.0。",
@@ -1792,6 +2084,40 @@ const musicYueLinkTranslations = {
   ko: "YuE2 모델 카드 보기 ↗", es: "Ver la ficha del modelo YuE2 ↗", pt: "Ver o cartão do modelo YuE2 ↗",
   tr: "YuE2 model kartını görüntüle ↗", ar: "عرض بطاقة نموذج YuE2 ↗", vi: "Xem thẻ mô hình YuE2 ↗",
   id: "Lihat kartu model YuE2 ↗", ru: "Открыть карточку модели YuE2 ↗",
+};
+const turboV4Translations = {
+  "zh-CN": ["使用 Turbo LoRA v4（4–8 步）", "H3 Turbo 固定使用 v4-600 EMA，强度 1.0。快速运动建议 6–8 步；不用于 FastH3。"],
+  "zh-TW": ["使用 Turbo LoRA v4（4–8 步）", "H3 Turbo 固定使用 v4-600 EMA，強度 1.0。快速運動建議 6–8 步；不適用於 FastH3。"],
+  en: ["Use Turbo LoRA v4 (4–8 steps)", "H3 Turbo uses v4-600 EMA at strength 1.0. Use 6–8 steps for fast motion; not applied to FastH3."],
+  fr: ["Utiliser Turbo LoRA v4 (4–8 étapes)", "H3 Turbo utilise v4-600 EMA à 1.0. Préférez 6–8 étapes pour les mouvements rapides ; non appliqué à FastH3."],
+  de: ["Turbo LoRA v4 nutzen (4–8 Schritte)", "H3 Turbo nutzt v4-600 EMA mit Stärke 1.0. Für schnelle Bewegung 6–8 Schritte; nicht für FastH3."],
+  ja: ["Turbo LoRA v4 を使用（4–8ステップ）", "H3 Turbo は強度1.0のv4-600 EMAを使用。速い動きには6–8ステップを推奨。FastH3には適用しません。"],
+  ko: ["Turbo LoRA v4 사용 (4–8단계)", "H3 Turbo는 강도 1.0의 v4-600 EMA를 사용합니다. 빠른 움직임은 6–8단계 권장; FastH3에는 적용하지 않습니다."],
+  es: ["Usar Turbo LoRA v4 (4–8 pasos)", "H3 Turbo usa v4-600 EMA con intensidad 1.0. Use 6–8 pasos para movimientos rápidos; no se aplica a FastH3."],
+  pt: ["Usar Turbo LoRA v4 (4–8 etapas)", "H3 Turbo usa v4-600 EMA com intensidade 1.0. Use 6–8 etapas para movimentos rápidos; não se aplica ao FastH3."],
+  tr: ["Turbo LoRA v4 kullan (4–8 adım)", "H3 Turbo, 1.0 güçte v4-600 EMA kullanır. Hızlı hareket için 6–8 adım önerilir; FastH3'e uygulanmaz."],
+  ar: ["استخدام Turbo LoRA v4 (4–8 خطوات)", "يستخدم H3 Turbo إصدار v4-600 EMA بقوة 1.0. للحركة السريعة استخدم 6–8 خطوات؛ لا يُطبق على FastH3."],
+  vi: ["Dùng Turbo LoRA v4 (4–8 bước)", "H3 Turbo dùng v4-600 EMA với cường độ 1.0. Chuyển động nhanh nên dùng 6–8 bước; không áp dụng cho FastH3."],
+  id: ["Gunakan Turbo LoRA v4 (4–8 langkah)", "H3 Turbo memakai v4-600 EMA dengan kekuatan 1.0. Gunakan 6–8 langkah untuk gerakan cepat; tidak untuk FastH3."],
+  ru: ["Использовать Turbo LoRA v4 (4–8 шагов)", "H3 Turbo использует v4-600 EMA с силой 1.0. Для быстрых движений 6–8 шагов; не применяется к FastH3."]
+};
+const modelCategoryKeys = ["settingsCategoryVideo", "settingsCategoryMusic", "settingsCategoryImage",
+  "settingsCategoryEncoder", "settingsCategoryText", "settingsCategoryOther"];
+const modelCategoryTranslations = {
+  en: ["Video models", "Music models", "Text-to-image models", "Encoders", "Text models", "Other models"],
+  "zh-CN": ["视频模型", "音乐模型", "文生图模型", "编码器", "文本模型", "其他模型"],
+  "zh-TW": ["影片模型", "音樂模型", "文字生圖模型", "編碼器", "文字模型", "其他模型"],
+  fr: ["Modèles vidéo", "Modèles musicaux", "Modèles texte-image", "Encodeurs", "Modèles de texte", "Autres modèles"],
+  de: ["Videomodelle", "Musikmodelle", "Text-zu-Bild-Modelle", "Encoder", "Textmodelle", "Weitere Modelle"],
+  ja: ["動画モデル", "音楽モデル", "テキストから画像モデル", "エンコーダー", "テキストモデル", "その他のモデル"],
+  ko: ["영상 모델", "음악 모델", "텍스트 이미지 모델", "인코더", "텍스트 모델", "기타 모델"],
+  es: ["Modelos de vídeo", "Modelos de música", "Modelos de texto a imagen", "Codificadores", "Modelos de texto", "Otros modelos"],
+  pt: ["Modelos de vídeo", "Modelos de música", "Modelos de texto para imagem", "Codificadores", "Modelos de texto", "Outros modelos"],
+  tr: ["Video modelleri", "Müzik modelleri", "Metinden görsel modelleri", "Kodlayıcılar", "Metin modelleri", "Diğer modeller"],
+  ar: ["نماذج الفيديو", "نماذج الموسيقى", "نماذج النص إلى صورة", "المشفرات", "نماذج النص", "نماذج أخرى"],
+  vi: ["Mô hình video", "Mô hình âm nhạc", "Mô hình văn bản thành ảnh", "Bộ mã hóa", "Mô hình văn bản", "Mô hình khác"],
+  id: ["Model video", "Model musik", "Model teks ke gambar", "Encoder", "Model teks", "Model lainnya"],
+  ru: ["Видеомодели", "Музыкальные модели", "Модели текста в изображение", "Кодировщики", "Текстовые модели", "Другие модели"]
 };
 const modelSettingsKeys = ["settingsStorage", "settingsOutputDirectory", "settingsMigrationNote",
   "settingsGemmaPath", "settingsModelEnabled", "settingsModelName"];
@@ -1894,6 +2220,567 @@ for (const [language, values] of Object.entries(workflowFrameTranslations)) {
     workflowRestore: values[0], workflowFirstFrame: values[1], workflowLastFrame: values[2]
   });
 }
+const mvTranslationKeys = ["modeMV", "mvNote", "mvName", "mvMusic", "mvPrompt", "mvSave",
+  "mvNew", "mvUnavailable", "mvDrafts", "mvRefresh", "mvChoose", "mvSaved", "mvError",
+  "mvMissing", "mvDiscard", "mvPromptEnhancerNote"];
+const mvTranslations = {
+  "zh-CN": ["MV生成", "根据音乐制作视频。当前支持选择已有音乐、试听和保存草稿；音乐分析、分镜和视频生成尚未开放。", "项目名称", "选择已有音乐", "画面创作方向", "保存MV草稿", "新建MV", "生成（开发中）", "MV项目草稿", "刷新草稿", "请选择音乐", "草稿已保存", "操作失败", "源音乐已不存在，请重新选择", "放弃尚未保存的MV修改？"],
+  "zh-TW": ["MV生成", "依音樂製作影片。目前支援選擇既有音樂、試聽與儲存草稿；音樂分析、分鏡及影片生成尚未開放。", "專案名稱", "選擇既有音樂", "畫面創作方向", "儲存MV草稿", "新增MV", "生成（開發中）", "MV專案草稿", "重新整理草稿", "請選擇音樂", "草稿已儲存", "操作失敗", "來源音樂已不存在，請重新選擇", "放棄尚未儲存的MV修改？"],
+  en: ["MV creation", "Create video from music. Select existing music, preview it and save drafts. Music analysis, storyboards and video generation are not available yet.", "Project name", "Select existing music", "Visual direction", "Save MV draft", "New MV", "Generate (in development)", "MV project drafts", "Refresh drafts", "Select music", "Draft saved", "Operation failed", "Source music is missing; select another track", "Discard unsaved MV changes?"],
+  fr: ["Création MV", "Créer une vidéo à partir de musique. Sélection, écoute et brouillons disponibles ; analyse, storyboard et génération à venir.", "Nom du projet", "Musique existante", "Direction visuelle", "Enregistrer le brouillon MV", "Nouveau MV", "Générer (en développement)", "Brouillons MV", "Actualiser", "Choisir une musique", "Brouillon enregistré", "Échec de l’opération", "Musique source absente ; choisir une autre piste", "Abandonner les modifications MV non enregistrées ?"],
+  de: ["MV-Erstellung", "Video aus Musik erstellen. Musikauswahl, Vorschau und Entwürfe sind verfügbar; Analyse, Storyboards und Generierung folgen.", "Projektname", "Vorhandene Musik", "Visuelle Ausrichtung", "MV-Entwurf speichern", "Neues MV", "Generieren (in Entwicklung)", "MV-Projektentwürfe", "Aktualisieren", "Musik wählen", "Entwurf gespeichert", "Vorgang fehlgeschlagen", "Quellmusik fehlt; anderen Titel wählen", "Ungespeicherte MV-Änderungen verwerfen?"],
+  ja: ["MV制作", "音楽から動画を制作します。既存曲の選択・試聴・下書き保存に対応。音楽分析・絵コンテ・動画生成は未実装です。", "プロジェクト名", "既存の音楽を選択", "映像の方向性", "MV下書きを保存", "新規MV", "生成（開発中）", "MV下書き", "更新", "音楽を選択", "下書きを保存しました", "操作に失敗しました", "元の音楽がありません。別の曲を選択してください", "未保存のMV変更を破棄しますか？"],
+  ko: ["MV 제작", "음악으로 영상을 만듭니다. 기존 음악 선택, 미리 듣기 및 초안 저장 지원. 분석, 스토리보드 및 영상 생성은 아직 제공되지 않습니다.", "프로젝트 이름", "기존 음악 선택", "영상 방향", "MV 초안 저장", "새 MV", "생성 (개발 중)", "MV 프로젝트 초안", "새로 고침", "음악 선택", "초안 저장됨", "작업 실패", "원본 음악이 없습니다. 다른 곡을 선택하세요", "저장하지 않은 MV 변경을 버릴까요?"],
+  es: ["Creación MV", "Crear vídeo desde música. Selección, escucha y borradores disponibles; análisis, guion y generación pendientes.", "Nombre del proyecto", "Música existente", "Dirección visual", "Guardar borrador MV", "Nuevo MV", "Generar (en desarrollo)", "Borradores MV", "Actualizar", "Elegir música", "Borrador guardado", "Error en la operación", "Falta la música original; elija otra pista", "¿Descartar los cambios MV sin guardar?"],
+  pt: ["Criação MV", "Criar vídeo a partir de música. Seleção, prévia e rascunhos disponíveis; análise, storyboard e geração ainda indisponíveis.", "Nome do projeto", "Música existente", "Direção visual", "Salvar rascunho MV", "Novo MV", "Gerar (em desenvolvimento)", "Rascunhos MV", "Atualizar", "Selecionar música", "Rascunho salvo", "Falha na operação", "Música original ausente; selecione outra faixa", "Descartar alterações MV não salvas?"],
+  tr: ["MV oluşturma", "Müzikten video oluşturun. Müzik seçimi, önizleme ve taslak kaydı hazır; analiz, storyboard ve video üretimi henüz yok.", "Proje adı", "Mevcut müzik", "Görsel yön", "MV taslağını kaydet", "Yeni MV", "Üret (geliştiriliyor)", "MV proje taslakları", "Yenile", "Müzik seç", "Taslak kaydedildi", "İşlem başarısız", "Kaynak müzik eksik; başka parça seçin", "Kaydedilmemiş MV değişiklikleri silinsin mi?"],
+  ar: ["إنشاء MV", "إنشاء فيديو من الموسيقى. اختيار الموسيقى والاستماع وحفظ المسودات متاح؛ التحليل والمشاهد وتوليد الفيديو غير متاحة بعد.", "اسم المشروع", "اختيار موسيقى موجودة", "التوجه البصري", "حفظ مسودة MV", "MV جديد", "توليد (قيد التطوير)", "مسودات مشاريع MV", "تحديث", "اختر الموسيقى", "تم حفظ المسودة", "فشلت العملية", "الموسيقى الأصلية مفقودة؛ اختر مقطعًا آخر", "تجاهل تعديلات MV غير المحفوظة؟"],
+  vi: ["Tạo MV", "Tạo video từ nhạc. Hỗ trợ chọn nhạc, nghe thử và lưu bản nháp; phân tích, phân cảnh và tạo video chưa có.", "Tên dự án", "Chọn nhạc có sẵn", "Định hướng hình ảnh", "Lưu bản nháp MV", "MV mới", "Tạo (đang phát triển)", "Bản nháp MV", "Làm mới", "Chọn nhạc", "Đã lưu bản nháp", "Thao tác thất bại", "Nhạc nguồn không còn; chọn bài khác", "Bỏ thay đổi MV chưa lưu?"],
+  id: ["Pembuatan MV", "Buat video dari musik. Pilihan musik, pratinjau dan draf tersedia; analisis, storyboard dan video belum tersedia.", "Nama proyek", "Pilih musik yang ada", "Arah visual", "Simpan draf MV", "MV baru", "Buat (dalam pengembangan)", "Draf proyek MV", "Muat ulang", "Pilih musik", "Draf disimpan", "Operasi gagal", "Musik sumber hilang; pilih lagu lain", "Buang perubahan MV yang belum disimpan?"],
+  ru: ["Создание MV", "Видео по музыке. Доступны выбор музыки, прослушивание и сохранение черновиков; анализ, раскадровка и генерация пока недоступны.", "Название проекта", "Выбрать музыку", "Визуальное направление", "Сохранить черновик MV", "Новый MV", "Генерация (в разработке)", "Черновики MV", "Обновить", "Выберите музыку", "Черновик сохранён", "Ошибка операции", "Исходная музыка отсутствует; выберите другой трек", "Отменить несохранённые изменения MV?"]
+};
+for (const [language, values] of Object.entries(mvTranslations)) {
+  Object.assign(translations[language], Object.fromEntries(mvTranslationKeys.map((key, i) => [key, values[i]])));
+}
+const mvPromptEnhancerNotes = {
+  "zh-CN": "按所选视频模型优化 MV 画面提示词；Skill 选择与其他创作模式相互独立。",
+  "zh-TW": "依所選影片模型優化 MV 畫面提示詞；Skill 選擇與其他創作模式分開保存。",
+  en: "Optimizes the MV visual prompt for the selected video model; MV Skill selections stay separate from other modes.",
+  fr: "Optimise le prompt visuel MV pour le modèle vidéo choisi ; les Skills MV restent séparées des autres modes.",
+  de: "Optimiert den visuellen MV-Prompt für das gewählte Videomodell; MV-Skills bleiben separat.",
+  ja: "選択した動画モデル向けにMVの映像プロンプトを最適化します。MVのSkill選択は他のモードと別です。",
+  ko: "선택한 비디오 모델에 맞춰 MV 화면 프롬프트를 최적화합니다. MV Skill 선택은 다른 모드와 분리됩니다.",
+  es: "Optimiza el prompt visual del MV para el modelo de vídeo elegido; sus Skills se mantienen separadas.",
+  pt: "Otimiza o prompt visual do MV para o modelo de vídeo escolhido; as Skills do MV ficam separadas.",
+  tr: "Seçilen video modeli için MV görsel istemini iyileştirir; MV Skill seçimleri diğer modlardan ayrıdır.",
+  ar: "يحسّن وصف مشهد MV لنموذج الفيديو المحدد؛ اختيارات مهارات MV منفصلة عن الأوضاع الأخرى.",
+  vi: "Tối ưu prompt hình ảnh MV theo mô hình video đã chọn; lựa chọn Skill của MV tách biệt với chế độ khác.",
+  id: "Mengoptimalkan prompt visual MV untuk model video terpilih; pilihan Skill MV terpisah dari mode lain.",
+  ru: "Оптимизирует визуальный промпт MV для выбранной видеомодели; набор Skill для MV хранится отдельно."
+};
+for (const [language, value] of Object.entries(mvPromptEnhancerNotes)) {
+  translations[language].mvPromptEnhancerNote = value;
+}
+const mvNotes = {
+  "zh-CN": "保存并分析音乐，规划节拍分镜，审阅后生成镜头并使用原音乐合成。",
+  "zh-TW": "儲存並分析音樂，規劃節拍分鏡，審閱後生成鏡頭並使用原音樂合成。",
+  en: "Save and analyze music, plan beat-bound shots, then review, render and export with the original music.",
+  fr: "Enregistrez et analysez la musique, planifiez les plans rythmiques, puis relisez, générez et exportez avec la musique originale.",
+  de: "Musik speichern und analysieren, Beat-Szenen planen, dann prüfen, generieren und mit Originalmusik exportieren.",
+  ja: "音楽を保存・解析し、拍に合わせた絵コンテを確認して、動画を生成し元の音楽で書き出します。",
+  ko: "음악을 저장·분석하고 박자 기반 장면을 계획한 뒤 검토, 생성 및 원본 음악으로 내보내세요.",
+  es: "Guarda y analiza la música, planifica los planos rítmicos, revisa, genera y exporta con la música original.",
+  pt: "Salve e analise a música, planeje cenas no ritmo, revise, gere e exporte com a música original.",
+  tr: "Müziği kaydedip analiz edin, vuruş sahnelerini planlayın, inceleyip üretin ve orijinal müzikle dışa aktarın.",
+  ar: "احفظ الموسيقى وحللها وخطط اللقطات حسب الإيقاع، ثم راجعها وولّد الفيديو وصدّره بالموسيقى الأصلية.",
+  vi: "Lưu và phân tích nhạc, lập cảnh theo nhịp, xem lại, tạo và xuất với nhạc gốc.",
+  id: "Simpan dan analisis musik, rencanakan adegan sesuai ketukan, tinjau, buat, lalu ekspor dengan musik asli.",
+  ru: "Сохраните и проанализируйте музыку, спланируйте кадры по ритму, проверьте, создайте и экспортируйте с исходной музыкой."
+};
+for (const [language, value] of Object.entries(mvNotes)) translations[language].mvNote = value;
+const mvAnalysisKeys = ["mvAnalyze", "mvCancelAnalysis", "mvAnalysisIdle", "mvTimelineHelp",
+  "mvAnalysisQueued", "mvAnalysisSignal", "mvAnalysisBeats", "mvAnalysisComplete",
+  "mvAnalysisFailed", "mvAnalysisCancelled", "mvTimeline", "mvAnalysisSummary",
+  "mvAnalysisNotReady", "mvAnalysisCancelling"];
+const mvAnalysisTranslations = {
+  "zh-CN": ["分析音乐", "取消分析", "保存项目后可分析来源音乐。", "点击时间轴可定位试听；亮线为节拍，金线为重拍。", "音乐分析排队中…", "正在分析波形与能量…", "正在识别节拍…", "音乐分析完成", "音乐分析失败", "音乐分析已取消", "音乐时间轴", "BPM {bpm} · {beats} 个节拍 · {downbeats} 个重拍", "先保存项目并选择可用音乐。", "正在取消音乐分析…"],
+  "zh-TW": ["分析音樂", "取消分析", "儲存專案後可分析來源音樂。", "點擊時間軸可定位試聽；亮線為節拍，金線為重拍。", "音樂分析排隊中…", "正在分析波形與能量…", "正在辨識節拍…", "音樂分析完成", "音樂分析失敗", "音樂分析已取消", "音樂時間軸", "BPM {bpm} · {beats} 個節拍 · {downbeats} 個重拍", "請先儲存專案並選擇可用音樂。", "正在取消音樂分析…"],
+  en: ["Analyze music", "Cancel analysis", "Save the project to analyze its source music.", "Click the timeline to seek; bright marks are beats and gold marks are downbeats.", "Music analysis queued…", "Analyzing waveform and energy…", "Detecting beats…", "Music analysis complete", "Music analysis failed", "Music analysis cancelled", "Music timeline", "BPM {bpm} · {beats} beats · {downbeats} downbeats", "Save the project and select available music first.", "Cancelling music analysis…"],
+  fr: ["Analyser la musique", "Annuler l’analyse", "Enregistrez le projet pour analyser sa musique source.", "Cliquez sur la timeline pour écouter à cet endroit ; traits clairs : temps, dorés : temps forts.", "Analyse en attente…", "Analyse de la forme d’onde et de l’énergie…", "Détection des temps…", "Analyse musicale terminée", "Échec de l’analyse musicale", "Analyse musicale annulée", "Timeline musicale", "BPM {bpm} · {beats} temps · {downbeats} temps forts", "Enregistrez le projet et choisissez une musique disponible.", "Annulation de l’analyse musicale…"],
+  de: ["Musik analysieren", "Analyse abbrechen", "Projekt speichern, um die Quellmusik zu analysieren.", "Timeline anklicken, um dorthin zu springen; helle Markierungen sind Beats, goldene Downbeats.", "Musikanalyse wartet…", "Wellenform und Energie werden analysiert…", "Beats werden erkannt…", "Musikanalyse abgeschlossen", "Musikanalyse fehlgeschlagen", "Musikanalyse abgebrochen", "Musik-Timeline", "BPM {bpm} · {beats} Beats · {downbeats} Downbeats", "Projekt speichern und verfügbare Musik auswählen.", "Musikanalyse wird abgebrochen…"],
+  ja: ["音楽を分析", "分析をキャンセル", "プロジェクトを保存すると音源を分析できます。", "タイムラインをクリックして再生位置を移動します。明るい線は拍、金色の線は強拍です。", "音楽分析を待機中…", "波形と音量を分析中…", "拍を検出中…", "音楽分析が完了しました", "音楽分析に失敗しました", "音楽分析をキャンセルしました", "音楽タイムライン", "BPM {bpm} · 拍 {beats} · 強拍 {downbeats}", "プロジェクトを保存し、利用可能な音楽を選択してください。", "音楽分析をキャンセル中…"],
+  ko: ["음악 분석", "분석 취소", "프로젝트를 저장하면 원본 음악을 분석할 수 있습니다.", "타임라인을 클릭해 재생 위치를 이동하세요. 밝은 표시는 박자, 금색 표시는 강박입니다.", "음악 분석 대기 중…", "파형과 에너지를 분석하는 중…", "박자를 감지하는 중…", "음악 분석 완료", "음악 분석 실패", "음악 분석 취소됨", "음악 타임라인", "BPM {bpm} · 박자 {beats}개 · 강박 {downbeats}개", "프로젝트를 저장하고 사용 가능한 음악을 선택하세요.", "음악 분석 취소 중…"],
+  es: ["Analizar música", "Cancelar análisis", "Guarde el proyecto para analizar su música.", "Haga clic en la línea de tiempo para buscar; las marcas claras son pulsos y las doradas, acentos.", "Análisis en cola…", "Analizando forma de onda y energía…", "Detectando pulsos…", "Análisis musical completado", "Error en el análisis musical", "Análisis musical cancelado", "Línea de tiempo musical", "BPM {bpm} · {beats} pulsos · {downbeats} acentos", "Guarde el proyecto y seleccione música disponible.", "Cancelando el análisis musical…"],
+  pt: ["Analisar música", "Cancelar análise", "Salve o projeto para analisar a música de origem.", "Clique na linha do tempo para buscar; marcas claras são batidas e douradas são tempos fortes.", "Análise na fila…", "Analisando forma de onda e energia…", "Detectando batidas…", "Análise musical concluída", "Falha na análise musical", "Análise musical cancelada", "Linha do tempo musical", "BPM {bpm} · {beats} batidas · {downbeats} tempos fortes", "Salve o projeto e selecione uma música disponível.", "Cancelando análise musical…"],
+  tr: ["Müziği analiz et", "Analizi iptal et", "Kaynak müziği analiz etmek için projeyi kaydedin.", "Konumu dinlemek için zaman çizelgesine tıklayın; açık çizgiler vuruş, altın çizgiler güçlü vuruştur.", "Müzik analizi sırada…", "Dalga biçimi ve enerji analiz ediliyor…", "Vuruşlar algılanıyor…", "Müzik analizi tamamlandı", "Müzik analizi başarısız", "Müzik analizi iptal edildi", "Müzik zaman çizelgesi", "BPM {bpm} · {beats} vuruş · {downbeats} güçlü vuruş", "Projeyi kaydedin ve kullanılabilir müziği seçin.", "Müzik analizi iptal ediliyor…"],
+  ar: ["تحليل الموسيقى", "إلغاء التحليل", "احفظ المشروع لتحليل الموسيقى المصدر.", "انقر على المخطط للانتقال؛ العلامات الفاتحة للإيقاع والذهبية للإيقاع القوي.", "تحليل الموسيقى في قائمة الانتظار…", "جارٍ تحليل الموجة والطاقة…", "جارٍ اكتشاف الإيقاعات…", "اكتمل تحليل الموسيقى", "فشل تحليل الموسيقى", "أُلغي تحليل الموسيقى", "المخطط الزمني للموسيقى", "BPM {bpm} · {beats} إيقاع · {downbeats} إيقاع قوي", "احفظ المشروع واختر موسيقى متاحة أولاً.", "جارٍ إلغاء تحليل الموسيقى…"],
+  vi: ["Phân tích nhạc", "Hủy phân tích", "Lưu dự án để phân tích nhạc nguồn.", "Nhấp vào dòng thời gian để tua; vạch sáng là nhịp, vạch vàng là phách mạnh.", "Đang chờ phân tích nhạc…", "Đang phân tích dạng sóng và năng lượng…", "Đang nhận diện nhịp…", "Đã phân tích xong nhạc", "Phân tích nhạc thất bại", "Đã hủy phân tích nhạc", "Dòng thời gian âm nhạc", "BPM {bpm} · {beats} nhịp · {downbeats} phách mạnh", "Hãy lưu dự án và chọn nhạc khả dụng trước.", "Đang hủy phân tích nhạc…"],
+  id: ["Analisis musik", "Batalkan analisis", "Simpan proyek untuk menganalisis musik sumber.", "Klik linimasa untuk mencari posisi; tanda terang adalah ketukan dan emas adalah ketukan kuat.", "Analisis musik dalam antrean…", "Menganalisis bentuk gelombang dan energi…", "Mendeteksi ketukan…", "Analisis musik selesai", "Analisis musik gagal", "Analisis musik dibatalkan", "Linimasa musik", "BPM {bpm} · {beats} ketukan · {downbeats} ketukan kuat", "Simpan proyek dan pilih musik yang tersedia terlebih dahulu.", "Membatalkan analisis musik…"],
+  ru: ["Анализировать музыку", "Отменить анализ", "Сохраните проект, чтобы анализировать исходную музыку.", "Нажмите на шкалу, чтобы перейти к моменту; светлые метки — доли, золотые — сильные доли.", "Анализ музыки в очереди…", "Анализ формы волны и энергии…", "Поиск долей…", "Анализ музыки завершён", "Не удалось проанализировать музыку", "Анализ музыки отменён", "Шкала музыки", "BPM {bpm} · долей {beats} · сильных долей {downbeats}", "Сначала сохраните проект и выберите доступную музыку.", "Отмена анализа музыки…"]
+};
+for (const [language, values] of Object.entries(mvAnalysisTranslations)) {
+  Object.assign(translations[language], Object.fromEntries(mvAnalysisKeys.map((key, i) => [key, values[i]])));
+}
+const mvDeleteConfirmTranslations = {
+  "zh-CN": "删除此MV项目草稿？来源音乐不会删除。",
+  "zh-TW": "刪除此MV專案草稿？來源音樂不會刪除。",
+  en: "Delete this MV project draft? The source music will be kept.",
+  fr: "Supprimer ce brouillon MV ? La musique source sera conservée.",
+  de: "Diesen MV-Projektentwurf löschen? Die Quellmusik bleibt erhalten.",
+  ja: "このMV下書きを削除しますか？元の音楽は保持されます。",
+  ko: "이 MV 프로젝트 초안을 삭제할까요? 원본 음악은 유지됩니다.",
+  es: "¿Eliminar este borrador MV? Se conservará la música original.",
+  pt: "Excluir este rascunho MV? A música original será mantida.",
+  tr: "Bu MV proje taslağı silinsin mi? Kaynak müzik korunacaktır.",
+  ar: "هل تريد حذف مسودة مشروع MV؟ سيتم الاحتفاظ بالموسيقى الأصلية.",
+  vi: "Xóa bản nháp MV này? Nhạc nguồn sẽ được giữ lại.",
+  id: "Hapus draf proyek MV ini? Musik sumber akan tetap disimpan.",
+  ru: "Удалить этот черновик MV? Исходная музыка будет сохранена."
+};
+for (const [language, value] of Object.entries(mvDeleteConfirmTranslations)) {
+  translations[language].mvDeleteConfirm = value;
+}
+const mvUploadKeys = ["mvMusic", "mvUpload", "mvUploadHint", "mvUploading", "mvUploaded",
+  "mvUploadInvalid", "mvUploadLimit", "mvUploadFull", "mvNote", "mvPreviewError"];
+const mvUploadTranslations = {
+  "zh-CN": ["音乐来源", "上传WAV", "PCM/Float WAV · 单/双声道 · 最长12分钟 · 最大512MB", "正在上传并校验WAV…", "WAV上传成功", "请选择有效的单/双声道WAV文件。", "WAV不能超过12分钟或512MB。", "上传音乐存储已满。", "选择历史音乐或上传WAV，试听并保存MV草稿；音乐分析、分镜和视频生成尚未开放。", "无法试听此音频，请检查WAV格式或浏览器支持。"],
+  "zh-TW": ["音樂來源", "上傳WAV", "PCM/Float WAV · 單/雙聲道 · 最長12分鐘 · 最大512MB", "正在上傳並驗證WAV…", "WAV上傳成功", "請選擇有效的單/雙聲道WAV檔案。", "WAV不得超過12分鐘或512MB。", "上傳音樂儲存空間已滿。", "選擇歷史音樂或上傳WAV，試聽並儲存MV草稿；音樂分析、分鏡及影片生成尚未開放。", "無法試聽音訊，請檢查WAV格式或瀏覽器支援。"],
+  en: ["Music source", "Upload WAV", "PCM/Float WAV · Mono/stereo · Up to 12 minutes · 512MB maximum", "Uploading and validating WAV…", "WAV uploaded", "Choose a valid mono/stereo WAV file.", "WAV must not exceed 12 minutes or 512MB.", "Uploaded music storage is full.", "Select historical music or upload WAV, preview it and save an MV draft. Analysis, storyboards and video generation are not available yet.", "Audio preview failed; check WAV format and browser support."],
+  fr: ["Source musicale", "Importer WAV", "PCM/Float WAV · Mono/stéréo · 12 minutes · 512Mo maximum", "Importation et validation WAV…", "WAV importé", "Choisissez un WAV mono/stéréo valide.", "Le WAV ne doit pas dépasser 12 minutes ou 512Mo.", "Stockage musical plein.", "Choisissez une musique existante ou importez un WAV, écoutez et enregistrez un brouillon MV. Analyse et génération à venir.", "Écoute impossible ; vérifiez le format WAV et le navigateur."],
+  de: ["Musikquelle", "WAV hochladen", "PCM/Float WAV · Mono/Stereo · Max. 12 Minuten und 512MB", "WAV wird hochgeladen und geprüft…", "WAV hochgeladen", "Gültige Mono-/Stereo-WAV-Datei wählen.", "WAV darf 12 Minuten oder 512MB nicht überschreiten.", "Musikspeicher ist voll.", "Vorhandene Musik wählen oder WAV hochladen, anhören und MV-Entwurf speichern. Analyse und Generierung folgen.", "Audiovorschau fehlgeschlagen; WAV-Format und Browser prüfen."],
+  ja: ["音楽ソース", "WAVをアップロード", "PCM/Float WAV · モノラル/ステレオ · 最大12分・512MB", "WAVをアップロード・検証中…", "WAVをアップロードしました", "有効なモノラル/ステレオWAVを選択してください。", "WAVは12分・512MB以内にしてください。", "音楽保存領域がいっぱいです。", "既存曲またはWAVを選んで試聴し、MV下書きを保存します。分析・絵コンテ・動画生成は未実装です。", "試聴できません。WAV形式とブラウザー対応をご確認ください。"],
+  ko: ["음악 소스", "WAV 업로드", "PCM/Float WAV · 모노/스테레오 · 최대 12분 및 512MB", "WAV 업로드 및 검증 중…", "WAV 업로드됨", "유효한 모노/스테레오 WAV 파일을 선택하세요.", "WAV는 12분 또는 512MB를 초과할 수 없습니다.", "음악 저장 공간이 가득 찼습니다.", "기존 음악 또는 WAV를 선택하여 듣고 MV 초안을 저장하세요. 분석, 스토리보드 및 영상 생성은 아직 제공되지 않습니다.", "오디오 미리 듣기 실패; WAV 형식과 브라우저 지원을 확인하세요."],
+  es: ["Fuente musical", "Subir WAV", "PCM/Float WAV · Mono/estéreo · Máximo 12 minutos y 512MB", "Subiendo y validando WAV…", "WAV subido", "Elija un WAV mono/estéreo válido.", "WAV no debe superar 12 minutos o 512MB.", "El almacenamiento de música está lleno.", "Elija música existente o suba WAV, escuche y guarde un borrador MV. Análisis y generación pendientes.", "Error de escucha; compruebe el formato WAV y el navegador."],
+  pt: ["Fonte musical", "Enviar WAV", "PCM/Float WAV · Mono/estéreo · Máximo 12 minutos e 512MB", "Enviando e validando WAV…", "WAV enviado", "Selecione um WAV mono/estéreo válido.", "WAV não pode exceder 12 minutos ou 512MB.", "Armazenamento de música cheio.", "Escolha música existente ou envie WAV, ouça e salve um rascunho MV. Análise e geração ainda indisponíveis.", "Falha na prévia; confira o formato WAV e o navegador."],
+  tr: ["Müzik kaynağı", "WAV yükle", "PCM/Float WAV · Mono/stereo · En fazla 12 dakika ve 512MB", "WAV yükleniyor ve doğrulanıyor…", "WAV yüklendi", "Geçerli bir mono/stereo WAV seçin.", "WAV 12 dakika veya 512MB sınırını aşamaz.", "Müzik depolama alanı dolu.", "Mevcut müzik seçin veya WAV yükleyin, dinleyin ve MV taslağını kaydedin. Analiz ve üretim henüz yok.", "Ses önizlemesi başarısız; WAV biçimini ve tarayıcıyı kontrol edin."],
+  ar: ["مصدر الموسيقى", "رفع WAV", "PCM/Float WAV · أحادي/ستيريو · حتى 12 دقيقة و512MB", "رفع WAV والتحقق منه…", "تم رفع WAV", "اختر ملف WAV أحاديًا أو ستيريو صالحًا.", "يجب ألا يتجاوز WAV 12 دقيقة أو512MB.", "مساحة تخزين الموسيقى ممتلئة.", "اختر موسيقى سابقة أو ارفع WAV واستمع واحفظ مسودة MV. التحليل وتوليد الفيديو غير متاحين بعد.", "تعذرت المعاينة؛ تحقق من صيغة WAV ودعم المتصفح."],
+  vi: ["Nguồn nhạc", "Tải WAV lên", "PCM/Float WAV · Mono/stereo · Tối đa 12 phút và 512MB", "Đang tải và kiểm tra WAV…", "Đã tải WAV", "Chọn WAV mono/stereo hợp lệ.", "WAV không được vượt quá 12 phút hoặc 512MB.", "Kho nhạc đã đầy.", "Chọn nhạc có sẵn hoặc tải WAV, nghe thử và lưu bản nháp MV. Phân tích và tạo video chưa có.", "Không nghe thử được; kiểm tra định dạng WAV và trình duyệt."],
+  id: ["Sumber musik", "Unggah WAV", "PCM/Float WAV · Mono/stereo · Maksimal 12 menit dan 512MB", "Mengunggah dan memvalidasi WAV…", "WAV diunggah", "Pilih WAV mono/stereo yang valid.", "WAV tidak boleh melebihi 12 menit atau 512MB.", "Penyimpanan musik penuh.", "Pilih musik lama atau unggah WAV, dengarkan dan simpan draf MV. Analisis dan pembuatan video belum tersedia.", "Pratinjau audio gagal; periksa format WAV dan browser."],
+  ru: ["Источник музыки", "Загрузить WAV", "PCM/Float WAV · Моно/стерео · До 12 минут и 512МБ", "Загрузка и проверка WAV…", "WAV загружен", "Выберите корректный моно/стерео WAV.", "WAV не должен превышать 12 минут или 512МБ.", "Хранилище музыки заполнено.", "Выберите музыку или загрузите WAV, прослушайте и сохраните MV. Анализ и генерация пока недоступны.", "Ошибка прослушивания; проверьте формат WAV и поддержку браузера."]
+};
+for (const [language, values] of Object.entries(mvUploadTranslations)) {
+  Object.assign(translations[language], Object.fromEntries(mvUploadKeys.map((key, i) => [key, values[i]])));
+}
+const newScoreOnlyTranslations = {
+  "zh-CN": "长视频仅生成新配乐。请设置配乐提示词并重新保存分镜后运行。",
+  "zh-TW": "長影片僅生成新配樂。請設定配樂提示詞並重新儲存分鏡後執行。",
+  en: "Long video only generates new scores. Set a score prompt and save the storyboard before running.",
+  fr: "La vidéo longue génère une nouvelle musique. Définissez le prompt et enregistrez le storyboard avant de lancer.",
+  de: "Langvideos erzeugen nur neue Musik. Musik-Prompt festlegen und Storyboard vor dem Start speichern.",
+  ja: "長編動画は新規音楽のみ生成します。音楽プロンプトを設定し、絵コンテを保存してから実行してください。",
+  ko: "긴 영상은 새 음악만 생성합니다. 음악 프롬프트를 설정하고 스토리보드를 저장한 후 실행하세요.",
+  es: "El vídeo largo solo genera música nueva. Defina el prompt y guarde el guion antes de ejecutar.",
+  pt: "Vídeos longos geram apenas música nova. Defina o prompt e salve o storyboard antes de executar.",
+  tr: "Uzun video yalnızca yeni müzik üretir. Müzik istemini ayarlayıp storyboard'u kaydettikten sonra çalıştırın.",
+  ar: "الفيديو الطويل يولّد موسيقى جديدة فقط. حدد وصف الموسيقى واحفظ المشاهد قبل التشغيل.",
+  vi: "Video dài chỉ tạo nhạc mới. Đặt lời nhắc nhạc và lưu phân cảnh trước khi chạy.",
+  id: "Video panjang hanya membuat musik baru. Atur prompt musik dan simpan storyboard sebelum menjalankan.",
+  ru: "Длинное видео создаёт только новую музыку. Задайте запрос музыки и сохраните раскадровку перед запуском."
+};
+for (const [language, value] of Object.entries(newScoreOnlyTranslations)) {
+  translations[language].workflowNewScoreOnly = value;
+}
+let mvProjects = [];
+let mvMusicSources = [];
+let currentMV = null;
+let mvDirty = false;
+let mvBusy = false;
+let mvFetchVersion = 0;
+let mvMusicFetchVersion = 0;
+let mvDisabledControls = [];
+let mvAnalysisJob = null;
+let mvAnalysis = null;
+let mvAnalysisPollTimer = null;
+let mvAnalysisFetchVersion = 0;
+let mvAnalysisStatusKey = "mvAnalysisIdle";
+let mvAnalysisStatusDetail = "";
+
+function setMVBusy(busy) {
+  mvBusy = busy;
+  if (busy) {
+    mvDisabledControls = [...document.querySelectorAll("#mv-panel input, #mv-panel textarea, #mv-panel select, #mv-panel button")]
+      .map(control => ({control, disabled: control.disabled}));
+    mvDisabledControls.forEach(({control}) => {control.disabled = true;});
+  } else {
+    mvDisabledControls.forEach(({control, disabled}) => {control.disabled = disabled;});
+    mvDisabledControls = [];
+  }
+  updateMVMusicPreview();
+  renderMVDrafts();
+  renderHistory();
+}
+
+function showMVMessage(message, error = false) {
+  const node = document.querySelector("#mv-message");
+  node.textContent = message;
+  node.hidden = !message;
+  node.classList.toggle("error", error);
+}
+
+function setMVAnalysisStatus(key, detail = "") {
+  mvAnalysisStatusKey = key;
+  mvAnalysisStatusDetail = detail;
+  const node = document.querySelector("#mv-analysis-status");
+  node.textContent = `${t(key)}${detail ? ` ${detail}` : ""}`;
+}
+
+function updateMVAnalysisControls() {
+  const active = ["queued", "running", "cancelling"].includes(mvAnalysisJob?.status);
+  const sourceId = document.querySelector("#mv-music").value;
+  document.querySelector("#mv-analyze").disabled = mvBusy || active || !currentMV?.id ||
+    !sourceId || mvDirty || currentMV.music_source_id !== sourceId;
+  document.querySelector("#mv-cancel-analysis").hidden = !active;
+  document.querySelector("#mv-cancel-analysis").disabled = mvBusy || !active || mvAnalysisJob.status === "cancelling";
+  document.querySelector("#mv-music").disabled = mvBusy || active;
+  window.MiniMuvMVGeneration?.updateControls();
+}
+
+function renderMVTimeline() {
+  const wrap = document.querySelector("#mv-timeline-wrap");
+  const canvas = document.querySelector("#mv-timeline");
+  const summary = document.querySelector("#mv-analysis-summary");
+  const sourceId = document.querySelector("#mv-music").value;
+  const result = mvAnalysis?.music_source_id === sourceId ? mvAnalysis.result : null;
+  if (!result) {
+    wrap.hidden = true;
+    summary.hidden = true;
+    return;
+  }
+  wrap.hidden = false;
+  summary.hidden = false;
+  const bpm = result.bpm === null ? "—" : result.bpm;
+  summary.textContent = t("mvAnalysisSummary")
+    .replace("{bpm}", String(bpm))
+    .replace("{beats}", String(result.beats.length))
+    .replace("{downbeats}", String(result.downbeats.length));
+  const width = Math.max(320, Math.round(canvas.clientWidth || 640));
+  const height = 96;
+  const ratio = window.devicePixelRatio || 1;
+  canvas.width = Math.round(width * ratio);
+  canvas.height = Math.round(height * ratio);
+  const context = canvas.getContext?.("2d");
+  if (!context) return;
+  context.setTransform(ratio, 0, 0, ratio, 0, 0);
+  context.clearRect(0, 0, width, height);
+  const maxEnergy = Math.max(0.000001, ...result.waveform);
+  const binWidth = width / result.waveform.length;
+  context.fillStyle = "#82909b";
+  result.waveform.forEach((value, index) => {
+    const barHeight = Math.max(1, value / maxEnergy * 48);
+    context.fillRect(index * binWidth, 58 - barHeight, Math.max(1, binWidth * 0.72), barHeight);
+  });
+  const downbeats = new Set(result.downbeats);
+  result.beats.forEach(beat => {
+    const x = beat / result.duration * width;
+    context.beginPath();
+    context.strokeStyle = downbeats.has(beat) ? "#d2a75c" : "#e6e9eb";
+    context.globalAlpha = downbeats.has(beat) ? 0.95 : 0.55;
+    context.moveTo(x, 65);
+    context.lineTo(x, downbeats.has(beat) ? 93 : 84);
+    context.stroke();
+  });
+  context.globalAlpha = 1;
+  const player = document.querySelector("#mv-audio");
+  document.querySelector("#mv-playhead").style.left =
+    `${Math.max(0, Math.min(100, player.currentTime / result.duration * 100))}%`;
+}
+
+function seekMVTimeline(event) {
+  const result = mvAnalysis?.music_source_id === document.querySelector("#mv-music").value
+    ? mvAnalysis.result : null;
+  if (!result) return;
+  const bounds = event.currentTarget.getBoundingClientRect();
+  if (bounds.width > 0) {
+    document.querySelector("#mv-audio").currentTime =
+      Math.max(0, Math.min(1, (event.clientX - bounds.left) / bounds.width)) * result.duration;
+  }
+}
+
+function handleMVTimelineKeydown(event) {
+  const result = mvAnalysis?.music_source_id === document.querySelector("#mv-music").value
+    ? mvAnalysis.result : null;
+  if (!result) return;
+  const player = document.querySelector("#mv-audio");
+  if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+    event.preventDefault();
+    player.currentTime = Math.max(0, Math.min(result.duration,
+      player.currentTime + (event.key === "ArrowRight" ? 1 : -1)));
+  } else if (event.key === "Home" || event.key === "End") {
+    event.preventDefault();
+    player.currentTime = event.key === "Home" ? 0 : result.duration;
+  }
+}
+
+function loadMVAnalysis() {
+  const project = currentMV;
+  const version = ++mvAnalysisFetchVersion;
+  mvAnalysis = null;
+  if (!project?.id) {
+    setMVAnalysisStatus("mvAnalysisIdle");
+    renderMVTimeline();
+    updateMVAnalysisControls();
+    return;
+  }
+  setMVAnalysisStatus("mvAnalysisQueued");
+  fetch(`/api/mv-projects/${project.id}/analysis`, {cache: "no-store"})
+    .then(async response => {
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.detail || data.error || "mv_analysis_unavailable");
+      return data;
+    })
+    .then(data => {
+      if (version !== mvAnalysisFetchVersion || currentMV?.id !== project.id) return;
+      if (data.music_source_id !== project.music_source_id) throw new Error("mv_analysis_source_mismatch");
+      mvAnalysis = data.result ? {music_source_id: data.music_source_id, result: data.result, cached: true} : null;
+      setMVAnalysisStatus(mvAnalysis ? "mvAnalysisComplete" : "mvAnalysisIdle");
+      renderMVTimeline();
+      updateMVAnalysisControls();
+    })
+    .catch(error => {
+      if (version === mvAnalysisFetchVersion && currentMV?.id === project.id) {
+        setMVAnalysisStatus("mvAnalysisFailed", error.message);
+        renderMVTimeline();
+      }
+    });
+  updateMVAnalysisControls();
+}
+
+function scheduleMVAnalysisPoll(jobId) {
+  if (mvAnalysisPollTimer) window.clearTimeout(mvAnalysisPollTimer);
+  mvAnalysisPollTimer = window.setTimeout(() => pollMVAnalysis(jobId), 1000);
+}
+
+async function pollMVAnalysis(jobId) {
+  if (mvAnalysisJob?.id !== jobId) return;
+  try {
+    const response = await fetch(`/api/mv-analysis/${jobId}`, {cache: "no-store"});
+    const data = await response.json();
+    if (!response.ok || !data.job) throw new Error(data.error || "mv_analysis_unavailable");
+    mvAnalysisJob = data.job;
+    if (["queued", "running", "cancelling"].includes(data.job.status)) {
+      const statusKey = data.job.status === "cancelling" ? "mvAnalysisCancelling" :
+        data.job.status === "queued" ? "mvAnalysisQueued" :
+          data.job.stage === "signal" ? "mvAnalysisSignal" : "mvAnalysisBeats";
+      setMVAnalysisStatus(statusKey);
+      scheduleMVAnalysisPoll(jobId);
+    } else {
+      mvAnalysisJob = null;
+      if (data.job.status === "completed" && data.job.result) {
+        mvAnalysis = {music_source_id: data.job.music_source_id, result: data.job.result};
+        setMVAnalysisStatus("mvAnalysisComplete");
+      } else if (data.job.status === "cancelled") {
+        setMVAnalysisStatus("mvAnalysisCancelled");
+      } else {
+        setMVAnalysisStatus("mvAnalysisFailed", data.job.error || "");
+      }
+      renderMVTimeline();
+    }
+    updateMVAnalysisControls();
+  } catch (error) {
+    setMVAnalysisStatus("mvAnalysisFailed", error.message);
+    scheduleMVAnalysisPoll(jobId);
+  }
+}
+
+async function startMVAnalysis() {
+  if (mvBusy || mvAnalysisJob || !currentMV?.id) return;
+  const project = currentMV;
+  updateMVAnalysisControls();
+  setMVAnalysisStatus("mvAnalysisQueued");
+  try {
+    const response = await fetch(`/api/mv-projects/${project.id}/analyze`, {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({revision: project.revision})
+    });
+    const data = await response.json();
+    if (!response.ok || !data.job) throw new Error(data.detail || data.error || "mv_analysis_failed");
+    mvAnalysisJob = data.job;
+    if (data.job.status === "completed" && data.job.result) {
+      mvAnalysis = {music_source_id: data.job.music_source_id, result: data.job.result, cached: true};
+      mvAnalysisJob = null;
+      setMVAnalysisStatus("mvAnalysisComplete");
+      renderMVTimeline();
+    } else {
+      scheduleMVAnalysisPoll(data.job.id);
+    }
+    updateMVAnalysisControls();
+  } catch (error) {
+    setMVAnalysisStatus("mvAnalysisFailed", error.message);
+    updateMVAnalysisControls();
+  }
+}
+
+async function cancelMVAnalysis() {
+  const jobId = mvAnalysisJob?.id;
+  if (!jobId || mvBusy) return;
+  document.querySelector("#mv-cancel-analysis").disabled = true;
+  try {
+    const response = await fetch(`/api/mv-analysis/${jobId}/cancel`, {
+      method: "POST", headers: {"Content-Type": "application/json"}, body: "{}"
+    });
+    const data = await response.json();
+    if (!response.ok || !data.job) throw new Error(data.detail || data.error || "mv_analysis_cancel_failed");
+    mvAnalysisJob = data.job;
+    setMVAnalysisStatus("mvAnalysisCancelling");
+    scheduleMVAnalysisPoll(jobId);
+  } catch (error) {
+    setMVAnalysisStatus("mvAnalysisFailed", error.message);
+    updateMVAnalysisControls();
+  }
+}
+
+function refreshMVMusicSources() {
+  const select = document.querySelector("#mv-music");
+  const selected = select.value;
+  const options = [new Option(t("mvChoose"), "")];
+  historyItems.filter(item => item.kind === "music" && item.audio_url).forEach(item => {
+    options.push(new Option(`${item.name || item.prompt?.slice(0, 60) || item.id.slice(0, 8)} · ${item.id.slice(0, 8)}`, item.id));
+  });
+  mvMusicSources.forEach(item => {
+    options.push(new Option(`WAV · ${item.name} · ${item.id.slice(0, 8)}`, item.id));
+  });
+  if (selected && !options.some(option => option.value === selected)) {
+    const missing = new Option(`${t("mvMissing")} · ${selected.slice(0, 8)}`, selected);
+    missing.disabled = true;
+    options.push(missing);
+  }
+  select.replaceChildren(...options);
+  select.value = selected;
+  updateMVMusicPreview();
+}
+
+function updateMVMusicPreview() {
+  const id = document.querySelector("#mv-music").value;
+  const item = historyItems.find(item => item.kind === "music" && item.id === id && item.audio_url)
+    || mvMusicSources.find(item => item.id === id && item.audio_url);
+  const player = document.querySelector("#mv-audio");
+  if (player.dataset.musicId !== id || !item) {
+    player.pause();
+    player.removeAttribute("src");
+    if (item) player.src = item.audio_url;
+    player.dataset.musicId = id;
+  }
+  player.hidden = !item;
+  document.querySelector("#mv-save").disabled = mvBusy || !item;
+  updateMVAnalysisControls();
+}
+
+function openMVProject(project = null) {
+  if (mvBusy || window.MiniMuvVisualReferences?.busy() || (mvDirty && !window.confirm(t("mvDiscard")))) return false;
+  if (window.MiniMuvMVGeneration && !window.MiniMuvMVGeneration.canLeave()) return false;
+  currentMV = project;
+  document.querySelector("#mv-name").value = project?.name || "";
+  mvPromptInput.value = project?.prompt || "";
+  window.MiniMuvVisualReferences?.load("mv", project?.visual_references);
+  window.MiniMuvVideoPrompts?.load("mv", project?.negative_prompt || "");
+  mvPromptEnhancerResult.hidden = true;
+  setPromptEnhancerStatus("", "mv");
+  document.querySelector("#mv-aspect").value = project?.aspect || "16:9";
+  const select = document.querySelector("#mv-music");
+  select.replaceChildren(new Option("", project?.music_source_id || ""));
+  select.value = project?.music_source_id || "";
+  mvDirty = false;
+  refreshMVMusicSources();
+  if (!mvAnalysisJob) loadMVAnalysis();
+  else updateMVAnalysisControls();
+  showMVMessage(project && !project.music_available ? t("mvMissing") : "", Boolean(project && !project.music_available));
+  renderMVDrafts();
+  renderHistory();
+  window.MiniMuvMVGeneration?.refresh();
+  return true;
+}
+
+function renderMVDrafts() {
+  const container = document.querySelector("#mv-drafts");
+  if (!container) return;
+  container.replaceChildren();
+}
+
+async function loadMVProjects() {
+  const version = ++mvFetchVersion;
+  try {
+    const response = await fetch("/api/mv-projects", {cache: "no-store"});
+    const data = await response.json();
+    if (version !== mvFetchVersion) return;
+    if (!response.ok) throw new Error(data.detail || data.error);
+    if (!Array.isArray(data.items)) throw new Error("invalid_mv_response");
+    mvProjects = data.items;
+    renderMVDrafts();
+    renderHistory();
+    return true;
+  } catch (error) {
+    if (version === mvFetchVersion) showMVMessage(`${t("mvError")}: ${error.message}`, true);
+    return false;
+  }
+}
+
+async function saveMVProject(event) {
+  event.preventDefault();
+  if (mvBusy || window.MiniMuvVisualReferences?.busy()) return;
+  if (window.MiniMuvMVGeneration && !window.MiniMuvMVGeneration.canLeave()) return;
+  setMVBusy(true);
+  try {
+    const response = await fetch(currentMV ? `/api/mv-projects/${currentMV.id}/update` : "/api/mv-projects", {
+      method: "POST", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        name: document.querySelector("#mv-name").value.trim(),
+        prompt: document.querySelector("#mv-prompt").value.trim(),
+        aspect: document.querySelector("#mv-aspect").value,
+        music_source_id: document.querySelector("#mv-music").value,
+        ...(window.MiniMuvVisualReferences ? {
+          visual_references: window.MiniMuvVisualReferences.payload("mv")
+        } : {}),
+        ...(window.MiniMuvVideoPrompts?.payload("mv") || {}),
+        ...(currentMV ? {revision: currentMV.revision} : {})
+      })
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || data.error);
+    currentMV = data.project;
+    mvDirty = false;
+    if (await loadMVProjects()) showMVMessage(t("mvSaved"));
+    loadMVAnalysis();
+    window.MiniMuvMVGeneration?.refresh();
+  } catch (error) {
+    showMVMessage(`${t("mvError")}: ${error.message}`, true);
+  } finally {
+    setMVBusy(false);
+  }
+}
+
+async function loadMVMusicSources() {
+  const version = ++mvMusicFetchVersion;
+  try {
+    const response = await fetch("/api/mv-music", {cache: "no-store"});
+    const data = await response.json();
+    if (version !== mvMusicFetchVersion) return;
+    if (!response.ok || !Array.isArray(data.items)) throw new Error(data.detail || data.error || "invalid_mv_response");
+    mvMusicSources = data.items;
+    refreshMVMusicSources();
+    return true;
+  } catch (error) {
+    if (version === mvMusicFetchVersion) showMVMessage(`${t("mvError")}: ${error.message}`, true);
+    return false;
+  }
+}
+
+async function uploadMVMusic(event) {
+  const input = event.target;
+  const file = input.files?.[0];
+  if (mvBusy || !file) return;
+  if (!file.name.toLowerCase().endsWith(".wav") || !file.size || file.size > 512 * 1024 * 1024) {
+    showMVMessage(t(file.size > 512 * 1024 * 1024 ? "mvUploadLimit" : "mvUploadInvalid"), true);
+    input.value = "";
+    return;
+  }
+  setMVBusy(true);
+  showMVMessage(t("mvUploading"));
+  try {
+    const response = await fetch(`/api/mv-music?name=${encodeURIComponent(file.name)}`, {
+      method: "POST", headers: {"Content-Type": "audio/wav"}, body: file
+    });
+    const data = await response.json();
+    if (!response.ok) {
+      const keys = {invalid_mv_wav: "mvUploadInvalid", mv_wav_limit: "mvUploadLimit",
+        mv_music_storage_full: "mvUploadFull"};
+      throw new Error(keys[data.error] ? t(keys[data.error]) : data.detail || data.error || t("mvError"));
+    }
+    mvMusicFetchVersion += 1;
+    mvMusicSources = [data.item, ...mvMusicSources.filter(item => item.id !== data.item.id)];
+    const select = document.querySelector("#mv-music");
+    select.replaceChildren(new Option(data.item.name, data.item.id));
+    select.value = data.item.id;
+    mvDirty = true;
+    refreshMVMusicSources();
+    showMVMessage(t("mvUploaded"));
+  } catch (error) {
+    showMVMessage(`${t("mvError")}: ${error.message}`, true);
+  } finally {
+    input.value = "";
+    setMVBusy(false);
+  }
+}
+
 const downloadControlTranslations = {
   "zh-CN": ["下载 / 继续", "暂停下载", "请先保存模型目录和 Gemma 路径。", "外部下载正在运行，不能重复启动或在此暂停。", "后台下载已启动；中断后每 5 分钟重试，最多 12 次。", "正在暂停下载；共用编码器也将暂停，已下载数据保留。"],
   "zh-TW": ["下載 / 繼續", "暫停下載", "請先儲存模型目錄和 Gemma 路徑。", "外部下載正在執行，無法重複啟動或在此暫停。", "背景下載已啟動；中斷後每 5 分鐘重試，最多 12 次。", "正在暫停下載及共用編碼器，已下載資料保留。"],
@@ -1927,7 +2814,49 @@ const historyTranslations = {
   id: { historyTitle: "Riwayat proyek", historyCategory: "Kategori riwayat", historyAll: "Semua", historyVideo: "Video", historyImage: "Gambar", historyMusic: "Musik", historyEmpty: "Belum ada proyek dalam kategori ini", historyNoPrompt: "Prompt tidak disimpan", historyLoadError: "Riwayat proyek tidak dapat dimuat", historyCount: "item", projectName: 'Nama proyek', projectNamePlaceholder: 'Opsional, mis. Adegan pembuka laut', workflowNamePlaceholder: 'mis. Film perjalanan senja di pantai', workflowNameHint: 'Mengidentifikasi video panjang di riwayat. Kosongkan untuk memakai “Untitled video”; maks. 120 karakter.' },
   ru: { historyTitle: "История проектов", historyCategory: "Категория истории", historyAll: "Все", historyVideo: "Видео", historyImage: "Изображения", historyMusic: "Музыка", historyEmpty: "В этой категории пока нет проектов", historyNoPrompt: "Промпт не сохранён", historyLoadError: "Не удалось загрузить историю проектов", historyCount: "элементов", projectName: 'Название проекта', projectNamePlaceholder: 'Необязательно, например: Вступительный кадр океана', workflowNamePlaceholder: 'например: Путешествие на закате у моря', workflowNameHint: 'Помогает найти длинное видео в истории. Если оставить пустым — «Untitled video»; до 120 символов.' }
 };
+const historyModeTranslations = {
+  "zh-CN": "播客制作", en: "Podcast", "zh-TW": "播客製作", fr: "Production de podcast",
+  de: "Podcast-Produktion", ja: "ポッドキャスト制作", ko: "팟캐스트 제작", es: "Producción de pódcast",
+  pt: "Produção de podcast", tr: "Podcast üretimi", ar: "إنتاج بودكاست", vi: "Sản xuất podcast",
+  id: "Produksi podcast", ru: "Производство подкаста"
+};
+for (const [language, label] of Object.entries(historyModeTranslations)) {
+  historyTranslations[language].modePodcast = label;
+}
 const settingsDialog = document.querySelector("#settings-dialog");
+const settingsSections = [
+  { key: "models", nav: document.querySelector("#settings-nav-models"), pane: document.querySelector("#settings-pane-models") },
+  { key: "prompts", nav: document.querySelector("#prompts-open"), pane: document.querySelector("#prompts-dialog") },
+  { key: "skills", nav: document.querySelector("#skills-open"), pane: document.querySelector("#skills-dialog") }
+];
+
+function selectSettingsSection(key) {
+  for (const section of settingsSections) {
+    const active = section.key === key;
+    section.pane.hidden = !active;
+    section.nav.setAttribute("aria-selected", active ? "true" : "false");
+    if (section.key !== "models") section.pane.open = active && settingsDialog.open;
+  }
+}
+
+function openSettingsSection(key) {
+  if (!settingsDialog.open) settingsDialog.showModal();
+  selectSettingsSection(key);
+}
+
+for (const section of settingsSections) {
+  section.nav.addEventListener("click", () => openSettingsSection(section.key));
+  if (section.key === "models") continue;
+  // The prompt and skill panels keep their own show/close calls after being merged into this dialog.
+  section.pane.showModal = () => openSettingsSection(section.key);
+  section.pane.close = () => settingsDialog.close();
+}
+settingsDialog.addEventListener("close", () => selectSettingsSection("models"));
+settingsDialog.addEventListener("cancel", event => {
+  const active = settingsSections.find(section => section.key !== "models" && !section.pane.hidden);
+  if (!active) return;
+  if (!active.pane.dispatchEvent(new Event("cancel", { cancelable: true }))) event.preventDefault();
+});
 const settingsForm = document.querySelector("#settings-form");
 const settingsStatus = document.querySelector("#settings-status");
 const settingsSaveButton = document.querySelector("#settings-save");
@@ -1945,6 +2874,15 @@ const promptEnhancerKeywords = document.querySelector("#prompt-enhancer-keywords
 const promptEnhancerOutput = document.querySelector("#prompt-enhancer-output");
 const applyEnhancedPromptButton = document.querySelector("#apply-enhanced-prompt");
 const dismissEnhancedPromptButton = document.querySelector("#dismiss-enhanced-prompt");
+const mvPromptInput = document.querySelector("#mv-prompt");
+const mvPromptEnhancerModel = document.querySelector("#mv-prompt-enhancer-model");
+const mvEnhancePromptButton = document.querySelector("#mv-enhance-prompt-button");
+const mvPromptEnhancerStatus = document.querySelector("#mv-prompt-enhancer-status");
+const mvPromptEnhancerResult = document.querySelector("#mv-prompt-enhancer-result");
+const mvPromptEnhancerKeywords = document.querySelector("#mv-prompt-enhancer-keywords");
+const mvPromptEnhancerOutput = document.querySelector("#mv-prompt-enhancer-output");
+const mvApplyEnhancedPromptButton = document.querySelector("#mv-apply-enhanced-prompt");
+const mvDismissEnhancedPromptButton = document.querySelector("#mv-dismiss-enhanced-prompt");
 const generateButton = document.querySelector("#generate-button");
 const generateLabel = document.querySelector("#generate-label");
 const videoModeButton = document.querySelector("#video-mode-button");
@@ -1961,10 +2899,7 @@ const workflowStoryStatus = document.querySelector("#workflow-story-status");
 const workflowGlobalMusicWrapper = document.querySelector("#workflow-global-music-wrapper");
 const workflowGlobalMusicPrompt = document.querySelector("#workflow-global-music-prompt");
 const workflowGlobalMusicPromptWrapper = document.querySelector("#workflow-global-music-prompt-wrapper");
-const workflowMusicSource = document.querySelector("#workflow-music-source");
-const workflowBurnLyrics = document.querySelector("#workflow-burn-lyrics");
-const workflowBurnLyricsWrapper = document.querySelector("#workflow-burn-lyrics-wrapper");
-const workflowList = document.querySelector("#workflow-list");
+const mvModeButton = document.querySelector("#mv-mode-button");
 const workflowStatus = document.querySelector("#workflow-status");
 const workflowMessage = document.querySelector("#workflow-message");
 const workflowSaveButton = document.querySelector("#workflow-save");
@@ -1975,6 +2910,8 @@ const workflowCancelButton = document.querySelector("#workflow-cancel");
 const videoModelSection = document.querySelector("#video-model-section");
 const imageModelSection = document.querySelector("#image-model-section");
 const musicModelSection = document.querySelector("#music-model-section");
+const generationModelPicker = document.querySelector("#generation-model-picker");
+const generationModelSummary = document.querySelector("#generation-model-summary");
 const videoControls = document.querySelector("#video-controls");
 const imageControls = document.querySelector("#image-controls");
 const musicControls = document.querySelector("#music-controls");
@@ -1983,13 +2920,11 @@ const musicLyricsField = document.querySelector("#music-lyrics-field");
 const musicLyricsInput = document.querySelector("#music-lyrics");
 const musicModelTitle = document.querySelector("#music-model-title");
 const musicModelDescription = document.querySelector("#music-model-description");
-const musicModelPath = document.querySelector("#music-model-path");
 const musicModelNotice = document.querySelector("#music-model-notice");
 const modelNotice = document.querySelector("#model-notice");
 const modelTitle = document.querySelector("#model-title");
 const modelDescription = document.querySelector("#model-description");
 const modelLinks = document.querySelector("#model-links");
-const modelPath = document.querySelector("#model-path");
 const loadModelButton = document.querySelector("#load-model-button");
 const turboToggle = document.querySelector("#turbo");
 const stepsSelect = document.querySelector("#steps");
@@ -2001,16 +2936,65 @@ const loadingTitle = document.querySelector("#loading-title");
 const cancelButton = document.querySelector("#cancel-button");
 const video = document.querySelector("#video-result");
 const image = document.querySelector("#image-result");
+const imageCandidates = document.querySelector("#image-candidates");
 const audio = document.querySelector("#audio-result");
 const resultFooter = document.querySelector("#result-footer");
 const imageModelNotice = document.querySelector("#image-model-notice");
 const imageModelTitle = document.querySelector("#image-model-title");
 const imageModelDescription = document.querySelector("#image-model-description");
 const imageModelLinks = document.querySelector("#image-model-links");
-const imageModelPath = document.querySelector("#image-model-path");
 const imageDownloadLink = document.querySelector("#download-image");
 const logPanel = document.querySelector("#log-panel");
 const jobLogs = document.querySelector("#job-logs");
+const logCopyTranslations = {
+  en: ["Copy all logs", "Logs copied", "Could not copy logs. Check clipboard permissions.", "No logs to copy."],
+  "zh-CN": ["复制全部日志", "日志已复制", "复制失败，请检查剪贴板权限。", "暂无日志可复制。"],
+  "zh-TW": ["複製全部日誌", "日誌已複製", "複製失敗，請檢查剪貼簿權限。", "暫無日誌可複製。"],
+  fr: ["Copier tous les journaux", "Journaux copiés", "Échec de copie. Vérifiez les autorisations du presse-papiers.", "Aucun journal à copier."],
+  de: ["Alle Protokolle kopieren", "Protokolle kopiert", "Kopieren fehlgeschlagen. Zwischenablage-Berechtigung prüfen.", "Keine Protokolle zum Kopieren."],
+  ja: ["ログをすべてコピー", "ログをコピーしました", "コピーできません。クリップボードの権限を確認してください。", "コピーするログがありません。"],
+  ko: ["모든 로그 복사", "로그가 복사되었습니다", "복사하지 못했습니다. 클립보드 권한을 확인하세요.", "복사할 로그가 없습니다."],
+  es: ["Copiar todos los registros", "Registros copiados", "No se pudo copiar. Comprueba los permisos del portapapeles.", "No hay registros para copiar."],
+  pt: ["Copiar todos os registros", "Registros copiados", "Falha ao copiar. Verifique as permissões da área de transferência.", "Não há registros para copiar."],
+  tr: ["Tüm günlükleri kopyala", "Günlükler kopyalandı", "Kopyalanamadı. Pano izinlerini kontrol edin.", "Kopyalanacak günlük yok."],
+  ar: ["نسخ جميع السجلات", "تم نسخ السجلات", "تعذر النسخ. تحقق من أذونات الحافظة.", "لا توجد سجلات للنسخ."],
+  vi: ["Sao chép toàn bộ nhật ký", "Đã sao chép nhật ký", "Không thể sao chép. Kiểm tra quyền bảng nhớ tạm.", "Không có nhật ký để sao chép."],
+  id: ["Salin semua log", "Log disalin", "Gagal menyalin. Periksa izin papan klip.", "Tidak ada log untuk disalin."],
+  ru: ["Копировать весь журнал", "Журнал скопирован", "Не удалось скопировать. Проверьте разрешения буфера обмена.", "Нет записей для копирования."]
+};
+let logCopyStatusIndex = null;
+function updateLogCopyLanguage() {
+  const labels = logCopyTranslations[languageSelect.value] || logCopyTranslations.en;
+  const button = document.querySelector("#copy-logs");
+  button.title = labels[0];
+  button.setAttribute("aria-label", labels[0]);
+  const status = document.querySelector("#copy-logs-status");
+  status.hidden = logCopyStatusIndex === null;
+  status.textContent = logCopyStatusIndex === null ? "" : labels[logCopyStatusIndex];
+}
+async function copyJobLogs() {
+  const button = document.querySelector("#copy-logs");
+  if (button.disabled) return;
+  const text = jobLogs.textContent;
+  if (!text) {
+    logCopyStatusIndex = 3;
+    updateLogCopyLanguage();
+    return;
+  }
+  button.disabled = true;
+  logCopyStatusIndex = null;
+  updateLogCopyLanguage();
+  try {
+    await navigator.clipboard.writeText(text);
+    logCopyStatusIndex = 1;
+  } catch (error) {
+    console.error("Failed to copy generation logs:", error);
+    logCopyStatusIndex = 2;
+  } finally {
+    button.disabled = false;
+    updateLogCopyLanguage();
+  }
+}
 const historyList = document.querySelector("#history-list");
 const historyStatus = document.querySelector("#history-status");
 const historyCount = document.querySelector("#history-count");
@@ -2021,13 +3005,49 @@ let modelInfo = null;
 let textModelsAvailable = false;
 let promptEnhancementBusy = false;
 let promptEnhancerStatusKey = "";
-let activeMode = ["image", "music", "workflow"].includes(localStorage.getItem("h3-mode"))
+let mvPromptEnhancerStatusKey = "";
+let activeMode = ["image", "music", "workflow", "mv", "podcast"].includes(localStorage.getItem("h3-mode"))
   ? localStorage.getItem("h3-mode")
   : "video";
 let pollTimer = null;
 let modelPollTimer = null;
 let currentWorkflow = null;
 let workflowPollTimer = null;
+let workflowFetchVersion = 0;
+let workflowItems = [];
+const workflowListTranslations = {
+  en: ["Workflow steps", "Expand workflow steps", "Collapse workflow steps"],
+  "zh-CN": ["工作流清单", "展开工作流清单", "折叠工作流清单"],
+  "zh-TW": ["工作流程清單", "展開工作流程清單", "摺疊工作流程清單"],
+  fr: ["Étapes du workflow", "Développer les étapes", "Réduire les étapes"],
+  de: ["Workflow-Schritte", "Workflow-Schritte erweitern", "Workflow-Schritte einklappen"],
+  ja: ["ワークフロー手順", "手順を展開", "手順を折りたたむ"],
+  ko: ["워크플로 단계", "단계 펼치기", "단계 접기"],
+  es: ["Pasos del flujo", "Expandir pasos", "Contraer pasos"],
+  pt: ["Etapas do fluxo", "Expandir etapas", "Recolher etapas"],
+  tr: ["İş akışı adımları", "Adımları genişlet", "Adımları daralt"],
+  ar: ["خطوات سير العمل", "توسيع الخطوات", "طيّ الخطوات"],
+  vi: ["Các bước quy trình", "Mở rộng các bước", "Thu gọn các bước"],
+  id: ["Langkah alur kerja", "Perluas langkah", "Ciutkan langkah"],
+  ru: ["Шаги рабочего процесса", "Развернуть шаги", "Свернуть шаги"]
+};
+for (const [lang, values] of Object.entries(workflowListTranslations)) {
+  ["workflowSteps", "workflowExpandSteps", "workflowCollapseSteps"].forEach((key, index) => {
+    workflowTranslations[lang][key] = values[index];
+  });
+}
+let workflowDeletion = null;
+let workflowDeleteLastShot = null;
+let workflowStructureBusy = false;
+
+function updateWorkflowProgressToggle() {
+  const button = document.querySelector("#workflow-progress-toggle");
+  const expanded = button.getAttribute("aria-expanded") === "true";
+  button.textContent = expanded ? "−" : "+";
+  button.setAttribute("aria-label", t(expanded ? "workflowCollapseSteps" : "workflowExpandSteps"));
+  button.title = button.getAttribute("aria-label");
+  document.querySelector("#workflow-progress").hidden = !expanded;
+}
 let workflowShotSequence = 0;
 let storyboardBusy = false;
 let firstFrameBusy = false;
@@ -2091,6 +3111,7 @@ function initializeTheme() {
 function t(key) {
   const quickIndex = musicQuickKeys.indexOf(key);
   if (quickIndex !== -1) return (musicQuickTranslations[languageSelect.value] || musicQuickTranslations.en)[quickIndex];
+  if (key === "modelSelection") return modelPickerTranslations[languageSelect.value] || modelPickerTranslations.en;
   const restoreIndex = historyRestoreKeys.indexOf(key);
   if (restoreIndex !== -1) return (historyRestoreTranslations[languageSelect.value] || historyRestoreTranslations.en)[restoreIndex];
   const uploadIndex = uploadKeys.indexOf(key);
@@ -2105,6 +3126,11 @@ function t(key) {
   if (key === "musicYueNote") return musicYueNoteTranslations[lang] || musicYueNoteTranslations.en;
   if (key === "musicYueLink") return musicYueLinkTranslations[lang] || musicYueLinkTranslations.en;
   if (key === "errModelDisabled") return disabledModelTranslations[lang] || disabledModelTranslations.en;
+  if (key === "turboLabel" || key === "turboV4Note") {
+    return (turboV4Translations[lang] || turboV4Translations.en)[key === "turboLabel" ? 0 : 1];
+  }
+  const categoryKey = modelCategoryKeys.indexOf(key);
+  if (categoryKey !== -1) return (modelCategoryTranslations[lang] || modelCategoryTranslations.en)[categoryKey];
   const modelSettingsKey = modelSettingsKeys.indexOf(key);
   if (modelSettingsKey !== -1) return (modelSettingsTranslations[lang] || modelSettingsTranslations.en)[modelSettingsKey];
   const downloadKey = downloadStatusKeys.indexOf(key);
@@ -2112,6 +3138,18 @@ function t(key) {
   if (key === "downloadSpeed") return downloadSpeedTranslations[lang] || downloadSpeedTranslations.en;
   const controlKey = downloadControlKeys.indexOf(key);
   if (controlKey !== -1) return (downloadControlTranslations[lang] || downloadControlTranslations.en)[controlKey];
+  const timingKey = storyboardTimingKeys.indexOf(key);
+  const replacementKey = ["storyboardGenerate", "storyboardAdded", "storyboardHint",
+    "storyboardDurationHint", "storyboardModelLimited"].indexOf(key);
+  if (replacementKey !== -1) {
+    return (storyboardReplacementTranslations[lang] || storyboardReplacementTranslations.en)[replacementKey];
+  }
+  if (key === "imageResolution") return imageLongEdgeTranslations[lang] || imageLongEdgeTranslations.en;
+  const imageQualityKey = imageQualityKeys.indexOf(key);
+  if (imageQualityKey !== -1) {
+    return (imageQualityTranslations[lang] || imageQualityTranslations.en)[imageQualityKey];
+  }
+  if (timingKey !== -1) return (storyboardTimingTranslations[lang] || storyboardTimingTranslations.en)[timingKey];
   return localModelTranslations[lang]?.[key] || localModelTranslations.en[key] || storyTranslations[lang]?.[key] || storyTranslations.en[key] || historyTranslations[lang]?.[key] || settingsTranslations[lang]?.[key] || promptEnhancerTranslations[lang]?.[key] || musicTranslations[lang]?.[key] ||
     imageTranslations[lang]?.[key] || storyboardTranslations[lang]?.[key] || workflowTranslations[lang]?.[key] ||
     translations[lang]?.[key] || historyTranslations.en[key] || settingsTranslations.en[key] || promptEnhancerTranslations.en[key] || musicTranslations.en[key] || imageTranslations.en[key] ||
@@ -2131,9 +3169,21 @@ function applyLanguage() {
   document.querySelectorAll("[data-i18n-placeholder]").forEach((node) => {
     node.placeholder = t(node.dataset.i18nPlaceholder);
   });
+  document.querySelectorAll("[data-i18n-aria-label]").forEach((node) => {
+    node.setAttribute("aria-label", t(node.dataset.i18nAriaLabel));
+  });
   document.querySelectorAll("option[data-i18n]").forEach((node) => {
     node.textContent = t(node.dataset.i18n);
   });
+  document.querySelectorAll("[data-workflow-delete-name]").forEach((node) => {
+    node.setAttribute("aria-label", `${t("workflowDelete")}: ${node.dataset.workflowDeleteName}`);
+  });
+  if (workflowDeletion && workflowDeleteLastShot !== null) {
+    document.querySelector("#workflow-delete-title").textContent = t("workflowClearShots");
+    document.querySelector("#workflow-delete-confirm").textContent = t("workflowClearShots");
+  }
+  updateWorkflowProgressToggle();
+  updateLogCopyLanguage();
   document.querySelector(".language-picker select").setAttribute("aria-label", t("language"));
   document.querySelector("#theme").setAttribute("aria-label", t("theme"));
   document.querySelector("#settings-open").setAttribute("aria-label", t("settingsButton"));
@@ -2143,12 +3193,24 @@ function applyLanguage() {
   updateModeUI();
   updateTurboSteps();
   if (promptEnhancerStatusKey) promptEnhancerStatus.textContent = t(promptEnhancerStatusKey);
+  if (mvPromptEnhancerStatusKey) mvPromptEnhancerStatus.textContent = t(mvPromptEnhancerStatusKey);
   enhancePromptButton.textContent = t(promptEnhancementBusy ? "enhancingPrompt" : "enhancePrompt");
+  mvEnhancePromptButton.textContent = t(promptEnhancementBusy ? "enhancingPrompt" : "enhancePrompt");
   if (modelInfo) renderModelInfo(modelInfo);
   if (currentJob) renderJob(currentJob);
   renderHistory();
   refreshWorkflowFirstFrames();
-  refreshWorkflowMusicSources();
+  refreshMVMusicSources();
+  renderMVDrafts();
+  document.querySelector("#mv-timeline").setAttribute("aria-label", t("mvTimeline"));
+  setMVAnalysisStatus(mvAnalysisStatusKey, mvAnalysisStatusDetail);
+  renderMVTimeline();
+  updateWorkflowShotNumbers();
+  window.MiniMuvMVGeneration?.localize();
+  window.MiniMuvVisualReferences?.localize();
+  window.MiniMuvVideoPrompts?.localize();
+  window.MiniMuvPodcast?.localize();
+  window.MiniMuvAssistant?.localize();
 }
 
 function showSettingsStatus(message, isError = false) {
@@ -2157,15 +3219,47 @@ function showSettingsStatus(message, isError = false) {
   settingsStatus.classList.toggle("error", isError);
 }
 
-function populateSettings(settings) {
+function populateSettings(settings, modelOptions = modelInfo?.model_options || {}) {
   document.querySelector("#settings-output-directory").value = settings.output_directory;
   document.querySelector("#settings-gemma-path").value = settings.gemma_path;
   const container = document.querySelector("#settings-model-options");
   const h3Service = document.querySelector("#settings-h3-service");
   const hidreamNotice = document.querySelector("#settings-hidream-notice");
   const music3Notice = document.querySelector("#settings-music3-notice");
+  const encoders = document.querySelector("#settings-encoders");
+  const textService = document.querySelector("#settings-text-service");
+  const categoryStates = new Map(Array.from(container.querySelectorAll("[data-model-category]"),
+    group => [group.dataset.modelCategory, group.open]));
+  const categories = new Map();
   container.replaceChildren();
+  const categoryBody = (category) => {
+    if (categories.has(category)) return categories.get(category);
+    const group = document.createElement("details");
+    group.className = "settings-group model-settings-category";
+    group.dataset.modelCategory = category;
+    group.open = categoryStates.get(category) ?? true;
+    const heading = document.createElement("summary");
+    const label = document.createElement("span");
+    label.dataset.i18n = {
+      video: "settingsCategoryVideo", music: "settingsCategoryMusic", image: "settingsCategoryImage",
+      encoder: "settingsCategoryEncoder", text: "settingsCategoryText", voice: "modePodcast", other: "settingsCategoryOther"
+    }[category];
+    label.textContent = t(label.dataset.i18n);
+    const count = document.createElement("span");
+    count.className = "model-category-count";
+    heading.append(label, count);
+    const body = document.createElement("div");
+    body.className = "model-category-body";
+    group.append(heading, body);
+    group.addEventListener("invalid", () => { group.open = true; }, true);
+    container.append(group);
+    categories.set(category, body);
+    return body;
+  };
+  for (const category of ["video", "music", "image", "voice", "encoder", "text"]) categoryBody(category);
   for (const [id, entry] of Object.entries(settings.models)) {
+    const category = ["video", "music", "image", "encoder", "text", "voice"].find(
+      kind => modelOptions[kind]?.some(model => model.id === id)) || "other";
     const group = document.createElement("details");
     group.className = "settings-group model-settings-card";
     group.dataset.modelId = id;
@@ -2192,6 +3286,8 @@ function populateSettings(settings) {
     }
     const actions = document.createElement("div");
     actions.className = "model-download-actions";
+    actions.hidden = id === "h3-fasth3-vsa-q8" ||
+      modelInfo?.downloads?.[id]?.download_catalog === false;
     for (const [action, key] of [["start", "downloadResume"], ["pause", "downloadPause"]]) {
       const button = document.createElement("button");
       button.type = "button";
@@ -2208,8 +3304,13 @@ function populateSettings(settings) {
     if (id === "h3") body.append(h3Service);
     if (id === "hidream") body.append(hidreamNotice);
     if (id === "music3") body.append(music3Notice);
-    container.append(group);
-    renderModelDownload(modelInfo?.downloads?.[id] || {}, progress.id);
+    categoryBody(category).append(group);
+    if (id !== "h3-fasth3-vsa-q8") renderModelDownload(modelInfo?.downloads?.[id] || {}, progress.id);
+  }
+  categoryBody("encoder").append(encoders);
+  categoryBody("text").append(textService);
+  for (const body of categories.values()) {
+    body.parentElement.querySelector(".model-category-count").textContent = `(${body.children.length})`;
   }
   document.querySelector("#settings-video-url").value = settings.video.service_url;
   document.querySelector("#settings-video-model").value = settings.video.model_id;
@@ -2217,6 +3318,7 @@ function populateSettings(settings) {
   document.querySelector("#settings-text-url").value = settings.text.service_url;
   document.querySelector("#settings-text-models").value = settings.text.model_ids.join("\n");
   document.querySelector("#settings-text-params").value = JSON.stringify(settings.text.api_params, null, 2);
+  document.querySelector("#settings-skill-budget").value = settings.text.skill_input_token_budget;
 }
 
 async function controlModelDownload(id, action, button) {
@@ -2247,13 +3349,18 @@ async function controlModelDownload(id, action, button) {
 
 async function openSettings() {
   settingsSaveButton.disabled = true;
-  settingsDialog.showModal();
+  openSettingsSection("models");
   showSettingsStatus("");
   try {
-    const response = await fetch("/api/settings", { cache: "no-store" });
+    const [response, registryResponse] = await Promise.all([
+      fetch("/api/settings", { cache: "no-store" }),
+      fetch("/api/models", { cache: "no-store" })
+    ]);
     const data = await response.json();
+    const registry = await registryResponse.json();
     if (!response.ok) throw new Error(data.detail || data.error || "settings_unavailable");
-    populateSettings(data.settings);
+    if (!registryResponse.ok) throw new Error(registry.detail || registry.error || "models_unavailable");
+    populateSettings(data.settings, registry.model_options);
     settingsSaveButton.disabled = false;
   } catch (error) {
     showSettingsStatus(`${t("settingsSaveError")} ${error.message}`, true);
@@ -2290,7 +3397,8 @@ function settingsFormPayload() {
       service_url: document.querySelector("#settings-text-url").value.trim(),
       model_ids: [...new Set(document.querySelector("#settings-text-models").value
         .split(/[\r\n;；]+/).map((id) => id.trim()).filter(Boolean))],
-      api_params: parseJsonObject("#settings-text-params")
+      api_params: parseJsonObject("#settings-text-params"),
+      skill_input_token_budget: Number(document.querySelector("#settings-skill-budget").value)
     }
   };
 }
@@ -2309,7 +3417,7 @@ settingsForm.addEventListener("submit", async (event) => {
     if (!response.ok) throw new Error(data.detail || data.error || "settings_save_failed");
     populateSettings(data.settings);
     showSettingsStatus(t("settingsSaved"));
-    await Promise.all([loadModels(), loadTextModels(), loadHistory(), loadWorkflows()]);
+    await Promise.all([loadModels(), loadTextModels(), loadHistory(), loadWorkflows(), loadMVProjects(), loadMVMusicSources()]);
   } catch (error) {
     showSettingsStatus(`${t("settingsSaveError")} ${error.message}`, true);
   } finally {
@@ -2325,9 +3433,16 @@ function updateModeUI() {
   const isImage = activeMode === "image";
   const isMusic = activeMode === "music";
   const isWorkflow = activeMode === "workflow";
-  const isVideo = !isImage && !isMusic && !isWorkflow;
+  const isMV = activeMode === "mv";
+  const isPodcast = activeMode === "podcast";
+  document.querySelector("#podcast-log-panel").hidden = !isPodcast;
+  logPanel.hidden = logPanel.dataset.hasLogs !== "true" || logPanel.dataset.mode !== activeMode;
+  const isVideo = !isImage && !isMusic && !isWorkflow && !isMV && !isPodcast;
+  window.MiniMuvVideoPrompts?.setMode(activeMode);
   const modeKey = isMusic ? "music" : isImage ? "image" : "video";
   const modeTextKey = (key) => {
+    if (isPodcast) return {eyebrow: "modePodcast", headline: "modePodcast", intro: "podcastNote"}[key] || key;
+    if (isMV) return {eyebrow: "modeMV", headline: "modeMV", intro: "mvNote"}[key] || key;
     if (isWorkflow) {
       return {
         eyebrow: "workflowKicker",
@@ -2339,8 +3454,8 @@ function updateModeUI() {
     return `${modeKey}${key[0].toUpperCase()}${key.slice(1)}`;
   };
   const isVideoPreview = isVideo || isWorkflow;
-  const emptyTextKey = isVideoPreview ? "previewEmpty" : `${modeKey}Empty`;
-  const emptyHintTextKey = isVideoPreview ? "previewEmptyHint" : `${modeKey}EmptyHint`;
+  const emptyTextKey = isPodcast ? "modePodcast" : isMV ? "mvNote" : isVideoPreview ? "previewEmpty" : `${modeKey}Empty`;
+  const emptyHintTextKey = isPodcast ? "podcastNote" : isMV ? "mvUnavailable" : isVideoPreview ? "previewEmptyHint" : `${modeKey}EmptyHint`;
   videoModeButton.classList.toggle("active", isVideo);
   imageModeButton.classList.toggle("active", isImage);
   musicModeButton.classList.toggle("active", isMusic);
@@ -2349,16 +3464,29 @@ function updateModeUI() {
   imageModeButton.setAttribute("aria-pressed", String(isImage));
   musicModeButton.setAttribute("aria-pressed", String(isMusic));
   workflowModeButton.setAttribute("aria-pressed", String(isWorkflow));
-  videoModelSection.hidden = !isVideo && !isWorkflow;
+  mvModeButton.classList.toggle("active", isMV);
+  mvModeButton.setAttribute("aria-pressed", String(isMV));
+  videoModelSection.hidden = !isVideo && !isWorkflow && !isMV;
   imageModelSection.hidden = !isImage;
   musicModelSection.hidden = !isMusic && !isWorkflow;
+  generationModelPicker.hidden = !isVideo && !isImage && !isMusic && !isWorkflow && !isMV;
   videoControls.hidden = !isVideo;
   imageControls.hidden = !isImage;
   musicControls.hidden = !isMusic;
-  form.hidden = isWorkflow;
+  form.hidden = isWorkflow || isMV || isPodcast;
   workflowPanel.hidden = !isWorkflow;
+  document.querySelector("#mv-panel").hidden = !isMV;
+  const podcastPanel = document.querySelector("#podcast-panel");
+  const podcastButton = document.querySelector("#podcast-mode-button");
+  if (podcastPanel) podcastPanel.hidden = !isPodcast;
+  if (podcastButton) {
+    podcastButton.classList.toggle("active", isPodcast);
+    podcastButton.setAttribute("aria-pressed", String(isPodcast));
+  }
+  if (!isMV) document.querySelector("#mv-audio").pause();
   musicLyricsField.hidden = musicLyricsMode.value !== "lyrics";
   musicLyricsInput.required = isMusic && musicLyricsMode.value === "lyrics";
+  updateGenerationModelSummary();
 
   document.querySelector("#intro-eyebrow").dataset.i18n = modeTextKey("eyebrow");
   document.querySelector("h1").dataset.i18n = modeTextKey("headline");
@@ -2390,30 +3518,185 @@ function updateModeUI() {
   renderMusicKeywords();
   updateLocalModelControls();
   updateGenerateAvailability();
+  refreshResultPreview();
+}
+
+function imageCanvasSettings() {
+  const model = imageModelChoice.value;
+  const quality = document.querySelector("#image-quality").value;
+  const requestedSize = Number(document.querySelector("#image-size").value);
+  const size = quality === "preview" ? 512
+    : quality === "standard" ? 1024
+    : quality === "high" ? (model === "hidream" ? 2048 : 1024)
+    : requestedSize;
+  const aspect = document.querySelector("#image-aspect").value;
+  const turnaround = document.querySelector("#image-turnaround")?.checked === true;
+  const sceneViews = document.querySelector("#image-scene-views")?.checked === true &&
+    ["hidream", "flux2-klein-4b"].includes(model);
+  const preset = sceneViews ? "scene_views" : turnaround ? "character_turnaround" : "";
+  const candidateCount = preset ? 3 : Number(document.querySelector("#image-candidate-count").value);
+  if (model === "hidream" && quality === "high") {
+    const [width, height] = {
+      "1:1": [2048, 2048], "4:3": [2304, 1728], "3:4": [1728, 2304],
+      "16:9": [2560, 1440], "9:16": [1440, 2560]
+    }[aspect];
+    return {model, quality, candidate_count: candidateCount, size, aspect, width, height,
+      ...(preset ? {image_preset: preset} : {})};
+  }
+  const [a, b] = aspect.split(":").map(Number);
+  const grid = model === "hidream" ? 32 : 16;
+  return {
+    model, quality, candidate_count: candidateCount, size, aspect,
+    width: a >= b ? size : Math.max(grid, Math.round(size * a / b / grid) * grid),
+    height: a >= b ? Math.max(grid, Math.round(size * b / a / grid) * grid) : size,
+    ...(preset ? {image_preset: preset} : {})
+  };
+}
+
+function updateVideoModelNotes() {
+  const model = videoModelChoice.value;
+  const key = model === "h3-fasth3-vsa-q8" ? "fastH3Note" :
+    model === "h3" ? "h3QualityNote" : "distilledNote";
+  const description = model === "ltx-2.3-dev-q4"
+    ? (window.MiniMuvVideoPrompts?.note() || "") : t(key);
+  const name = videoModelChoice.selectedOptions?.[0]?.textContent || model;
+  for (const selector of ["#workflow-quality-note", "#video-quality-note", "#video-compute-copy"]) {
+    const node = document.querySelector(selector);
+    node.removeAttribute("data-i18n");
+    node.textContent = description ? `${name}: ${description}` : "";
+  }
 }
 
 function updateLocalModelControls() {
-  const ltx = videoModelChoice.value !== "h3";
+  window.MiniMuvImageReferences?.render();
+  window.MiniMuvSkills?.renderSelectors();
+  const fastH3 = videoModelChoice.value === "h3-fasth3-vsa-q8";
+  const ltx = videoModelChoice.value.startsWith("ltx-");
+  const dev = videoModelChoice.value === "ltx-2.3-dev-q4";
+  const continuousOption = document.querySelector('#workflow-shot-mode option[value="continuous"]');
+  if (continuousOption) continuousOption.disabled = fastH3;
+  document.querySelector("#video-quality-field").hidden = false;
+  document.querySelector("#workflow-video-quality-field").hidden = false;
   const localImage = imageModelChoice.value !== "hidream";
-  stepsSelect.closest(".field").hidden = ltx;
-  turboToggle.closest("label").hidden = ltx;
-  document.querySelector("#local-image-size").hidden = !localImage;
-  const videoNote = document.querySelector("#video-compute-copy");
-  videoNote.dataset.i18n = ltx ? "distilledNote" : "computeNote";
-  videoNote.textContent = t(videoNote.dataset.i18n);
-  const imageNote = document.querySelector("#image-compute-copy");
-  imageNote.dataset.i18n = localImage ? "localImageNote" : "imageComputeNote";
-  imageNote.textContent = t(imageNote.dataset.i18n);
+  stepsSelect.closest(".field").hidden = (ltx && !dev) || fastH3;
+  turboToggle.closest("label").hidden = ltx || fastH3;
+  document.querySelector("#local-image-size").hidden = false;
+  const imageSize = document.querySelector("#image-size");
+  const imageQuality = document.querySelector("#image-quality");
+  const turnaround = document.querySelector("#image-turnaround").checked ||
+    (document.querySelector("#image-scene-views")?.checked &&
+      ["hidream", "flux2-klein-4b"].includes(imageModelChoice.value));
+  const candidateSelect = document.querySelector("#image-candidate-count");
+  if (turnaround) {
+    if (candidateSelect.value !== "3") candidateSelect.dataset.previousValue = candidateSelect.value;
+    candidateSelect.value = "3";
+  } else if (candidateSelect.value === "3") {
+    candidateSelect.value = candidateSelect.dataset.previousValue || "1";
+  }
+  candidateSelect.disabled = turnaround;
+  const largeOption = [...imageSize.options].find(option => option.value === "2048");
+  largeOption.hidden = localImage;
+  largeOption.disabled = localImage;
+  if (imageSize.dataset.model !== imageModelChoice.value) {
+    imageQuality.value = localImage ? "standard" : "high";
+    imageSize.dataset.model = imageModelChoice.value;
+  }
+  const presetSize = imageQuality.value === "preview" ? "512"
+    : imageQuality.value === "standard" ? "1024"
+    : imageQuality.value === "high" ? (localImage ? "1024" : "2048") : null;
+  if (presetSize) imageSize.value = presetSize;
+  imageSize.disabled = imageQuality.value !== "custom";
+  const {width, height, candidate_count: candidateCount} = imageCanvasSettings();
+  const qualityName = imageQuality.selectedOptions?.[0]?.textContent || imageQuality.value;
+  const nativeNote = !localImage && imageQuality.value === "high" ? ` · ${t("imageNativeResolution")}` : "";
+  document.querySelector("#image-compute-copy").textContent =
+    `${t("imageQuality")}: ${qualityName} · ${t("imageResolution")}: ${width} × ${height}` +
+    ` · ${t("imageCandidates")}: ${candidateCount}${nativeNote}`;
+  updateVideoModelNotes();
   const yue = isYueMusicModel();
   document.querySelector("#music-duration").closest(".field").hidden = yue;
   document.querySelector("#music-steps").closest(".field").hidden = yue;
   const musicNote = document.querySelector("#music-compute-copy");
   musicNote.dataset.i18n = yue ? "musicYueNote" : "musicComputeNote";
   musicNote.textContent = t(musicNote.dataset.i18n);
-  updateSelectedModelCards();
+  updateGenerationModelSummary();
+  updateSelectedModelLinks();
+  updateParameterControls();
 }
 
-function updateSelectedModelCards() {
+function updateGenerationModelSummary() {
+  const selected = [];
+  if (!videoModelSection.hidden) {
+    selected.push(videoModelChoice.selectedOptions?.[0]?.textContent || videoModelChoice.value);
+  }
+  if (!imageModelSection.hidden) {
+    selected.push(imageModelChoice.selectedOptions?.[0]?.textContent || imageModelChoice.value);
+  }
+  if (!musicModelSection.hidden) {
+    selected.push(musicModelChoice.selectedOptions?.[0]?.textContent || musicModelChoice.value);
+  }
+  generationModelSummary.textContent = selected.join(" · ");
+}
+
+function applyParameterRange(control, hint, limits) {
+  if (!control || !limits || limits.automatic) return;
+  control.min = String(limits.min);
+  control.max = String(limits.max);
+  control.step = "1";
+  if (hint) hint.textContent = t("parameterRange")
+    .replace("{min}", limits.min).replace("{max}", limits.max);
+}
+
+function updateParameterControls() {
+  if (!modelInfo) return;
+  const busy = storyboardBusy || firstFrameBusy || promptEnhancementBusy || workflowStructureBusy ||
+    Boolean(window.MiniMuvImageReferences?.busy()) ||
+    ["queued", "running"].includes(currentWorkflow?.status) ||
+    ["queued", "loading", "running", "cancelling"].includes(currentJob?.status) ||
+    Boolean(window.MiniMuvMVGeneration?.active()) || Boolean(window.MiniMuvVisualReferences?.busy()) ||
+    Boolean(window.MiniMuvPodcast?.active());
+  window.MiniMuvVideoPrompts?.sync(videoModelChoice.value, busy);
+  window.MiniMuvImageReferences?.render();
+  const durations = modelInfo.duration_limits;
+  const sampling = modelInfo.sampling_limits;
+  const videoDuration = durations?.video?.[videoModelChoice.value];
+  const videoSampling = sampling?.video?.[videoModelChoice.value];
+  const stepRange = videoModelChoice.value === "h3"
+    ? videoSampling?.[turboToggle.checked ? "turbo" : "standard"] : videoSampling;
+  const musicDuration = durations?.music?.[musicModelChoice.value];
+  const musicSteps = sampling?.music?.[musicModelChoice.value];
+  for (const [selector, hint, limits, disabled] of [
+    ["#duration", "#video-duration-limit", videoDuration, activeMode !== "video"],
+    ["#steps", "#video-steps-limit", stepRange, activeMode !== "video" || stepRange?.fixed],
+    ["#music-duration", "#music-duration-limit", musicDuration, activeMode !== "music" || musicDuration?.automatic],
+    ["#music-steps", "#music-steps-limit", musicSteps, activeMode !== "music" || musicSteps?.automatic],
+    ["#workflow-shot-duration", "#storyboard-duration-limit", videoDuration, false]
+  ]) {
+    const control = document.querySelector(selector);
+    applyParameterRange(control, document.querySelector(hint), limits);
+    if (control) control.disabled = Boolean(disabled || busy);
+  }
+  if (videoDuration) {
+    const total = document.querySelector("#workflow-total-duration");
+    total.min = String(videoDuration.min);
+    total.max = "1800";
+  }
+  for (const card of workflowShots.children) {
+    applyParameterRange(card.querySelector("[data-shot-duration]"),
+      card.querySelector("[data-shot-duration-hint]"), videoDuration);
+    const turbo = card.querySelector("[data-shot-turbo]");
+    const shotSteps = videoModelChoice.value === "h3"
+      ? videoSampling?.[turbo?.checked !== false ? "turbo" : "standard"] : videoSampling;
+    applyParameterRange(card.querySelector("[data-shot-steps]"),
+      card.querySelector("[data-shot-steps-hint]"), shotSteps);
+    const stepField = card.querySelector("[data-shot-steps-field]");
+    if (stepField) stepField.hidden = Boolean(shotSteps?.fixed);
+    if (turbo) turbo.disabled = Boolean(shotSteps?.fixed || busy);
+  }
+  updateStoryboardTiming();
+}
+
+function updateSelectedModelLinks() {
   for (const [mode, selector, status] of [
     ["video", videoModelChoice, videoModelChoice.value === "h3" ? modelInfo :
       modelInfo?.video_models?.[videoModelChoice.value]],
@@ -2423,17 +3706,11 @@ function updateSelectedModelCards() {
   ]) {
     const entry = modelInfo?.model_options?.[mode]?.find(item => item.id === selector.value);
     const name = entry?.name || selector.selectedOptions?.[0]?.textContent || selector.value;
-    const cards = mode === "image" ? [mode] : [mode, `workflow-${mode}`];
-    for (const card of cards) {
-      document.querySelector(`#${card}-model-summary`).textContent = `${t("modelSettings")} · ${name}`;
-      document.querySelector(`#${card === "video" ? "model" : `${card}-model`}-path`).textContent =
-        `${t("modelPath")}${status?.model_path || ""}`;
-      const source = document.querySelector(`#${card}-model-source`);
-      source.hidden = !status?.model_download_url;
-      source.textContent = `${name} ↗`;
-      if (status?.model_download_url) source.href = status.model_download_url;
-      else source.removeAttribute("href");
-    }
+    const source = document.querySelector(`#${mode}-model-source`);
+    source.hidden = !status?.model_download_url;
+    source.textContent = `${name} ↗`;
+    if (status?.model_download_url) source.href = status.model_download_url;
+    else source.removeAttribute("href");
   }
 }
 
@@ -2447,10 +3724,11 @@ function selectedMusicStatus(info = modelInfo) {
 
 function updateGenerateAvailability() {
   const workflowBusy = ["queued", "running"].includes(currentWorkflow?.status);
-  const busy = workflowBusy || ["queued", "loading", "running", "cancelling"].includes(currentJob?.status);
+  const busy = workflowBusy || ["queued", "loading", "running", "cancelling"].includes(currentJob?.status) ||
+    Boolean(window.MiniMuvMVGeneration?.active()) || Boolean(window.MiniMuvVisualReferences?.busy());
   workflowPlanStory.disabled = storyboardBusy || busy || promptEnhancementBusy ||
     !textModelsAvailable || !workflowTextModel.value ||
-    Boolean(currentWorkflow && currentWorkflow.status !== "draft");
+    Boolean(currentWorkflow && ["queued", "running"].includes(currentWorkflow.status));
   const imageStatus = imageModelChoice.value === "hidream" ? modelInfo?.hidream :
     modelInfo?.image_models?.[imageModelChoice.value];
   const videoStatus = modelInfo?.video_models?.[videoModelChoice.value];
@@ -2460,7 +3738,7 @@ function updateGenerateAvailability() {
       ? selectedMusicStatus()?.model_ready && selectedMusicStatus()?.runtime_ready
       : videoModelChoice.value === "h3" ? modelInfo?.model_loaded :
         videoStatus?.model_ready && videoStatus?.runtime_ready;
-  videoModelChoice.disabled = busy || (activeMode === "workflow" && Boolean(currentWorkflow) && currentWorkflow.status !== "draft");
+  videoModelChoice.disabled = busy || (activeMode === "workflow" && Boolean(currentWorkflow) && ["queued", "running"].includes(currentWorkflow.status));
   imageModelChoice.disabled = busy;
   musicModelChoice.disabled = busy;
   const selectedMode = activeMode === "image" ? "image" : activeMode === "music" ? "music" : "video";
@@ -2468,18 +3746,29 @@ function updateGenerateAvailability() {
     activeMode === "music" ? musicModelChoice.value : videoModelChoice.value;
   const disabledModel = modelInfo?.model_options?.[selectedMode] &&
     !modelInfo.model_options[selectedMode]?.some(entry => entry.id === selectedId && entry.enabled);
-  generateButton.disabled = busy || firstFrameBusy || storyboardBusy || promptEnhancementBusy || !ready || disabledModel;
+  const unsupportedFrame = activeMode === "video" && videoModelChoice.value === "h3-fasth3-vsa-q8" &&
+    Boolean(document.querySelector("#video-frame")?.value);
+  generateButton.disabled = busy || firstFrameBusy || storyboardBusy || promptEnhancementBusy ||
+    !ready || disabledModel || unsupportedFrame;
   document.querySelector("#video-first-frame").querySelectorAll("select, input").forEach(control => {
     control.disabled = busy || firstFrameBusy || storyboardBusy || promptEnhancementBusy;
   });
   enhancePromptButton.disabled = busy || storyboardBusy || promptEnhancementBusy || !textModelsAvailable ||
     !promptEnhancerModel.value;
+  mvEnhancePromptButton.disabled = busy || storyboardBusy || promptEnhancementBusy || !textModelsAvailable ||
+    !mvPromptEnhancerModel.value;
+  const skillControls = document.querySelector("#prompt-skill-controls");
+  if (skillControls) skillControls.disabled = busy || storyboardBusy || promptEnhancementBusy;
+  const mvSkillControls = document.querySelector("#mv-prompt-skill-controls");
+  if (mvSkillControls) mvSkillControls.disabled = busy || storyboardBusy || promptEnhancementBusy;
   document.querySelectorAll("[data-music-keyword]").forEach(button => {
     button.disabled = busy || firstFrameBusy || storyboardBusy || promptEnhancementBusy;
   });
   const modeKey = activeMode === "music" ? "music" : activeMode === "image" ? "image" : "";
   generateLabel.textContent = t(busy ? (modeKey ? `${modeKey}Generating` : "generating") :
     (modeKey ? `${modeKey}Generate` : "generate"));
+  window.MiniMuvMVGeneration?.updateControls(false);
+  window.MiniMuvPodcast?.updateControls();
 }
 
 function updateMusicLyricsMode() {
@@ -2489,15 +3778,7 @@ function updateMusicLyricsMode() {
 }
 
 function updateTurboSteps() {
-  const turboEnabled = turboToggle.checked;
-  document.querySelectorAll("[data-turbo-step]").forEach((option) => {
-    option.hidden = !turboEnabled;
-  });
-  document.querySelectorAll("[data-standard-step]").forEach((option) => {
-    option.hidden = turboEnabled;
-  });
-  if (turboEnabled && Number(stepsSelect.value) > 8) stepsSelect.value = "4";
-  if (!turboEnabled && Number(stepsSelect.value) < 16) stepsSelect.value = "16";
+  updateParameterControls();
 }
 
 function addModelLink(label, url) {
@@ -2544,7 +3825,7 @@ function renderModelDownload(info, containerId) {
   const container = document.getElementById(containerId);
   if (!container) return;
   container.replaceChildren();
-  container.hidden = !info.download_state;
+  container.hidden = !info.download_state || info.download_catalog === false;
   if (container.hidden) return;
   const keys = {
     downloading: "downloadActive", paused: "downloadPaused", not_started: "downloadNotStarted",
@@ -2584,12 +3865,16 @@ function renderModelDownload(info, containerId) {
     container.append(hint);
   }
 }
+window.renderLocalModelDownload = renderModelDownload;
 
 function populateModelSelectors(options) {
   if (!options) return;
   for (const [mode, selector] of [["video", videoModelChoice], ["image", imageModelChoice], ["music", musicModelChoice]]) {
-    const entries = options[mode] || [];
+    const entries = [...(options[mode] || [])];
+    if (mode === "video") entries.sort((a, b) => Number(a.id === "h3") - Number(b.id === "h3"));
     const selected = selector.value;
+    const historyOption = [...selector.options].find(option =>
+      option.value === selected && option.dataset.historyOption);
     const signature = JSON.stringify(entries.map(({id, name, enabled}) => ({id, name, enabled})));
     if (selector.dataset.optionsSignature === signature) continue;
     selector.replaceChildren();
@@ -2598,7 +3883,11 @@ function populateModelSelectors(options) {
       option.disabled = !entry.enabled;
       selector.add(option);
     }
-    selector.value = entries.some(entry => entry.id === selected) ? selected :
+    if (historyOption && !entries.some(entry => entry.id === selected)) {
+      historyOption.disabled = true;
+      selector.add(historyOption);
+    }
+    selector.value = historyOption || entries.some(entry => entry.id === selected) ? selected :
       entries.find(entry => entry.enabled)?.id || "";
     selector.dataset.optionsSignature = signature;
   }
@@ -2607,11 +3896,18 @@ function populateModelSelectors(options) {
 
 function renderModelInfo(info) {
   modelInfo = info;
+  const adapterStatus = document.querySelector("#settings-h3-turbo-status");
+  if (adapterStatus && info.h3_turbo) {
+    adapterStatus.textContent = [
+      `Turbo LoRA ${info.h3_turbo.version}`,
+      t(info.h3_turbo.model_ready ? "localReady" : "localMissing"),
+      `${t("modelPath")}${info.h3_turbo.model_path}`, info.h3_turbo.model_error
+    ].filter(Boolean).join(" · ");
+  }
   for (const [id, progress] of Object.entries(info.downloads || {})) {
     renderModelDownload(progress, `settings-download-${id}`);
   }
   populateModelSelectors(info.model_options);
-  if (modelPath) modelPath.textContent = `${t("modelPath")}${info.model_path}`;
   modelLinks.replaceChildren();
   loadModelButton.hidden = true;
   loadModelButton.disabled = false;
@@ -2648,9 +3944,9 @@ function renderModelInfo(info) {
     modelLinks.replaceChildren();
     modelTitle.textContent = t(selected.model_ready && selected.runtime_ready ? "localReady" :
       selected.download_in_progress ? "downloadActive" : "localMissing");
-    modelDescription.textContent = selected.model_path || "";
+    modelDescription.textContent = [selected.model_path, selected.model_error, selected.runtime_error]
+      .filter(Boolean).join(" · ");
     modelNotice.classList.toggle("ready", Boolean(selected.model_ready && selected.runtime_ready));
-    if (modelPath) modelPath.textContent = `${t("modelPath")}${selected.model_path || ""}`;
   }
   const h3Download = {
     download_state: info.model_ready ? "completed" :
@@ -2666,6 +3962,7 @@ function renderModelInfo(info) {
     info.image_models?.[imageModelChoice.value];
   renderImageModelInfo(imageStatus || {});
   renderMusicModelInfo(selectedMusicStatus(info) || {});
+  updateSelectedModelLinks();
   if (info.model_options?.video.find(entry => entry.id === videoModelChoice.value)?.enabled === false) {
     modelTitle.textContent = t("errModelDisabled");
     modelNotice.classList.remove("ready");
@@ -2676,7 +3973,6 @@ function renderModelInfo(info) {
 
 function renderImageModelInfo(info) {
   imageModelLinks.replaceChildren();
-  imageModelPath.textContent = `${t("modelPath")}${info.model_path || ""}`;
   imageModelNotice.classList.remove("ready");
   if (!info.model_ready) {
     imageModelTitle.textContent = t("imageModelMissing");
@@ -2715,7 +4011,6 @@ function addImageModelLink(label, url) {
 }
 
 function renderMusicModelInfo(info) {
-  musicModelPath.textContent = `${t("modelPath")}${info.model_path || ""}`;
   musicModelNotice.classList.remove("ready");
   if (!info.model_ready) {
     musicModelTitle.textContent = t("musicModelMissing");
@@ -2744,18 +4039,136 @@ function renderMusicModelInfo(info) {
   }
 }
 
+const visualTokenTranslations = {
+  en: "Visual sequence tokens (geometry)", "zh-CN": "视觉序列 Token（几何统计）",
+  "zh-TW": "視覺序列 Token（幾何統計）", fr: "Jetons visuels (géométrie)",
+  de: "Visuelle Tokens (Geometrie)", ja: "視覚系列トークン（形状計算）",
+  ko: "시각 시퀀스 토큰 (형상)", es: "Tokens visuales (geometría)",
+  pt: "Tokens visuais (geometria)", tr: "Görsel tokenlar (geometri)",
+  ar: "رموز التسلسل المرئي (الهندسة)", vi: "Token thị giác (hình học)",
+  id: "Token visual (geometri)", ru: "Визуальные токены (геометрия)"
+};
+
 function formatGenerationMetrics(item) {
   const seconds = Number(item?.elapsed_seconds);
   const tokens = Number(item?.tokens);
   const number = new Intl.NumberFormat(languageSelect.value);
   const elapsed = Number.isFinite(seconds) && item?.elapsed_seconds !== null
     ? `${number.format(Math.round(seconds * 10) / 10)}s` : "—";
-  const tokenText = Number.isInteger(tokens) && item?.tokens !== null ? number.format(tokens) : "—";
-  return `${t("metricElapsed")} ${elapsed} · ${t("metricTokens")} ${tokenText}`;
+  const tokenText = Number.isInteger(tokens) && tokens >= 0 && typeof item?.tokens === "number"
+    ? number.format(tokens) : "—";
+  const visual = item?.visual_tokens;
+  const visualText = Number.isInteger(visual) && visual >= 0
+    ? ` · ${visualTokenTranslations[languageSelect.value] || visualTokenTranslations.en} ${number.format(visual)}`
+    : "";
+  return `${t("metricElapsed")} ${elapsed} · ${t("metricTokens")} ${tokenText}${visualText}`;
+}
+
+function renderImageCandidates(result) {
+  const urls = Array.isArray(result?.image_urls) && result.image_urls.length
+    ? result.image_urls : result?.image_url ? [result.image_url] : [];
+  imageCandidates.hidden = urls.length <= 1;
+  if (urls.length <= 1) {
+    imageCandidates.replaceChildren();
+    delete imageCandidates.dataset.resultId;
+    return;
+  }
+  const resultId = `${languageSelect.value}:${result.id || ""}:${urls.join("|")}`;
+  if (imageCandidates.dataset.resultId === resultId) return;
+  imageCandidates.dataset.resultId = resultId;
+  const viewKeys = result?.image_views?.length === 3 && result.image_views[0] === "front"
+    ? ["turnaroundFront", "turnaroundSide", "turnaroundBack"] : [];
+  imageCandidates.replaceChildren(...urls.map((url, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "image-candidate";
+    const viewLabel = viewKeys[index] ? t(viewKeys[index])
+      : window.MiniMuvImageReferences?.viewLabel(result?.image_views?.[index]);
+    button.setAttribute("aria-label", viewLabel || `${t("imageCandidate")} ${index + 1}`);
+    button.setAttribute("aria-pressed", String(index === 0));
+    const thumbnail = document.createElement("img");
+    thumbnail.src = url;
+    thumbnail.alt = "";
+    button.append(thumbnail);
+    if (viewLabel) {
+      const label = document.createElement("span");
+      label.textContent = viewLabel;
+      button.append(label);
+    }
+    button.addEventListener("click", () => {
+      image.src = url;
+      image.dataset.url = url;
+      imageDownloadLink.href = url;
+      imageCandidates.querySelectorAll(".image-candidate").forEach((candidate) => {
+        candidate.setAttribute("aria-pressed", String(candidate === button));
+      });
+    });
+    return button;
+  }));
+}
+
+function refreshResultPreview() {
+  const result = activeMode === "mv" ? window.MiniMuvMVGeneration?.preview()
+    : activeMode === "podcast" ? window.MiniMuvPodcast?.preview()
+    : activeMode === "workflow" ? currentWorkflow && {
+      ...currentWorkflow, video_url: currentWorkflow.output_url}
+    : currentJob?.kind === activeMode ? currentJob : null;
+  const inProgress = ["queued", "loading", "running", "cancelling", "generating", "assembling"].includes(result?.status);
+  const completed = result?.status === "completed";
+  const urls = [completed && result.video_url, completed && result.image_url,
+    completed && ["music", "podcast"].includes(activeMode) && result.audio_url];
+  for (const [index, media] of [video, image, audio].entries()) {
+    const url = urls[index] || "";
+    media.hidden = !url;
+    if (media.dataset.url !== url) {
+      if (typeof media.pause === "function") media.pause();
+      if (url) media.src = url;
+      else media.removeAttribute("src");
+      media.dataset.url = url;
+      if (!url && typeof media.load === "function") media.load();
+    }
+  }
+  const hasResult = urls.some(Boolean);
+  renderImageCandidates(completed && activeMode === "image" ? result : null);
+  emptyState.hidden = inProgress || hasResult;
+  loadingState.hidden = !inProgress;
+  resultFooter.hidden = !hasResult;
+  const label = inProgress ? result.status === "queued" ? "queued" : "running"
+    : completed ? "completed" : result?.status === "failed" ? "failed"
+    : result?.status === "cancelled" ? "cancelled" : "waiting";
+  statusChip.textContent = t(label);
+  statusChip.className = `status-chip${inProgress ? " active" : completed ? " success" : label === "failed" ? " error" : ""}`;
+  if (inProgress) loadingTitle.textContent = t(label);
+  cancelButton.hidden = !["video", "image", "music"].includes(activeMode) ||
+    !["queued", "running"].includes(result?.status) || !result?.prompt;
+  for (const [index, link] of [
+    document.querySelector("#download-video"), imageDownloadLink,
+    document.querySelector("#download-audio")
+  ].entries()) {
+    link.hidden = !urls[index];
+    if (urls[index]) link.href = urls[index];
+    else link.removeAttribute("href");
+  }
+  document.querySelector("#download-video").textContent = t("downloadVideo");
+  document.querySelector("#download-audio").textContent = t(activeMode === "music" ? "musicDownload" : "downloadAudio");
+  document.querySelector("#download-video").download = activeMode === "mv" ? "minimuv-mv.mp4"
+    : activeMode === "workflow" ? "minimuv-long-video.mp4" : "minimax-h3.mp4";
+  document.querySelector("#download-audio").download = activeMode === "podcast" ? "minimuv-podcast.wav"
+    : activeMode === "music" ? "minimax-music3.wav" : "minimax-h3.wav";
+  imageDownloadLink.download = "hidream-o1.png";
+  if (completed && result.audio_url) {
+    const link = document.querySelector("#download-audio");
+    link.href = result.audio_url;
+    link.hidden = false;
+  }
 }
 
 function renderJob(job) {
   currentJob = job;
+  if (activeMode === "workflow" && currentWorkflow) {
+    renderWorkflow(currentWorkflow);
+    return;
+  }
   const states = {
     queued: ["queued", "active"], loading: ["preparing", "active"], running: ["running", "active"],
     cancelling: ["cancelling", "active"], cancelled: ["cancelled", ""],
@@ -2765,27 +4178,10 @@ function renderJob(job) {
   statusChip.textContent = t(label);
   statusChip.className = `status-chip ${tone}`;
   const inProgress = ["queued", "loading", "running", "cancelling"].includes(job.status);
-  const hasResult = !!(job.video_url || job.image_url || job.audio_url);
-  emptyState.hidden = inProgress || (job.status === "completed" && hasResult);
-  loadingState.hidden = !inProgress;
-  video.hidden = job.status !== "completed" || !job.video_url;
-  image.hidden = job.status !== "completed" || !job.image_url;
-  audio.hidden = job.status !== "completed" || job.kind !== "music" || !job.audio_url;
-  if (!video.hidden && video.dataset.url !== job.video_url) {
-    video.src = job.video_url;
-    video.dataset.url = job.video_url;
-  }
-  if (!image.hidden && image.dataset.url !== job.image_url) {
-    image.src = job.image_url;
-    image.dataset.url = job.image_url;
-  }
-  if (!audio.hidden && audio.dataset.url !== job.audio_url) {
-    audio.src = job.audio_url;
-    audio.dataset.url = job.audio_url;
-  }
-  resultFooter.hidden = job.status !== "completed" || !hasResult;
   const hasMetrics = Number.isFinite(Number(job.elapsed_seconds)) && job.elapsed_seconds !== null;
-  logPanel.hidden = !job.logs?.length && !job.error && !hasMetrics;
+  logPanel.dataset.hasLogs = String(Boolean(job.logs?.length || job.error || hasMetrics));
+  logPanel.dataset.mode = job.kind;
+  logPanel.hidden = logPanel.dataset.hasLogs !== "true" || logPanel.dataset.mode !== activeMode;
   jobMetrics.hidden = !hasMetrics;
   jobMetrics.textContent = hasMetrics ? formatGenerationMetrics(job) : "";
   jobLogs.textContent = [...(job.logs || []), job.error].filter(Boolean).join("\n");
@@ -2801,25 +4197,8 @@ function renderJob(job) {
   generateLabel.textContent = t(inProgress
     ? (buttonModeKey ? `${buttonModeKey}Generating` : "generating")
     : (buttonModeKey ? `${buttonModeKey}Generate` : "generate"));
-  if (job.video_url) {
-    const videoLink = document.querySelector("#download-video");
-    videoLink.href = job.video_url;
-    videoLink.download = "minimax-h3.mp4";
-  }
-  const audioLink = document.querySelector("#download-audio");
-  if (job.audio_url) {
-    audioLink.href = job.audio_url;
-    audioLink.download = job.kind === "music" ? "minimax-music3.wav" : "minimax-h3.wav";
-    audioLink.textContent = t(job.kind === "music" ? "musicDownload" : "downloadAudio");
-  }
-  audioLink.hidden = !job.audio_url;
-  document.querySelector("#download-video").hidden = !job.video_url;
-  imageDownloadLink.hidden = !job.image_url;
-  if (job.image_url) {
-    imageDownloadLink.href = job.image_url;
-    imageDownloadLink.download = "hidream-o1.png";
-  }
   if (!inProgress && !job.prompt) loadModels();
+  refreshResultPreview();
 }
 
 function restoreHistoryControl(selector, value) {
@@ -2842,6 +4221,8 @@ function restoreHistoryControl(selector, value) {
 
 function restoreHistoryItem(item) {
   if (historyDeleteBusy || firstFrameBusy || storyboardBusy || promptEnhancementBusy ||
+    window.MiniMuvImageReferences?.busy() ||
+    window.MiniMuvPodcast?.active() || window.MiniMuvMVGeneration?.active() ||
     ["queued", "loading", "running", "cancelling"].includes(currentJob?.status) ||
     ["queued", "running"].includes(currentWorkflow?.status)) {
     window.alert(t("errRunning"));
@@ -2867,6 +4248,8 @@ function restoreHistoryItem(item) {
   if (settings && typeof settings === "object") {
     if (item.kind === "video") {
       videoModelChoice.value = settings.model || "h3";
+      window.MiniMuvVideoPrompts?.load("video", settings.negative_prompt || "");
+      restoreHistoryControl("#video-quality", settings.quality || (videoModelChoice.value === "h3" ? "standard" : "preview"));
       if (typeof settings.turbo === "boolean") {
         turboToggle.checked = settings.turbo;
         updateTurboSteps();
@@ -2883,7 +4266,16 @@ function restoreHistoryItem(item) {
       }
     } else if (item.kind === "image") {
       imageModelChoice.value = settings.model || "hidream";
-      restoreHistoryControl("#image-size", settings.width || 1024);
+      updateLocalModelControls();
+      restoreHistoryControl("#image-quality", settings.quality || "custom");
+      restoreHistoryControl("#image-candidate-count", settings.candidate_count || 1);
+      const turnaround = document.querySelector("#image-turnaround");
+      if (turnaround) turnaround.checked = settings.image_preset === "character_turnaround";
+      const sceneViews = document.querySelector("#image-scene-views");
+      if (sceneViews) sceneViews.checked = settings.image_preset === "scene_views";
+      window.MiniMuvImageReferences?.load(settings.reference_image_ids || []);
+      restoreHistoryControl("#image-size", settings.size || settings.width || (settings.model ? 1024 : 2048));
+      restoreHistoryControl("#image-aspect", settings.aspect || "1:1");
       restoreHistoryControl("#image-seed", settings.seed);
     } else {
       for (const key of ["duration", "steps", "seed"]) {
@@ -2906,7 +4298,12 @@ function restoreHistoryItem(item) {
 }
 
 function renderHistory() {
-  const items = historyItems.filter((item) => historyFilter === "all" || item.kind === historyFilter);
+  const items = [...historyItems, ...workflowItems.map(item => ({...item, kind: "workflow"})),
+    ...mvProjects.map(item => ({...item, kind: "mv"})),
+    ...(window.MiniMuvPodcast?.history() || []).map(item => ({...item, kind: "podcast"}))]
+    .filter((item) => historyFilter === "all" || item.kind === historyFilter)
+    .sort((a, b) => b.created_at - a.created_at);
+  document.querySelector("#workflow-history-actions").hidden = historyFilter !== "workflow";
   historyCount.textContent = `${items.length} ${t("historyCount")}`;
   historyList.replaceChildren();
   historyStatus.hidden = items.length > 0;
@@ -2916,8 +4313,12 @@ function renderHistory() {
     row.className = "history-row";
     const button = document.createElement("button");
     button.type = "button";
-    button.className = `history-item${currentJob?.id === item.id ? " selected" : ""}`;
-    button.setAttribute("aria-pressed", String(currentJob?.id === item.id));
+    const selected = item.kind === "workflow" ? currentWorkflow?.id === item.id
+      : item.kind === "mv" ? currentMV?.id === item.id
+      : item.kind === "podcast" ? window.MiniMuvPodcast?.preview()?.id === item.id : currentJob?.id === item.id;
+    button.disabled = item.kind === "mv" && mvBusy;
+    button.className = `history-item${selected ? " selected" : ""}`;
+    button.setAttribute("aria-pressed", String(selected));
 
     const thumbnail = document.createElement("span");
     thumbnail.className = "history-thumb";
@@ -2927,7 +4328,8 @@ function renderHistory() {
       imageThumb.alt = "";
       thumbnail.append(imageThumb);
     } else {
-      thumbnail.textContent = item.kind === "video" ? "▶" : "♫";
+      thumbnail.textContent = item.kind === "mv" ? "MV"
+        : ["video", "workflow"].includes(item.kind) ? "▶" : "♫";
       thumbnail.setAttribute("aria-hidden", "true");
     }
 
@@ -2936,7 +4338,8 @@ function renderHistory() {
     const type = document.createElement("span");
     type.className = "history-type";
     const typeLabel = document.createElement("span");
-    typeLabel.textContent = t(`history${item.kind[0].toUpperCase()}${item.kind.slice(1)}`);
+    typeLabel.textContent = t(item.kind === "workflow" ? "modeWorkflow" :
+      item.kind === "mv" ? "modeMV" : item.kind === "podcast" ? "modePodcast" : `history${item.kind[0].toUpperCase()}${item.kind.slice(1)}`);
     const date = document.createElement("time");
     date.className = "history-date";
     const timestamp = new Date(item.created_at * 1000);
@@ -2949,11 +4352,15 @@ function renderHistory() {
     }
     const metrics = document.createElement("span");
     metrics.className = "history-metrics";
-    metrics.textContent = formatGenerationMetrics(item);
+    metrics.textContent = item.kind === "podcast" ? `${item.segments?.length || 0}`
+      : ["workflow", "mv"].includes(item.kind)
+      ? t(`workflowStatus${item.status[0].toUpperCase()}${item.status.slice(1)}`)
+      : formatGenerationMetrics(item);
     type.append(typeLabel, metrics, date);
     const prompt = document.createElement("span");
     prompt.className = "history-prompt";
-    prompt.textContent = item.prompt || t("historyNoPrompt");
+    prompt.textContent = item.kind === "workflow" ? `${item.shots?.length || 0} ${t("workflowShot")} · ${item.total_duration}s`
+      : item.prompt || t("historyNoPrompt");
     if (item.name) {
       const name = document.createElement("span");
       name.className = "history-name";
@@ -2964,38 +4371,67 @@ function renderHistory() {
       details.append(type, prompt);
     }
     button.append(thumbnail, details);
-    button.addEventListener("click", () => restoreHistoryItem(item));
+    button.addEventListener("click", () => {
+      if (window.MiniMuvPodcast?.active() || window.MiniMuvMVGeneration?.active()) {
+        window.alert(t("errRunning"));
+        return;
+      }
+      if (activeMode === "podcast" && item.kind !== "podcast" &&
+        !window.MiniMuvPodcast.canLeave()) return;
+      if (item.kind === "workflow") {
+        workflowModeButton.click();
+        fetchWorkflow(item.id);
+      } else if (item.kind === "mv") {
+        if (openMVProject(item)) mvModeButton.click();
+      } else if (item.kind === "podcast") {
+        window.MiniMuvPodcast.open(item.id);
+      } else restoreHistoryItem(item);
+    });
     const deleteButton = document.createElement("button");
     deleteButton.type = "button";
     deleteButton.className = "history-delete";
     deleteButton.textContent = "❌";
-    deleteButton.title = t("historyDelete");
-    deleteButton.setAttribute("aria-label", `${t("historyDelete")} · ${item.name || item.prompt || t("historyNoPrompt")}`);
-    deleteButton.disabled = historyDeleteBusy;
-    deleteButton.addEventListener("click", () => deleteHistoryItem(item));
-    row.append(button, deleteButton);
+    deleteButton.title = t(item.kind === "workflow" ? "workflowDelete" : "historyDelete");
+    deleteButton.setAttribute("aria-label", `${deleteButton.title} · ${item.name || item.prompt || t("historyNoPrompt")}`);
+    deleteButton.disabled = historyDeleteBusy || (item.kind === "mv" && mvBusy) || (item.kind === "workflow" &&
+      ["queued", "running"].includes(item.status));
+    deleteButton.addEventListener("click", () => item.kind === "workflow"
+      ? requestWorkflowDeletion([item]) : deleteHistoryItem(item));
+    row.append(button);
+    if (item.kind !== "podcast") row.append(deleteButton);
     historyList.append(row);
   }
 }
 
 async function deleteHistoryItem(item) {
-  if (historyDeleteBusy) return;
+  if (historyDeleteBusy || (item.kind === "mv" && mvBusy)) return;
   if (firstFrameBusy || ["queued", "loading", "running", "cancelling"].includes(currentJob?.status) ||
       ["queued", "running"].includes(currentWorkflow?.status)) {
     window.alert(t("errRunning"));
     return;
   }
-  if (!window.confirm(t("historyDeleteConfirm"))) return;
+  if (!window.confirm(t(item.kind === "mv" ? "mvDeleteConfirm" : "historyDeleteConfirm"))) return;
   historyDeleteBusy = true;
   renderHistory();
   historyStatus.hidden = false;
   historyStatus.textContent = t("historyDeleting");
   try {
-    const response = await fetch(`/api/history/${item.id}`, {method: "DELETE"});
+    const response = await fetch(item.kind === "mv" ? `/api/mv-projects/${item.id}` : `/api/history/${item.id}`,
+      item.kind === "mv" ? {
+        method: "DELETE", headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({revision: item.revision})
+      } : {method: "DELETE"});
     const data = await response.json();
     if (!response.ok) throw new Error(
       data.error === "history_in_use" ? t("historyInUse") : data.detail || data.error || t("historyDeleteError"));
-    if (currentJob?.id === item.id) {
+    if (item.kind === "mv") {
+      mvProjects = mvProjects.filter(project => project.id !== item.id);
+      if (currentMV?.id === item.id) {
+        mvDirty = false;
+        openMVProject();
+      }
+      if (!(await loadMVProjects())) throw new Error(t("mvError"));
+    } else if (currentJob?.id === item.id) {
       for (const id of ["#video-result", "#image-result", "#audio-result"]) {
         const media = document.querySelector(id);
         if (!media) continue;
@@ -3007,13 +4443,15 @@ async function deleteHistoryItem(item) {
       renderJob({kind: item.kind, status: "idle", logs: [], error: ""});
       currentJob = null;
     }
-    const frame = document.querySelector("#video-first-frame");
-    if (frame.dataset.firstFrameId === item.id) {
-      frame.dataset.firstFrameId = "";
-      frame.dataset.savedFirstFrameId = "";
-      frame.dataset.firstFrameUrl = "";
+    if (item.kind !== "mv") {
+      const frame = document.querySelector("#video-first-frame");
+      if (frame.dataset.firstFrameId === item.id) {
+        frame.dataset.firstFrameId = "";
+        frame.dataset.savedFirstFrameId = "";
+        frame.dataset.firstFrameUrl = "";
+      }
+      document.querySelector("#history-restore-status").hidden = true;
     }
-    document.querySelector("#history-restore-status").hidden = true;
     await loadHistory();
     historyStatus.hidden = false;
     historyStatus.textContent = t("historyDeleted");
@@ -3023,7 +4461,11 @@ async function deleteHistoryItem(item) {
     historyStatus.textContent = `${t("historyDeleteError")} ${error.message}`;
   } finally {
     historyDeleteBusy = false;
-    historyList.querySelectorAll(".history-delete").forEach(button => { button.disabled = false; });
+    const message = historyStatus.textContent;
+    const messageHidden = historyStatus.hidden;
+    renderHistory();
+    historyStatus.textContent = message;
+    historyStatus.hidden = messageHidden;
   }
 }
 
@@ -3033,21 +4475,25 @@ async function loadHistory() {
     const data = await response.json();
     if (!response.ok || !Array.isArray(data.items)) throw new Error(data.error || "history_unavailable");
     historyItems = data.items;
+    window.MiniMuvImageReferences?.history(historyItems);
     refreshWorkflowFirstFrames();
-    refreshWorkflowMusicSources();
+    refreshMVMusicSources();
     historyStatus.hidden = true;
     renderHistory();
   } catch {
     historyItems = [];
-    historyList.replaceChildren();
-    historyCount.textContent = "";
+    renderHistory();
     historyStatus.textContent = t("historyLoadError");
     historyStatus.hidden = false;
   }
 }
 
 function errorMessage(code) {
+  const nativeError = window.MiniMuvVideoPrompts?.error(code);
+  if (nativeError) return nativeError;
   const keys = {
+    fasth3_conditioning_unsupported: "fastH3Limit",
+    invalid_fasth3_steps: "errInvalid",
     local_model_not_ready: "localModelError", invalid_generation_model: "errInvalid",
     generation_model_disabled: "errModelDisabled",
     invalid_prompt: "errInvalidPrompt", h3_model_missing: "modelMissing",
@@ -3057,15 +4503,28 @@ function errorMessage(code) {
     mlx_serve_missing: "runtimeMissing",
     job_already_running: "errRunning",
     invalid_duration: "errInvalid", invalid_steps: "errInvalid",
-    invalid_seed: "errInvalid", invalid_aspect: "errInvalid"
+    invalid_seed: "errInvalid", invalid_aspect: "errInvalid", invalid_video_quality: "errInvalid"
   };
   return t(keys[code] || "errGeneric");
 }
 
-function setPromptEnhancerStatus(key) {
-  promptEnhancerStatusKey = key;
-  promptEnhancerStatus.textContent = key ? t(key) : "";
-  promptEnhancerStatus.hidden = !key;
+function setPromptEnhancerStatus(key, mode = "video") {
+  const status = mode === "mv" ? mvPromptEnhancerStatus : promptEnhancerStatus;
+  if (mode === "mv") mvPromptEnhancerStatusKey = key;
+  else promptEnhancerStatusKey = key;
+  status.textContent = key ? t(key) : "";
+  status.hidden = !key;
+}
+
+function syncMVPromptEnhancerModel() {
+  const selected = mvPromptEnhancerModel.value;
+  mvPromptEnhancerModel.replaceChildren(...[...promptEnhancerModel.options].map(option => option.cloneNode(true)));
+  if (selected && [...mvPromptEnhancerModel.options].some(option => option.value === selected)) {
+    mvPromptEnhancerModel.value = selected;
+  } else {
+    mvPromptEnhancerModel.value = promptEnhancerModel.value;
+  }
+  mvPromptEnhancerModel.disabled = promptEnhancerModel.disabled;
 }
 
 async function loadTextModels() {
@@ -3082,6 +4541,13 @@ async function loadTextModels() {
       option.textContent = model.name || model.id;
       promptEnhancerModel.append(option);
     }
+    const skillsModelSelect = document.querySelector("#skills-model");
+    if (skillsModelSelect && skillsModelSelect.options.length === 0) {
+      for (const model of models) {
+        if (typeof model.id !== "string" || !model.id) continue;
+        skillsModelSelect.append(new Option(model.name || model.id, model.id));
+      }
+    }
     textModelsAvailable = promptEnhancerModel.options.length > 0;
     if (textModelsAvailable) {
       const preferred = ["glm-4.7-flash-4bit", "gemma-4-12b", "qwen3.8-27b-uncensored-optiq-4bit", "qwen3.8-27b"];
@@ -3094,13 +4560,16 @@ async function loadTextModels() {
       }
       promptEnhancerModel.disabled = false;
       setPromptEnhancerStatus("");
+      setPromptEnhancerStatus("", "mv");
     } else {
       promptEnhancerModel.disabled = true;
       const option = document.createElement("option");
       option.textContent = t("enhancerNoModels");
       promptEnhancerModel.replaceChildren(option);
       setPromptEnhancerStatus("enhancerNoModels");
+      setPromptEnhancerStatus("enhancerNoModels", "mv");
     }
+    syncMVPromptEnhancerModel();
     syncWorkflowTextModels();
     updateGenerateAvailability();
   } catch {
@@ -3111,6 +4580,8 @@ async function loadTextModels() {
     promptEnhancerModel.append(option);
     promptEnhancerModel.disabled = true;
     setPromptEnhancerStatus("enhancerOffline");
+    syncMVPromptEnhancerModel();
+    setPromptEnhancerStatus("enhancerOffline", "mv");
     syncWorkflowTextModels();
     updateGenerateAvailability();
     window.setTimeout(loadTextModels, 10000);
@@ -3123,7 +4594,7 @@ function syncWorkflowTextModels() {
     ...[...promptEnhancerModel.options].map((option) => option.cloneNode(true))
   );
   workflowTextModel.disabled = !textModelsAvailable || storyboardBusy ||
-    Boolean(currentWorkflow && currentWorkflow.status !== "draft");
+    Boolean(currentWorkflow && ["queued", "running"].includes(currentWorkflow.status));
   if ([...workflowTextModel.options].some((option) => option.value === selected)) {
     workflowTextModel.value = selected;
   } else {
@@ -3131,18 +4602,33 @@ function syncWorkflowTextModels() {
   }
 }
 
+function updateStoryboardTiming() {
+  const total = Number(document.querySelector("#workflow-total-duration").value);
+  const durationInput = document.querySelector("#workflow-shot-duration");
+  const duration = Number(durationInput.value);
+  const minimum = Number(durationInput.min);
+  const maximum = Number(durationInput.max);
+  const valid = Number.isInteger(total) && total >= minimum && total <= 1800 &&
+    Number.isInteger(duration) && duration >= minimum && duration <= maximum && total % duration === 0 &&
+    total / duration <= 1800;
+  document.querySelector("#workflow-shot-count").value = valid ? String(total / duration) : "";
+  document.querySelector("#workflow-total-duration").setCustomValidity(valid ? "" : t("storyboardTimingInvalid"));
+  return valid ? {total, duration, count: total / duration} : null;
+}
+
 async function planWorkflowStory() {
-  if (workflowPlanStory.disabled) return;
+  if (workflowPlanStory.disabled || window.MiniMuvVisualReferences?.busy()) return;
   const story = document.querySelector("#workflow-story").value.trim();
-  const count = Number(document.querySelector("#workflow-shot-count").value);
-  const blankShots = [...workflowShots.children].filter((shot) =>
-    !shot.querySelector("[data-shot-title]").value.trim() &&
-    !shot.querySelector("[data-shot-prompt]").value.trim() &&
-    !shot.querySelector("[data-shot-frame]")?.value
-  );
-  const existingCount = workflowShots.children.length - blankShots.length;
+  const timing = updateStoryboardTiming();
+  if (!timing) {
+    workflowStoryStatus.textContent = t("storyboardTimingInvalid");
+    workflowStoryStatus.hidden = false;
+    workflowStoryStatus.classList.add("error");
+    return;
+  }
+  const {count, total, duration} = timing;
   if (!story || story.length > 30000 || !Number.isInteger(count) ||
-    count < 1 || count + existingCount > 48) {
+    count < 1 || count > 1800) {
     workflowStoryStatus.textContent = t("storyboardInvalid");
     workflowStoryStatus.hidden = false;
     workflowStoryStatus.classList.add("error");
@@ -3156,57 +4642,100 @@ async function planWorkflowStory() {
   workflowStoryStatus.textContent = t("storyboardGenerating");
   workflowStoryStatus.hidden = false;
   workflowStoryStatus.classList.remove("error");
+  const progress = document.querySelector("#workflow-story-progress");
+  progress.hidden = false;
+  const started = Date.now();
+  const progressTimer = window.setInterval(() => {
+    workflowStoryStatus.textContent = `${t("storyboardGenerating")} · ${
+      t("workflowElapsed")}: ${Math.floor((Date.now() - started) / 1000)}s`;
+  }, 1000);
   updateGenerateAvailability();
   try {
     const response = await fetch("/api/storyboards", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ story, shot_count: count, model: workflowTextModel.value })
+      body: JSON.stringify({ story, shot_count: count, total_duration: total,
+        shot_duration: duration, model: workflowTextModel.value,
+        ...(window.MiniMuvVisualReferences ? {
+          visual_references: window.MiniMuvVisualReferences.payload("workflow")
+        } : {}),
+        ...(window.MiniMuvVideoPrompts?.payload("workflow") || {}),
+        ...(window.MiniMuvSkills?.selection("storyboard") || {}),
+        target_model: videoModelChoice.value })
     });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.detail || data.error || t("enhanceFailed"));
+    if (!response.ok) {
+      const error = new Error(data.detail || data.error || t("enhanceFailed"));
+      error.modelLimited = response.status === 502 || data.error === "text_model_unavailable";
+      throw error;
+    }
     if (!Array.isArray(data.shots) || data.shots.length !== count ||
       data.shots.some((shot) => !shot ||
         [["title", 120], ["prompt", 4000], ["music_prompt", 4000]].some(([key, limit]) =>
           typeof shot[key] !== "string" || !shot[key].trim() || shot[key].length > limit
-        ) || ![5, 8, 10, 15].includes(shot.duration))) {
-      throw new Error(t("enhanceFailed"));
+        ) || shot.duration !== duration)) {
+      const error = new Error(t("enhanceFailed"));
+      error.modelLimited = true;
+      throw error;
     }
-    blankShots.forEach((shot) => shot.remove());
-    data.shots.forEach((shot) => addWorkflowShot(shot));
+    const first = workflowShots.children[0];
+    [...workflowShots.children].slice(1).forEach(card => card.remove());
+    if (first) {
+      const shot = data.shots[0];
+      first.querySelector("[data-shot-title]").value = shot.title;
+      first.querySelector("[data-shot-prompt]").value = shot.prompt;
+      first.querySelector("[data-shot-music-prompt]").value = shot.music_prompt;
+      first.querySelector("[data-shot-duration]").value = String(shot.duration);
+      first.dataset.skillUsage = JSON.stringify(data.skill_usage || []);
+      first.dataset.skillPrompt = shot.prompt;
+      first.dataset.skillMusicPrompt = shot.music_prompt;
+      window.MiniMuvVisualReferences?.attachShot(first, "workflow", shot.visual);
+      window.MiniMuvVideoPrompts?.attachShot(first, shot, videoModelChoice.value);
+    }
+    data.shots.slice(first ? 1 : 0).forEach((shot) =>
+      addWorkflowShot(data.skill_usage ? {...shot, skill_usage: data.skill_usage} : shot));
     workflowStoryStatus.textContent = t("storyboardAdded");
   } catch (error) {
-    workflowStoryStatus.textContent = `${t("enhanceFailed")} ${error.message}`;
+    workflowStoryStatus.textContent = `${t("enhanceFailed")} ${error.message}${
+      error.modelLimited ? `\n${t("storyboardModelLimited")}` : ""}`;
     workflowStoryStatus.classList.add("error");
   } finally {
+    window.clearInterval(progressTimer);
+    progress.hidden = true;
     storyboardBusy = false;
     controls.forEach((control, index) => { control.disabled = previousDisabled[index]; });
     updateWorkflowShotNumbers();
     workflowPlanStory.textContent = t("storyboardGenerate");
     updateGenerateAvailability();
+    updateWorkflowMusicPromptVisibility();
   }
 }
 
-async function enhancePrompt() {
+function promptEnhancementPayload(prompt, mode, model, skillScope) {
+  return {
+    prompt,
+    mode,
+    model,
+    ...(window.MiniMuvSkills?.selection(skillScope) || {})
+  };
+}
+
+async function enhancePromptForTarget({target, model, mode, scope, result, keywords, output, button, statusMode}) {
   if (!textModelsAvailable || promptEnhancementBusy) return;
-  if (!promptInput.value.trim()) {
-    setPromptEnhancerStatus("errInvalidPrompt");
+  if (!target.value.trim()) {
+    setPromptEnhancerStatus("errInvalidPrompt", statusMode);
     return;
   }
   promptEnhancementBusy = true;
-  promptEnhancerResult.hidden = true;
-  setPromptEnhancerStatus("enhancingPrompt");
-  enhancePromptButton.textContent = t("enhancingPrompt");
+  result.hidden = true;
+  setPromptEnhancerStatus("enhancingPrompt", statusMode);
+  button.textContent = t("enhancingPrompt");
   updateGenerateAvailability();
   try {
     const response = await fetch("/api/prompt-enhancements", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        prompt: promptInput.value,
-        mode: activeMode,
-        model: promptEnhancerModel.value
-      })
+      body: JSON.stringify(promptEnhancementPayload(target.value, mode, model.value, scope))
     });
     const data = await response.json();
     if (!response.ok) {
@@ -3214,27 +4743,68 @@ async function enhancePrompt() {
       error.code = data.error;
       throw error;
     }
-    promptEnhancerKeywords.replaceChildren();
+    keywords.replaceChildren();
     for (const keyword of data.keywords) {
       const item = document.createElement("li");
       item.textContent = keyword;
-      promptEnhancerKeywords.append(item);
+      keywords.append(item);
     }
-    promptEnhancerOutput.value = data.optimized_prompt;
-    promptEnhancerResult.hidden = false;
-    setPromptEnhancerStatus("");
+    output.value = data.optimized_prompt;
+    output.dataset.skillUsage = JSON.stringify(data.skill_usage || []);
+    result.hidden = false;
+    setPromptEnhancerStatus("", statusMode);
   } catch (error) {
     setPromptEnhancerStatus(error.code === "local_text_runtime_unavailable"
       ? "enhancerOffline"
-      : error.code === "invalid_prompt" ? "errInvalidPrompt" : "enhanceFailed");
+      : error.code === "invalid_prompt" ? "errInvalidPrompt" : "enhanceFailed", statusMode);
+    const status = statusMode === "mv" ? mvPromptEnhancerStatus : promptEnhancerStatus;
+    status.textContent += ` ${error.message}`;
   } finally {
     promptEnhancementBusy = false;
-    enhancePromptButton.textContent = t("enhancePrompt");
+    button.textContent = t("enhancePrompt");
     updateGenerateAvailability();
   }
 }
 
+async function enhancePrompt() {
+  return enhancePromptForTarget({
+    target: promptInput, model: promptEnhancerModel, mode: activeMode, scope: "prompt",
+    result: promptEnhancerResult, keywords: promptEnhancerKeywords, output: promptEnhancerOutput,
+    button: enhancePromptButton, statusMode: "video"
+  });
+}
+
+async function enhanceMVPrompt() {
+  return enhancePromptForTarget({
+    target: mvPromptInput, model: mvPromptEnhancerModel, mode: "mv", scope: "mv-prompt",
+    result: mvPromptEnhancerResult, keywords: mvPromptEnhancerKeywords, output: mvPromptEnhancerOutput,
+    button: mvEnhancePromptButton, statusMode: "mv"
+  });
+}
+
+function applyPromptEnhancement(target, keywordList, output, statusMode, onApplied = () => {}) {
+  const keywords = [...keywordList.querySelectorAll("li")]
+    .map(item => item.textContent.trim())
+    .filter(Boolean);
+  const keywordPrompt = keywords.length
+    ? `${t("enhancerKeywordPrefix")} ${keywords.join(", ")}`
+    : "";
+  const combinedPrompt = [output.value.trim(), keywordPrompt].filter(Boolean).join("\n\n");
+  if (combinedPrompt.length > target.maxLength) {
+    setPromptEnhancerStatus("enhancerPromptTooLong", statusMode);
+    return;
+  }
+  target.value = combinedPrompt;
+  target.dataset.skillUsage = output.dataset.skillUsage || "[]";
+  target.dataset.skillPrompt = combinedPrompt;
+  onApplied();
+  setPromptEnhancerStatus("enhancerApplied", statusMode);
+  target.focus();
+}
+
 function updateWorkflowShotNumbers() {
+  const editable = !workflowStructureBusy && !storyboardBusy && !firstFrameBusy &&
+    (!currentWorkflow || !["queued", "running"].includes(currentWorkflow.status));
   [...workflowShots.children].forEach((shot, index) => {
     const number = index + 1;
     shot.querySelector("[data-shot-number]").textContent = `${t("workflowShot")} ${number}`;
@@ -3243,36 +4813,100 @@ function updateWorkflowShotNumbers() {
     toggleButton.textContent = expanded ? "−" : "+";
     toggleButton.setAttribute("aria-label", `${t(expanded ? "workflowCollapseShot" : "workflowExpandShot")} ${number}`);
     const removeButton = shot.querySelector(".workflow-remove-shot");
-    removeButton.disabled = workflowShots.children.length <= 1;
+    removeButton.disabled = !editable;
     removeButton.setAttribute("aria-label", `${t("workflowRemoveShot")} ${number}`);
+    for (const [direction, key, boundary] of [
+      ["up", "workflowMoveUp", index === 0],
+      ["down", "workflowMoveDown", index === workflowShots.children.length - 1]
+    ]) {
+      const button = shot.querySelector(`[data-shot-move="${direction}"]`);
+      button.disabled = !editable || boundary;
+      button.setAttribute("aria-label", `${t(key)} ${number}`);
+      button.title = t(key);
+    }
     const noneOption = shot.querySelector("[data-shot-frame] option[value='']");
-    if (noneOption) noneOption.textContent = t(index > 0 ? "firstFrameChained" : "firstFrameNone");
+    if (noneOption) noneOption.textContent = t(index > 0 &&
+      document.querySelector("#workflow-shot-mode").value === "continuous" ? "firstFrameChained" : "firstFrameNone");
   });
 }
 
+async function syncWorkflowStructure() {
+  if (!currentWorkflow) return;
+  workflowStructureBusy = true;
+  const controls = [...workflowPanel.querySelectorAll("input, textarea, select, button")]
+    .map(control => [control, control.disabled]);
+  controls.forEach(([control]) => { control.disabled = true; });
+  try {
+    await submitWorkflowAction("save");
+  } finally {
+    workflowStructureBusy = false;
+    controls.forEach(([control, disabled]) => { control.disabled = disabled; });
+    updateWorkflowShotNumbers();
+  }
+}
+
+async function moveWorkflowShot(card, direction) {
+  if (workflowStructureBusy || workflowStageBusy || workflowDeletion || storyboardBusy || firstFrameBusy ||
+      (currentWorkflow && ["queued", "running"].includes(currentWorkflow.status))) return;
+  const neighbour = direction === "up" ? card.previousElementSibling : card.nextElementSibling;
+  if (!neighbour) return;
+  if (direction === "up") workflowShots.insertBefore(card, neighbour);
+  else workflowShots.insertBefore(neighbour, card);
+  updateWorkflowShotNumbers();
+  await syncWorkflowStructure();
+}
+
 function addWorkflowShot(shot = {}) {
-  if (workflowShots.children.length >= 48) {
+  if (workflowShots.children.length >= 1800) {
     showWorkflowMessage(t("workflowTooManyShots"), true);
     return;
   }
   const fragment = workflowShotTemplate.content.cloneNode(true);
   const card = fragment.querySelector(".workflow-shot");
+  card.dataset.shotId = shot.id || "";
+  card.dataset.seed = String(shot.seed || 0);
+  card.dataset.steps = String(shot.steps || 4);
+  card.dataset.turbo = String(shot.turbo !== false);
+  card.querySelector("[data-shot-generate]").addEventListener("click", () => runWorkflowStage("shot", card));
+  const preview = card.querySelector("[data-shot-preview]");
+  if (shot.video_url) {
+    preview.src = shot.video_url;
+    preview.dataset.url = shot.video_url;
+    preview.hidden = false;
+  }
   const shotNumber = ++workflowShotSequence;
   for (const [fieldSelector, labelSelector, idSuffix] of [
     ["[data-shot-title]", "[data-shot-title-label]", "title"],
     ["[data-shot-prompt]", "[data-shot-prompt-label]", "prompt"],
     ["[data-shot-duration]", "[data-shot-duration-label]", "duration"],
+    ["[data-shot-steps]", "[data-shot-steps-label]", "steps"],
     ["[data-shot-music-prompt]", "[data-shot-music-label]", "music"],
     ["[data-shot-frame]", "[data-shot-frame-label]", "frame"],
-    ["[data-shot-upload]", "[data-shot-upload-label]", "upload"]
+    ["[data-shot-upload]", "[data-shot-upload-label]", "upload"],
+    ["[data-shot-seed]", "[data-shot-seed-label]", "seed"]
   ]) {
     const field = card.querySelector(fieldSelector);
     field.id = `workflow-shot-${idSuffix}-${shotNumber}`;
     card.querySelector(labelSelector).htmlFor = field.id;
   }
+  for (const parameter of ["duration", "steps"]) {
+    const hint = card.querySelector(`[data-shot-${parameter}-hint]`);
+    hint.id = `workflow-shot-${parameter}-hint-${shotNumber}`;
+    card.querySelector(`[data-shot-${parameter}]`).setAttribute("aria-describedby", hint.id);
+  }
   card.querySelector("[data-shot-title]").value = shot.title || "";
+  card.querySelector("[data-shot-seed]").value = String(shot.seed || 0);
   card.querySelector("[data-shot-prompt]").value = shot.prompt || "";
+  card.dataset.skillUsage = JSON.stringify(shot.skill_usage || []);
+  card.dataset.skillPrompt = shot.prompt || "";
+  card.dataset.skillMusicPrompt = shot.music_prompt || "";
   card.querySelector("[data-shot-duration]").value = String(shot.duration || 5);
+  card.querySelector("[data-shot-steps]").value = String(shot.steps ||
+    (videoModelChoice.value === "ltx-2.3-dev-q4" ? 30 :
+      videoModelChoice.value === "h3-fasth3-vsa-q8" ? 4 :
+      videoModelChoice.value.startsWith("ltx-") ? 8 : 4));
+  card.querySelector("[data-shot-turbo]").checked = shot.turbo !== false;
+  card.querySelector("[data-shot-turbo]").addEventListener("change", updateParameterControls);
   card.querySelector("[data-shot-music-prompt]").value =
     shot.music_prompt || DEFAULT_WORKFLOW_MUSIC_PROMPT;
   card.dataset.firstFrameId = shot.first_frame_id || "";
@@ -3290,39 +4924,33 @@ function addWorkflowShot(shot = {}) {
     card.classList.toggle("is-collapsed", !expanded);
     updateWorkflowShotNumbers();
   });
-  card.querySelector(".workflow-remove-shot").addEventListener("click", () => {
-    if (workflowShots.children.length > 1) card.remove();
+  card.querySelector(".workflow-remove-shot").addEventListener("click", async () => {
+    if (workflowStructureBusy || workflowStageBusy || workflowDeletion || storyboardBusy || firstFrameBusy ||
+        (currentWorkflow && ["queued", "running"].includes(currentWorkflow.status))) return;
+    if (currentWorkflow && workflowShots.children.length === 1) {
+      requestWorkflowDeletion([currentWorkflow]);
+      if (workflowDeletion) {
+        workflowDeleteLastShot = card;
+        document.querySelector("#workflow-delete-title").textContent = t("workflowClearShots");
+        document.querySelector("#workflow-delete-confirm").textContent = t("workflowClearShots");
+      }
+      return;
+    }
+    card.remove();
     updateWorkflowShotNumbers();
+    await syncWorkflowStructure();
+  });
+  card.querySelectorAll("[data-shot-move]").forEach(button => {
+    button.addEventListener("click", () => moveWorkflowShot(card, button.dataset.shotMove));
   });
   workflowShots.append(fragment);
+  window.MiniMuvVisualReferences?.attachShot(card, "workflow", shot.visual);
+  window.MiniMuvVideoPrompts?.attachShot(card, shot, videoModelChoice.value);
   updateWorkflowShotNumbers();
   updateWorkflowMusicPromptVisibility();
   applyLanguage();
 }
 
-function workflowMusicSourceItem(id) {
-  return historyItems.find((item) => item.kind === "music" && item.id === id) || null;
-}
-function updateWorkflowMusicSourceVisibility() {
-  const id = workflowMusicSource.value;
-  workflowGlobalMusicPromptWrapper.hidden = Boolean(id);
-  const item = id ? workflowMusicSourceItem(id) : null;
-  workflowBurnLyricsWrapper.hidden = !(item?.generation?.lyrics_mode === "lyrics");
-}
-function refreshWorkflowMusicSources(selected = workflowMusicSource.value) {
-  const options = [new Option(t("workflowMusicSourceNew"), "")];
-  historyItems.filter((item) => item.kind === "music" && item.audio_url).forEach((item) => {
-    const duration = item.generation?.duration ? ` · ${item.generation.duration}s` : "";
-    const lyrics = item.generation?.lyrics_mode === "lyrics" ? " · ♪" : "";
-    options.push(new Option(`${item.name || item.prompt?.slice(0, 60) || item.id.slice(0, 8)}${duration}${lyrics} · ${item.id.slice(0, 8)}`, item.id));
-  });
-  if (selected && !options.some((option) => option.value === selected)) {
-    options.push(new Option(`${t("workflowMusicSource")} · ${selected.slice(0, 8)}`, selected));
-  }
-  workflowMusicSource.replaceChildren(...options);
-  workflowMusicSource.value = selected || "";
-  updateWorkflowMusicSourceVisibility();
-}
 function updateWorkflowMusicPromptVisibility() {
   workflowGlobalMusicWrapper.hidden = workflowMusic.checked;
   workflowShots.querySelectorAll("[data-shot-music-wrapper]").forEach((wrapper) => {
@@ -3335,7 +4963,7 @@ async function uploadWorkflowFirstFrame(card) {
   const file = input.files[0];
   const isVideo = card.id === "video-first-frame";
   if (!file || firstFrameBusy || storyboardBusy ||
-    (!isVideo && currentWorkflow && currentWorkflow.status !== "draft")) return;
+    (!isVideo && currentWorkflow && ["queued", "running"].includes(currentWorkflow.status))) return;
   const status = card.querySelector("[data-shot-upload-status]");
   const controls = [...(isVideo ? form : workflowPanel).querySelectorAll("input, textarea, select, button"),
     ...document.querySelectorAll(".mode-button")];
@@ -3388,7 +5016,8 @@ function refreshWorkflowFirstFrames() {
   [document.querySelector("#video-first-frame"), ...workflowShots.querySelectorAll(".workflow-shot")].forEach((card, index) => {
     const select = card.querySelector("[data-shot-frame]");
     const selected = card.dataset.firstFrameId || "";
-    const options = [new Option(t(index > 1 ? "firstFrameChained" : "firstFrameNone"), "")];
+    const options = [new Option(t(index > 1 &&
+      document.querySelector("#workflow-shot-mode").value === "continuous" ? "firstFrameChained" : "firstFrameNone"), "")];
     if (card.dataset.uploadedFrameId) {
       options.push(new Option(card.dataset.uploadedFrameName, card.dataset.uploadedFrameId));
     }
@@ -3411,6 +5040,8 @@ function showWorkflowMessage(message, isError = false) {
 }
 
 function workflowErrorMessage(action, error) {
+  if (error === "fasth3_conditioning_unsupported") return t("fastH3Limit");
+  if (error === "long_video_new_soundtrack_only") return t("workflowNewScoreOnly");
   if (error === "job_already_running") return t("workflowBusy");
   if (error === "h3_model_missing") return t("modelMissing");
   if (error === "music_model_missing") return t("musicModelMissing");
@@ -3422,36 +5053,65 @@ function workflowErrorMessage(action, error) {
 }
 
 function workflowPayload() {
+  for (const shot of workflowShots.children) {
+    for (const selector of ["[data-shot-duration]", "[data-shot-steps]"]) {
+      const control = shot.querySelector(selector);
+      if ((selector !== "[data-shot-steps]" ||
+          ["h3", "ltx-2.3-dev-q4"].includes(videoModelChoice.value)) &&
+          control?.checkValidity?.() === false) {
+        control.reportValidity();
+        throw new Error(control.validationMessage);
+      }
+    }
+  }
   return {
     name: document.querySelector("#workflow-name").value.trim() || "Untitled video",
     aspect: document.querySelector("#workflow-aspect").value,
     model: videoModelChoice.value,
+    quality: document.querySelector("#workflow-video-quality").value,
+    shot_mode: document.querySelector("#workflow-shot-mode").value,
+    ...(window.MiniMuvVisualReferences ? {
+      visual_references: window.MiniMuvVisualReferences.payload("workflow")
+    } : {}),
+    ...(window.MiniMuvVideoPrompts?.payload("workflow") || {}),
     shots: [...workflowShots.children].map((shot) => ({
+      id: shot.dataset.shotId || "",
       title: shot.querySelector("[data-shot-title]").value.trim(),
       prompt: shot.querySelector("[data-shot-prompt]").value.trim(),
       music_prompt: shot.querySelector("[data-shot-music-prompt]").value.trim(),
+      ...(shot.querySelector("[data-shot-prompt]").value === shot.dataset.skillPrompt &&
+          shot.querySelector("[data-shot-music-prompt]").value === shot.dataset.skillMusicPrompt &&
+          shot.dataset.skillUsage ? {skill_usage: JSON.parse(shot.dataset.skillUsage)} : {}),
       first_frame_id: shot.querySelector("[data-shot-frame]").value,
+      ...(window.MiniMuvVisualReferences?.shotPayload(shot) || {}),
+      ...(window.MiniMuvVideoPrompts?.shotPayload(shot) || {}),
       duration: Number(shot.querySelector("[data-shot-duration]").value),
-      steps: videoModelChoice.value === "h3" ? 4 : 8,
-      seed: 0,
-      turbo: true
+      steps: ["h3", "ltx-2.3-dev-q4"].includes(videoModelChoice.value) ?
+        Number(shot.querySelector("[data-shot-steps]")?.value ?? shot.dataset.steps ??
+          (videoModelChoice.value === "ltx-2.3-dev-q4" ? 30 : 4)) :
+        videoModelChoice.value === "h3-fasth3-vsa-q8" ? 4 : 8,
+      seed: Number(shot.querySelector("[data-shot-seed]").value),
+      turbo: videoModelChoice.value !== "h3" ||
+        (shot.querySelector("[data-shot-turbo]")?.checked ?? shot.dataset.turbo !== "false")
     })),
     soundtrack: {
       mode: "music3",
       strategy: document.querySelector("#workflow-music").checked ? "per_shot" : "global",
       prompt: workflowGlobalMusicPrompt.value.trim(),
-      lyrics_mode: "instrumental",
-      lyrics: "[instrumental]",
+      lyrics_mode: currentWorkflow?.soundtrack.lyrics_mode || "instrumental",
+      lyrics: currentWorkflow?.soundtrack.lyrics || "[instrumental]",
       mix: document.querySelector("#workflow-audio-mix").value,
-      ...(!document.querySelector("#workflow-music").checked && workflowMusicSource.value
-        ? { music_source_id: workflowMusicSource.value, burn_lyrics: workflowBurnLyrics.checked }
-        : {})
+      burn_lyrics: false
     }
   };
 }
 
 function setWorkflowForm(manifest) {
+  window.MiniMuvVisualReferences?.load("workflow", manifest.visual_references, manifest.reference_urls);
+  window.MiniMuvVideoPrompts?.load("workflow", manifest.negative_prompt || "");
   videoModelChoice.value = manifest.model || "h3";
+  document.querySelector("#workflow-shot-mode").value = manifest.shot_mode || "continuous";
+  document.querySelector("#workflow-video-quality").value = manifest.quality || (videoModelChoice.value === "h3" ? "standard" : "preview");
   updateLocalModelControls();
   if (modelInfo) renderModelInfo(modelInfo);
   document.querySelector("#workflow-name").value = manifest.name;
@@ -3459,8 +5119,6 @@ function setWorkflowForm(manifest) {
   workflowMusic.checked = manifest.soundtrack.mode === "music3" &&
     (manifest.soundtrack.strategy || "per_shot") === "per_shot";
   workflowGlobalMusicPrompt.value = manifest.soundtrack.prompt || DEFAULT_WORKFLOW_MUSIC_PROMPT;
-  workflowBurnLyrics.checked = manifest.soundtrack.burn_lyrics !== false;
-  refreshWorkflowMusicSources(manifest.soundtrack.music_source_id || "");
   document.querySelector("#workflow-audio-mix").value = manifest.soundtrack.mix;
   workflowShots.replaceChildren();
   manifest.shots.forEach((shot) => addWorkflowShot({
@@ -3470,18 +5128,31 @@ function setWorkflowForm(manifest) {
   updateWorkflowShotNumbers();
 }
 
-function newWorkflow() {
-  if (storyboardBusy) return;
+function newWorkflow({preserveShots = false} = {}) {
+  workflowFetchVersion += 1;
+  if (storyboardBusy || window.MiniMuvVisualReferences?.busy()) return;
   currentWorkflow = null;
-  document.querySelector("#workflow-name").value = "";
-  document.querySelector("#workflow-aspect").value = "16:9";
-  document.querySelector("#workflow-music").checked = true;
-  workflowGlobalMusicPrompt.value = DEFAULT_WORKFLOW_MUSIC_PROMPT;
-  workflowBurnLyrics.checked = true;
-  refreshWorkflowMusicSources("");
-  document.querySelector("#workflow-audio-mix").value = "score";
-  workflowShots.replaceChildren();
-  addWorkflowShot();
+  if (!preserveShots) {
+    window.MiniMuvVisualReferences?.load("workflow");
+    window.MiniMuvVideoPrompts?.load("workflow");
+    document.querySelector("#workflow-name").value = "";
+    document.querySelector("#workflow-aspect").value = "16:9";
+    workflowGlobalMusicPrompt.value = DEFAULT_WORKFLOW_MUSIC_PROMPT;
+    document.querySelector("#workflow-audio-mix").value = "score";
+    workflowShots.replaceChildren();
+    addWorkflowShot();
+  } else {
+    workflowShots.querySelectorAll(".workflow-shot").forEach(card => {
+      card.dataset.shotId = "";
+      const preview = card.querySelector("[data-shot-preview]");
+      preview.pause();
+      preview.removeAttribute("src");
+      delete preview.dataset.url;
+      preview.hidden = true;
+      preview.load();
+      card.querySelector("[data-shot-generate]").textContent = t("workflowGenerateShot");
+    });
+  }
   workflowStatus.textContent = t("workflowDraft");
   workflowStatus.className = "status-chip";
   workflowSaveButton.hidden = false;
@@ -3489,24 +5160,50 @@ function newWorkflow() {
   workflowResumeButton.hidden = true;
   workflowRestoreButton.hidden = true;
   workflowCancelButton.hidden = true;
+  document.querySelector("#workflow-clear-shots").disabled = false;
   workflowPanel.querySelectorAll("input, textarea, select, .workflow-remove-shot").forEach((field) => {
     field.disabled = false;
   });
   updateWorkflowMusicPromptVisibility();
+  if (!preserveShots) updateStoryboardTiming();
   document.querySelector("#workflow-progress").replaceChildren();
+  document.querySelector("#workflow-delete-current").disabled = true;
   showWorkflowMessage("");
   if (workflowPollTimer) window.clearTimeout(workflowPollTimer);
   updateGenerateAvailability();
+  updateWorkflowShotNumbers();
+  updateLocalModelControls();
+  refreshResultPreview();
 }
 
 function renderWorkflow(manifest) {
+  const previous = workflowItems.find(item => item.id === manifest.id);
+  const historyChanged = currentWorkflow?.id !== manifest.id || (previous &&
+    (previous.status !== manifest.status || previous.name !== manifest.name ||
+      previous.total_duration !== manifest.total_duration || previous.shots?.length !== manifest.shots?.length));
   currentWorkflow = manifest;
-  [...workflowShots.children].forEach((card, index) => {
-    const shot = manifest.shots[index];
+  workflowItems = workflowItems.map(item => item.id === manifest.id ? manifest : item);
+  if (historyChanged) renderHistory();
+  [...workflowShots.children].forEach((card) => {
+    const shot = manifest.shots.find(item => item.id === card.dataset.shotId);
     if (!shot) return;
     card.dataset.savedFirstFrameId = shot.first_frame_id || "";
     card.dataset.firstFrameUrl = shot.first_frame_url || "";
     updateWorkflowFirstFramePreview(card);
+    const preview = card.querySelector("[data-shot-preview]");
+    if (preview) {
+      if (shot.video_url && preview.dataset.url !== shot.video_url) {
+        preview.src = shot.video_url;
+        preview.dataset.url = shot.video_url;
+      } else if (!shot.video_url && preview.dataset.url) {
+        preview.removeAttribute("src");
+        delete preview.dataset.url;
+        preview.load();
+      }
+      preview.hidden = !shot.video_url;
+      card.querySelector("[data-shot-generate]").textContent = t(shot.video_url ? "workflowRegenerateShot" : "workflowGenerateShot");
+      card.querySelector("[data-shot-generate]").disabled = ["queued", "running"].includes(manifest.status);
+    }
   });
   const statusKey = manifest.status === "draft" ? "Draft" :
     manifest.status[0].toUpperCase() + manifest.status.slice(1);
@@ -3516,26 +5213,52 @@ function renderWorkflow(manifest) {
       manifest.status === "completed" ? "success" :
         ["failed", "interrupted"].includes(manifest.status) ? "error" : ""
   }`;
-  const isDraft = manifest.status === "draft";
+  const isDraft = !["queued", "running"].includes(manifest.status);
   const isActive = ["queued", "running"].includes(manifest.status);
+  document.querySelector("#workflow-delete-current").disabled = isActive;
   workflowSaveButton.hidden = !isDraft;
   workflowStartButton.hidden = !isDraft;
   workflowResumeButton.hidden = !["failed", "cancelled", "interrupted"].includes(manifest.status);
   workflowRestoreButton.hidden = !["completed", "failed", "cancelled", "interrupted"].includes(manifest.status);
   workflowCancelButton.hidden = !isActive;
+  for (const id of ["videos", "assemble", "soundtrack"]) {
+    const control = document.querySelector(`#workflow-${id}`);
+    if (control) control.disabled = isActive;
+  }
   workflowSaveButton.textContent = t("workflowSave");
-  workflowStartButton.textContent = t("workflowStart");
+  workflowStartButton.textContent = t("workflowAuto");
   workflowResumeButton.textContent = t("workflowResume");
   workflowCancelButton.textContent = t("workflowCancel");
   workflowPanel.querySelectorAll("input, textarea, select, .workflow-remove-shot").forEach((field) => {
+    if (field.closest("#workflow-delete-dialog")) return;
     field.disabled = !isDraft;
   });
+  document.querySelector("#workflow-clear-shots").disabled = !isDraft || storyboardBusy || firstFrameBusy;
   workflowShots.querySelectorAll("[data-shot-music-prompt]").forEach((field) => {
     field.disabled = !isDraft;
   });
   updateWorkflowMusicPromptVisibility();
+  updateWorkflowShotNumbers();
   const progress = document.querySelector("#workflow-progress");
   progress.replaceChildren();
+  const liveSummary = workflowProgressText(manifest);
+  if (manifest.progress?.total) {
+    const summary = document.createElement("p");
+    summary.className = "history-metrics";
+    summary.textContent = liveSummary;
+    const meter = document.createElement("progress");
+    meter.max = manifest.progress.total;
+    meter.value = manifest.progress.completed;
+    meter.setAttribute("aria-label", t("workflowTaskProgress"));
+    progress.append(summary, meter);
+  }
+  if (Number.isInteger(manifest.visual_tokens)) {
+    const summary = document.createElement("p");
+    summary.className = "history-metrics";
+    summary.textContent = `${visualTokenTranslations[languageSelect.value] || visualTokenTranslations.en} ${
+      new Intl.NumberFormat(languageSelect.value).format(manifest.visual_tokens)}`;
+    progress.append(summary);
+  }
   for (const [index, shot] of manifest.shots.entries()) {
     const row = document.createElement("div");
     row.className = "workflow-progress-row";
@@ -3552,6 +5275,18 @@ function renderWorkflow(manifest) {
       ? `${t(shotStatusKey)} · ${t("workflowMusicProgress")}: ${t(musicStatusKey)}`
       : t(shotStatusKey);
     row.append(title, state);
+    const error = shot.error || shot.music_error;
+    if (error) {
+      const detail = document.createElement("span");
+      detail.textContent = error;
+      row.append(detail);
+    }
+    if (Number.isInteger(shot.visual_tokens)) {
+      const metrics = document.createElement("span");
+      metrics.className = "history-metrics";
+      metrics.textContent = formatGenerationMetrics(shot);
+      row.append(metrics);
+    }
     for (const [key, label] of [
       ["generated_first_frame_url", "workflowFirstFrame"],
       ["last_frame_url", "workflowLastFrame"]
@@ -3573,10 +5308,13 @@ function renderWorkflow(manifest) {
       segment.status === "pending" ? "workflowStatusDraft" :
         `workflowStatus${segment.status[0].toUpperCase()}${segment.status.slice(1)}`
     )}`;
+    if (segment.error) row.textContent += ` · ${segment.error}`;
     progress.append(row);
   }
   showWorkflowMessage(
-    manifest.error ? `${t("workflowFailed")}${manifest.error}` : "",
+    manifest.error ? `${t("workflowFailed")}${manifest.error}\n${t(
+      manifest.failure?.retryable ? "workflowRetryHint" : "workflowRepairHint"
+    )}` : "",
     Boolean(manifest.error)
   );
   const active = ["queued", "running"].includes(manifest.status);
@@ -3588,7 +5326,7 @@ function renderWorkflow(manifest) {
     loadingTitle.textContent = t(
       manifest.status === "queued" ? "workflowStatusQueued" : "workflowStatusRunning"
     );
-    document.querySelector("#loading-copy").textContent = t("workflowNote");
+    document.querySelector("#loading-copy").textContent = liveSummary || t("workflowNote");
     cancelButton.hidden = true;
     video.hidden = manifest.status !== "completed" || !manifest.output_url;
     image.hidden = true;
@@ -3607,68 +5345,194 @@ function renderWorkflow(manifest) {
       link.download = "minimuv-long-video.mp4";
       link.textContent = t("workflowOutput");
     }
-    logPanel.hidden = !manifest.error;
-    jobLogs.textContent = manifest.error || "";
+    logPanel.dataset.hasLogs = String(Boolean(manifest.logs?.length || manifest.error));
+    logPanel.dataset.mode = "workflow";
+    logPanel.hidden = logPanel.dataset.hasLogs !== "true" || activeMode !== "workflow";
+    const followLogs = jobLogs.scrollTop + jobLogs.clientHeight >= jobLogs.scrollHeight - 20;
+    jobLogs.textContent = [...(manifest.logs || []), manifest.error].filter(Boolean).join("\n");
+    if (followLogs) jobLogs.scrollTop = jobLogs.scrollHeight;
   }
   updateGenerateAvailability();
+  refreshResultPreview();
+  if (workflowStructureBusy) {
+    workflowPanel.querySelectorAll("input, textarea, select, button").forEach(control => {
+      control.disabled = true;
+    });
+  }
 }
 
 async function loadWorkflows() {
   try {
     const response = await fetch("/api/workflows", { cache: "no-store" });
     const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "workflow_list_failed");
-    workflowList.replaceChildren();
-    if (!data.items.length) {
-      workflowList.textContent = t("workflowNoItems");
-      return;
+    if (!response.ok || !Array.isArray(data.items)) throw new Error(data.error || "workflow_list_failed");
+    workflowItems = data.items;
+    const deleteDisabled = !data.items.length ||
+      data.items.some(item => ["queued", "running"].includes(item.status));
+    for (const id of ["workflow-delete-all"]) {
+      document.querySelector(`#${id}`).disabled = deleteDisabled;
     }
-    for (const item of data.items) {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "workflow-list-item";
-      const title = document.createElement("strong");
-      title.textContent = item.name;
-      const state = document.createElement("span");
-      const statusKey = item.status === "draft" ? "Draft" :
-        item.status[0].toUpperCase() + item.status.slice(1);
-      state.textContent = t(`workflowStatus${statusKey}`);
-      button.append(title, state);
-      button.addEventListener("click", () => fetchWorkflow(item.id));
-      workflowList.append(button);
-    }
+    renderHistory();
     const active = data.items.find((item) => ["queued", "running"].includes(item.status));
     if (active && !currentWorkflow) await fetchWorkflow(active.id);
   } catch (error) {
-    workflowList.textContent = `${t("workflowServerError")} ${error.message}`;
+    historyStatus.textContent = `${t("workflowServerError")} ${error.message}`;
+    historyStatus.hidden = false;
   }
 }
 
-async function fetchWorkflow(workflowId) {
-  if (storyboardBusy) return;
+function workflowProgressText(manifest) {
+  const parts = [];
+  if (manifest.progress) parts.push(`${t("workflowTaskProgress")}: ${
+    manifest.progress.completed}/${manifest.progress.total} (${manifest.progress.percent}%)`);
+  const phases = {preparing: "workflowPreparing", video: "workflowVideoStage",
+    music: "workflowMusicStage", soundtrack: "workflowSoundtrackStage",
+    assembling: "workflowAssembling"};
+  if (["queued", "running"].includes(manifest.status)) {
+    if (phases[manifest.phase]) parts.push(`${t(phases[manifest.phase])} ${manifest.current_unit || ""}`.trim());
+    const job = manifest.active_job;
+    if (job?.status === "loading") parts.push(t("workflowPreparing"));
+    if (job?.segment) parts.push(`${t("workflowSegment")}: ${job.segment.current}/${job.segment.total}`);
+    if (job?.progress) {
+      const step = job.progress;
+      parts.push(`${step.stage}${Number.isInteger(step.step) && Number.isInteger(step.total)
+        ? `: ${step.step}/${step.total}` : ""}`);
+    }
+    if (job && !job.progress) parts.push(t("workflowWaiting"));
+    if (manifest.retry_at) parts.push(`${t("workflowRetrying")}: ${
+      Math.max(0, Math.ceil(manifest.retry_at - manifest.observed_at))}s`);
+  }
+  if (manifest.status !== "draft") parts.push(`${t("workflowElapsed")}: ${
+    Math.floor(manifest.elapsed_seconds || 0)}s`);
+  return parts.join(" · ");
+}
+
+function scheduleWorkflowPoll(workflowId) {
+  if (workflowPollTimer) window.clearTimeout(workflowPollTimer);
+  workflowPollTimer = window.setTimeout(() => fetchWorkflow(workflowId, true), 2000);
+}
+
+function clearWorkflowShots() {
+  if (workflowStructureBusy || workflowStageBusy || workflowDeletion || storyboardBusy || firstFrameBusy ||
+      (currentWorkflow && ["queued", "running"].includes(currentWorkflow.status))) return;
+  if (!workflowShots.children.length) return;
+  if (currentWorkflow) {
+    requestWorkflowDeletion([currentWorkflow]);
+    if (workflowDeletion) {
+      workflowDeleteLastShot = "all";
+      document.querySelector("#workflow-delete-title").textContent = t("workflowClearShots");
+      document.querySelector("#workflow-delete-confirm").textContent = t("workflowClearShots");
+    }
+    return;
+  }
+  if (!window.confirm(t("workflowClearConfirm"))) return;
+  workflowShots.replaceChildren();
+  updateWorkflowShotNumbers();
+  updateGenerateAvailability();
+}
+
+function requestWorkflowDeletion(items) {
+  if (workflowStructureBusy || workflowStageBusy || storyboardBusy || firstFrameBusy || workflowDeletion || !items.length) return;
+  if (items.some(item => ["queued", "running"].includes(item.status))) {
+    showWorkflowMessage(t("workflowDeleteActive"), true);
+    return;
+  }
+  workflowDeletion = items.map(item => item.id);
+  const dialog = document.querySelector("#workflow-delete-dialog");
+  document.querySelector("#workflow-delete-title").textContent = t("workflowDelete");
+  document.querySelector("#workflow-delete-confirm").textContent = t("workflowDeleteConfirm");
+  document.querySelector("#workflow-delete-description").textContent =
+    `${t("workflowDeleteCount")} ${items.length}\n${items.map(item => item.name).join(", ")}`;
+  const media = document.querySelector("#workflow-delete-media");
+  media.checked = false;
+  media.disabled = !items.some(item => item.has_media);
+  dialog.returnValue = "cancel";
+  dialog.showModal();
+}
+
+async function finishWorkflowDeletion() {
+  const dialog = document.querySelector("#workflow-delete-dialog");
+  const ids = workflowDeletion;
+  if (!ids) return;
+  if (dialog.returnValue !== "delete") {
+    workflowDeletion = null;
+    workflowDeleteLastShot = null;
+    return;
+  }
+  const clearing = workflowDeleteLastShot !== null;
+  try {
+    const response = await fetch(clearing ? `/api/workflows/${ids[0]}/clear-shots` :
+      ids.length === 1 ? `/api/workflows/${ids[0]}` : "/api/workflows", {
+      method: clearing ? "POST" : "DELETE", headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ids, delete_media: document.querySelector("#workflow-delete-media").checked})
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error === "workflow_delete_active"
+      ? t("workflowDeleteActive") : `${data.error}${data.detail ? `: ${data.detail}` : ""}`);
+    if (ids.includes(currentWorkflow?.id)) {
+      if (clearing) {
+        workflowShots.replaceChildren();
+        renderWorkflow(data.workflow);
+      } else {
+        newWorkflow({preserveShots: true});
+      }
+      updateWorkflowShotNumbers();
+      logPanel.hidden = true;
+      jobLogs.textContent = "";
+      video.pause();
+      video.removeAttribute("src");
+      delete video.dataset.url;
+      video.hidden = true;
+      resultFooter.hidden = true;
+      loadingState.hidden = true;
+      emptyState.hidden = false;
+    }
+    await loadWorkflows();
+    await loadHistory();
+  } catch (error) {
+    showWorkflowMessage(error.message, true);
+    await loadWorkflows();
+  } finally {
+    workflowDeletion = null;
+    workflowDeleteLastShot = null;
+  }
+}
+
+async function fetchWorkflow(workflowId, polling = false) {
+  if (polling && currentWorkflow?.id !== workflowId) return;
+  const version = ++workflowFetchVersion;
+  if (workflowPollTimer) window.clearTimeout(workflowPollTimer);
+  if (storyboardBusy) {
+    if (polling) scheduleWorkflowPoll(workflowId);
+    return;
+  }
   try {
     const response = await fetch(`/api/workflows/${workflowId}`, { cache: "no-store" });
     const data = await response.json();
+    if (version !== workflowFetchVersion) return;
     if (!response.ok) throw new Error(data.error || "workflow_not_found");
     currentWorkflow = data.workflow;
-    setWorkflowForm(currentWorkflow);
+    if (!polling) setWorkflowForm(currentWorkflow);
     renderWorkflow(currentWorkflow);
     if (["queued", "running"].includes(currentWorkflow.status)) {
-      if (workflowPollTimer) window.clearTimeout(workflowPollTimer);
-      workflowPollTimer = window.setTimeout(() => fetchWorkflow(workflowId), 2000);
+      scheduleWorkflowPoll(workflowId);
     }
   } catch (error) {
-    showWorkflowMessage(`${t("workflowServerError")} ${error.message}`, true);
+    if (version !== workflowFetchVersion) return;
+    const reconnect = polling && currentWorkflow?.id === workflowId &&
+      ["queued", "running"].includes(currentWorkflow.status);
+    showWorkflowMessage(`${t(reconnect ? "workflowPollRetry" : "workflowServerError")} ${error.message}`, true);
+    if (reconnect) scheduleWorkflowPoll(workflowId);
   }
 }
 
 async function submitWorkflowAction(action, body = undefined) {
-  if (storyboardBusy || firstFrameBusy) return;
+  if (storyboardBusy || firstFrameBusy || window.MiniMuvVisualReferences?.busy()) return;
   if (action === "save") {
     showWorkflowMessage(t("workflowSaving"));
     workflowSaveButton.disabled = true;
     try {
-      const isUpdate = currentWorkflow?.status === "draft";
+      const isUpdate = currentWorkflow && !["queued", "running"].includes(currentWorkflow.status);
       const url = isUpdate ? `/api/workflows/${currentWorkflow.id}/update` : "/api/workflows";
       const response = await fetch(url, {
         method: "POST",
@@ -3677,15 +5541,20 @@ async function submitWorkflowAction(action, body = undefined) {
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "workflow_save_failed");
+      [...workflowShots.children].forEach((card, index) => {
+        card.dataset.shotId = data.workflow.shots[index].id;
+      });
       renderWorkflow(data.workflow);
       await loadWorkflows();
+      return true;
     } catch (error) {
       showWorkflowMessage(workflowErrorMessage("save", error.message), true);
+      return false;
     } finally {
       workflowSaveButton.disabled = false;
     }
-    return;
   }
+
   if (!currentWorkflow) return;
   const button = action === "start" ? workflowStartButton :
     action === "resume" ? workflowResumeButton :
@@ -3701,6 +5570,9 @@ async function submitWorkflowAction(action, body = undefined) {
       });
       const saved = await saveResponse.json();
       if (!saveResponse.ok) throw new Error(saved.error || "workflow_save_failed");
+      [...workflowShots.children].forEach((card, index) => {
+        card.dataset.shotId = saved.workflow.shots[index].id;
+      });
       currentWorkflow = saved.workflow;
       renderWorkflow(currentWorkflow);
     }
@@ -3711,13 +5583,39 @@ async function submitWorkflowAction(action, body = undefined) {
     renderWorkflow(data.workflow);
     await loadWorkflows();
     if (["queued", "running"].includes(data.workflow.status)) {
-      if (workflowPollTimer) window.clearTimeout(workflowPollTimer);
-      workflowPollTimer = window.setTimeout(() => fetchWorkflow(data.workflow.id), 1500);
+      scheduleWorkflowPoll(data.workflow.id);
     }
   } catch (error) {
     showWorkflowMessage(error.message, true);
   } finally {
     button.disabled = false;
+  }
+}
+
+let workflowStageBusy = false;
+async function runWorkflowStage(operation, card = null) {
+  if (workflowStructureBusy || workflowStageBusy || workflowDeletion || storyboardBusy || firstFrameBusy ||
+      ["queued", "running"].includes(currentWorkflow?.status)) return;
+  const index = card ? [...workflowShots.children].indexOf(card) : -1;
+  workflowStageBusy = true;
+  try {
+    if (!await submitWorkflowAction("save")) return;
+    const action = card ? `shots/${currentWorkflow.shots[index].id}/generate` : operation;
+    const response = await fetch(`/api/workflows/${currentWorkflow.id}/${action}`, {method: "POST"});
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "workflow_generation_failed");
+    renderWorkflow(data.workflow);
+    scheduleWorkflowPoll(data.workflow.id);
+    await loadWorkflows();
+  } catch (error) {
+    const key = {
+      workflow_shot_media_missing: "workflowNeedShots",
+      workflow_assembly_required: "workflowNeedAssembly",
+      workflow_global_soundtrack_required: "workflowNeedGlobal"
+    }[error.message];
+    showWorkflowMessage(key ? t(key) : `${t("workflowServerError")} ${error.message}`, true);
+  } finally {
+    workflowStageBusy = false;
   }
 }
 
@@ -3793,17 +5691,96 @@ workflowModeButton.addEventListener("click", () => {
   updateModeUI();
   if (currentWorkflow) renderWorkflow(currentWorkflow);
 });
+mvModeButton.addEventListener("click", () => {
+  activeMode = "mv";
+  localStorage.setItem("h3-mode", activeMode);
+  updateModeUI();
+  applyLanguage();
+  loadMVProjects();
+  loadMVMusicSources();
+});
+window.MiniMuvMVHost = {
+    state: () => ({project: currentMV, dirty: mvDirty, busy: mvBusy,
+      model: videoModelChoice.value, quality: document.querySelector("#mv-video-quality").value,
+      textModel: mvPromptEnhancerModel.value, language: languageSelect.value, analysis: mvAnalysis,
+      externalBusy: Boolean(_mvExternalBusy()),
+      images: historyItems.filter(item => item.kind === "image" && item.image_url),
+      analysisBusy: ["queued", "running", "cancelling"].includes(mvAnalysisJob?.status)}),
+    text: t, updateAvailability: updateGenerateAvailability,
+    restoreGeneration: workflow => {
+      restoreHistoryControl("#video-model-choice", workflow.model);
+      document.querySelector("#mv-video-quality").value = workflow.quality;
+      updateLocalModelControls();
+    },
+  };
+function _mvExternalBusy() {
+    return Boolean(window.MiniMuvVisualReferences?.busy()) || ["queued", "running"].includes(currentWorkflow?.status) ||
+      ["queued", "loading", "running", "cancelling"].includes(currentJob?.status);
+}
+document.querySelector("#mv-form").addEventListener("submit", saveMVProject);
+document.querySelector("#mv-form").addEventListener("input", event => {
+  if (event.target.id !== "mv-music-file") {
+    mvDirty = true;
+    updateMVAnalysisControls();
+  }
+});
+document.querySelector("#mv-upload").addEventListener("click", () => document.querySelector("#mv-music-file").click());
+document.querySelector("#mv-music-file").addEventListener("change", uploadMVMusic);
+document.querySelector("#mv-audio").addEventListener("error", () => showMVMessage(t("mvPreviewError"), true));
+document.querySelector("#mv-music").addEventListener("change", () => {
+  mvDirty = true;
+  updateMVMusicPreview();
+  if (!mvAnalysisJob) setMVAnalysisStatus("mvAnalysisIdle");
+  renderMVTimeline();
+});
+document.querySelector("#mv-analyze").addEventListener("click", startMVAnalysis);
+document.querySelector("#mv-cancel-analysis").addEventListener("click", cancelMVAnalysis);
+document.querySelector("#mv-audio").addEventListener("timeupdate", renderMVTimeline);
+document.querySelector("#mv-timeline").addEventListener("click", seekMVTimeline);
+document.querySelector("#mv-timeline").addEventListener("keydown", handleMVTimelineKeydown);
+if (typeof window.addEventListener === "function") {
+  window.addEventListener("resize", renderMVTimeline);
+}
+document.querySelector("#mv-new").addEventListener("click", () => openMVProject());
+loadMVProjects();
+loadMVMusicSources();
 document.querySelector("#workflow-add-shot").addEventListener("click", () => addWorkflowShot());
 workflowPlanStory.addEventListener("click", planWorkflowStory);
+document.querySelector("#workflow-total-duration").addEventListener("input", updateStoryboardTiming);
+document.querySelector("#workflow-shot-duration").addEventListener("input", updateStoryboardTiming);
+document.querySelector("#image-size").addEventListener("change", updateLocalModelControls);
+document.querySelector("#image-aspect").addEventListener("change", updateLocalModelControls);
+document.querySelector("#image-quality").addEventListener("change", updateLocalModelControls);
+document.querySelector("#image-candidate-count").addEventListener("change", updateLocalModelControls);
+document.querySelector("#image-turnaround").addEventListener("change", () => {
+  if (document.querySelector("#image-turnaround").checked) document.querySelector("#image-scene-views").checked = false;
+  updateLocalModelControls();
+});
+updateStoryboardTiming();
 workflowMusic.addEventListener("change", updateWorkflowMusicPromptVisibility);
-workflowMusicSource.addEventListener("change", updateWorkflowMusicSourceVisibility);
 workflowSaveButton.addEventListener("click", () => submitWorkflowAction("save"));
+document.querySelector("#workflow-videos").addEventListener("click", () => runWorkflowStage("videos"));
+document.querySelector("#workflow-assemble").addEventListener("click", () => runWorkflowStage("assemble"));
+document.querySelector("#workflow-soundtrack").addEventListener("click", () => runWorkflowStage("soundtrack"));
 workflowStartButton.addEventListener("click", () => submitWorkflowAction("start"));
 workflowResumeButton.addEventListener("click", () => submitWorkflowAction("resume"));
+document.querySelector("#workflow-clear-shots").addEventListener("click", clearWorkflowShots);
+document.querySelector("#workflow-delete-all").addEventListener("click", () => requestWorkflowDeletion(workflowItems));
+document.querySelector("#copy-logs").addEventListener("click", copyJobLogs);
+document.querySelector("#workflow-delete-current").addEventListener("click", () => {
+  if (currentWorkflow) requestWorkflowDeletion([currentWorkflow]);
+});
+document.querySelector("#workflow-progress-toggle").addEventListener("click", (event) => {
+  const button = event.currentTarget;
+  button.setAttribute("aria-expanded", String(button.getAttribute("aria-expanded") !== "true"));
+  updateWorkflowProgressToggle();
+});
+document.querySelector("#workflow-delete-dialog").addEventListener("close", finishWorkflowDeletion);
 workflowCancelButton.addEventListener("click", () => submitWorkflowAction("cancel"));
 document.querySelector("#workflow-refresh").addEventListener("click", loadWorkflows);
 workflowRestoreButton.addEventListener("click", () => submitWorkflowAction("restore"));
 document.querySelector("#workflow-new").addEventListener("click", newWorkflow);
+document.querySelector("#workflow-shot-mode").addEventListener("change", updateWorkflowShotNumbers);
 musicLyricsMode.addEventListener("change", updateMusicLyricsMode);
 addWorkflowShot();
 applyLanguage();
@@ -3834,27 +5811,30 @@ promptInput.addEventListener("input", () => {
 });
 enhancePromptButton.addEventListener("click", enhancePrompt);
 applyEnhancedPromptButton.addEventListener("click", () => {
-  const keywords = [...promptEnhancerKeywords.querySelectorAll("li")]
-    .map((item) => item.textContent.trim())
-    .filter(Boolean);
-  const keywordPrompt = keywords.length
-    ? `${t("enhancerKeywordPrefix")} ${keywords.join(", ")}`
-    : "";
-  const combinedPrompt = [promptEnhancerOutput.value.trim(), keywordPrompt]
-    .filter(Boolean)
-    .join("\n\n");
-  if (combinedPrompt.length > promptInput.maxLength) {
-    setPromptEnhancerStatus("enhancerPromptTooLong");
-    return;
-  }
-  promptInput.value = combinedPrompt;
+  applyPromptEnhancement(promptInput, promptEnhancerKeywords, promptEnhancerOutput, "video", () => {
   document.querySelector("#prompt-count").textContent = `${promptInput.value.length} / 4000`;
-  setPromptEnhancerStatus("enhancerApplied");
-  promptInput.focus();
+  });
 });
 dismissEnhancedPromptButton.addEventListener("click", () => {
   promptEnhancerResult.hidden = true;
   setPromptEnhancerStatus("");
+});
+mvPromptInput.addEventListener("input", () => {
+  if (!promptEnhancementBusy) {
+    mvPromptEnhancerResult.hidden = true;
+    setPromptEnhancerStatus("", "mv");
+  }
+});
+mvEnhancePromptButton.addEventListener("click", enhanceMVPrompt);
+mvApplyEnhancedPromptButton.addEventListener("click", () => {
+  applyPromptEnhancement(mvPromptInput, mvPromptEnhancerKeywords, mvPromptEnhancerOutput, "mv", () => {
+    mvDirty = true;
+    updateMVAnalysisControls();
+  });
+});
+mvDismissEnhancedPromptButton.addEventListener("click", () => {
+  mvPromptEnhancerResult.hidden = true;
+  setPromptEnhancerStatus("", "mv");
 });
 loadModelButton.addEventListener("click", async () => {
   loadModelButton.disabled = true;
@@ -3887,15 +5867,21 @@ videoFirstFrame.querySelector("[data-shot-upload]").addEventListener("change", (
 });
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
-  if (promptEnhancementBusy || firstFrameBusy || storyboardBusy) return;
+  if (promptEnhancementBusy || firstFrameBusy || storyboardBusy || window.MiniMuvImageReferences?.busy()) return;
   const isImage = activeMode === "image";
   const isMusic = activeMode === "music";
+  let referencePayload;
+  try {
+    referencePayload = isImage ? window.MiniMuvImageReferences?.payload() : {};
+  } catch (error) {
+    renderJob({status: "failed", error: error.message, logs: []});
+    return;
+  }
   const payload = isImage
     ? {
       prompt: promptInput.value, name: projectNameInput.value.trim(), seed: Number(document.querySelector("#image-seed").value),
-      model: imageModelChoice.value,
-      width: Number(document.querySelector("#image-size").value),
-      height: Number(document.querySelector("#image-size").value)
+      ...imageCanvasSettings(),
+      ...referencePayload
     }
     : isMusic
       ? {
@@ -3912,13 +5898,23 @@ form.addEventListener("submit", async (event) => {
       prompt: promptInput.value,
       name: projectNameInput.value.trim(),
       model: videoModelChoice.value,
+      ...(window.MiniMuvVideoPrompts?.payload("video") || {}),
+      quality: document.querySelector("#video-quality").value,
       duration: Number(document.querySelector("#duration").value),
       aspect: document.querySelector("#aspect").value,
-      steps: videoModelChoice.value === "h3" ? Number(document.querySelector("#steps").value) : 8,
+      steps: ["h3", "ltx-2.3-dev-q4"].includes(videoModelChoice.value) ? Number(document.querySelector("#steps").value) :
+        videoModelChoice.value === "h3-fasth3-vsa-q8" ? 4 : 8,
       seed: Number(document.querySelector("#seed").value),
       turbo: videoModelChoice.value === "h3" ? document.querySelector("#turbo").checked : true,
-      first_frame_id: videoFirstFrame.querySelector("[data-shot-frame]").value
+      first_frame_id: videoFirstFrame.querySelector("[data-shot-frame]").value,
+      ...(window.MiniMuvVisualReferences ? {
+        visual_references: window.MiniMuvVisualReferences.payload("video"),
+        ...window.MiniMuvVisualReferences.shotPayload(document.querySelector("#video-visual-selection"))
+      } : {})
     };
+  if (promptInput.value === promptInput.dataset?.skillPrompt && promptInput.dataset?.skillUsage) {
+    payload.skill_usage = JSON.parse(promptInput.dataset.skillUsage);
+  }
   generateButton.disabled = true;
   try {
     const endpoint = isMusic ? "/api/music-jobs" : isImage ? "/api/image-jobs" : "/api/jobs";

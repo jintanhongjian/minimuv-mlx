@@ -34,13 +34,20 @@ def main() -> None:
     chunks = []
     sample_rate = None
     tokens = 0
+    tokens_reported = True
     for result in model.generate(**kwargs):
         if sample_rate is None:
             sample_rate = result.sample_rate
         elif result.sample_rate != sample_rate:
             raise ValueError("Music generation returned inconsistent sample rates")
         chunks.append(result.audio)
-        tokens += int(getattr(result, "token_count", 0) or 0)
+        count = getattr(result, "token_count", None)
+        if count is None:
+            tokens_reported = False
+        elif type(count) is not int or count < 0:
+            raise ValueError("Music generation returned an invalid token count")
+        else:
+            tokens += count
     if not chunks or sample_rate is None:
         raise RuntimeError("Music generation produced no audio")
 
@@ -48,7 +55,10 @@ def main() -> None:
     args.output.parent.mkdir(parents=True, exist_ok=True)
     audio_write(args.output, audio, sample_rate)
     print(f"Saved: {args.output}")
-    print(f"TOKENS: {tokens}")
+    if tokens_reported:
+        print(f"TOKENS: {tokens}")
+    else:
+        print("Token usage unavailable: Music3 did not report token_count for every chunk.")
 
 
 if __name__ == "__main__":

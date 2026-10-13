@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "python": "3.11.15",
+  "platform": "macos-arm64",
+  "device": "cpu",
+  "source": {
+    "repository": "https://github.com/CPJKU/beat_this",
+    "commit": "b95c8ab0c58c2d9fcfd40508ae8dffbc05ac4f5c",
+    "license": "MIT",
+    "url": "https://codeload.github.com/CPJKU/beat_this/tar.gz/b95c8ab0c58c2d9fcfd40508ae8dffbc05ac4f5c",
+    "bytes": 4938005,
+    "sha256": "6c40ca7149ccfe5afba1e650eabb7c73fca5b5ac1e40b9ca60bf259d7c2048b8"
+  },
+  "checkpoint": {
+    "name": "final0",
+    "license": "MIT",
+    "url": "https://cloud.cp.jku.at/public.php/dav/files/7ik4RrBKTS273gp/final0.ckpt",
+    "bytes": 81058141,
+    "sha1": "e1506282faf66ca10e8ab50ee26bd542b7b9ff0a",
+    "etag": "\"16b9fd56ab436abbf2779aa85e2b5a87\""
+  }
+}

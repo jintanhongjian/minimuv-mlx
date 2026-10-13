@@ -5,7 +5,7 @@ import vm from "node:vm";
 
 const source = readFileSync(new URL("../webapp/static/app.js", import.meta.url), "utf8");
 const html = readFileSync(new URL("../webapp/static/index.html", import.meta.url), "utf8");
-const formatter = source.slice(source.indexOf("function formatGenerationMetrics("),
+const formatter = source.slice(source.indexOf("const visualTokenTranslations ="),
   source.indexOf("function renderJob("));
 
 function format(item) {
@@ -22,6 +22,12 @@ test("generation metrics show elapsed seconds and token count", () => {
 test("missing metrics render as dashes instead of zero", () => {
   assert.equal(format({elapsed_seconds: null, tokens: null}), "Elapsed — · Tokens —");
   assert.equal(format({}), "Elapsed — · Tokens —");
+});
+
+test("visual sequence geometry is separate from reported usage", () => {
+  assert.equal(format({elapsed_seconds: 2, tokens: null, visual_tokens: 4096}),
+    "Elapsed 2s · Tokens — · Visual sequence tokens (geometry) 4,096");
+  assert.equal(format({tokens: true, visual_tokens: true}), "Elapsed — · Tokens —");
 });
 
 test("job log and history rows include metric elements", () => {

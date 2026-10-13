@@ -19,6 +19,13 @@
     }
   },
   "models": {
+    "h3-fasth3-vsa-q8": {
+      "repository": "Sawfwair/MiniMax-H3-FastH3-VSA-DataFree-MLX-Q8",
+      "revision": "6068ae3dafafb1e4b2afb29f3109745a16912e07",
+      "directory": "MiniMax-H3-FastH3-VSA-DataFree-MLX-Q8",
+      "download_supported": false,
+      "exclude": []
+    },
     "flux2-klein-4b": {
       "repository": "black-forest-labs/FLUX.2-klein-4B",
       "revision": "e7b7dc27f91deacad38e78976d1f2b499d76a294",
@@ -60,6 +67,17 @@
         "temporal_upscaler*"
       ]
     },
+    "ltx-2.3-dev-q4": {
+      "repository": "dgrauet/ltx-2.3-mlx-q4",
+      "revision": "56a5866d638ecfe37c54d348e88938235185c2d4",
+      "directory": "ltx-2.3-mlx-q4",
+      "exclude": [
+        "transformer-distilled*",
+        "*lora*",
+        "spatial_upscaler*",
+        "temporal_upscaler*"
+      ]
+    },
     "gemma-3-12b-it-4bit": {
       "repository": "mlx-community/gemma-3-12b-it-4bit",
       "revision": "86cc6a8dedbc456dd0e4af01a9d09f396f77e558",
@@ -84,6 +102,13 @@
         ".gitattributes"
       ],
       "strict_tree": true
+    },
+    "fish-s2-pro-8bit": {
+      "repository": "appautomaton/fishaudio-s2-pro-8bit-mlx",
+      "revision": "520af75a48816821e59fce7f6b7a85deb49e7f1c",
+      "directory": "fishaudio-s2-pro-8bit-mlx",
+      "download_supported": false,
+      "exclude": []
     }
   }
 }

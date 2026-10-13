@@ -74,19 +74,20 @@ def shape_test():
 def run_inference(args):
     import mlx.core as mx
     try:
-        from mlx_vlm import load as mlx_vlm_load
+        from mlx_vlm.utils import load_model
     except ImportError:
         sys.exit("mlx-vlm not installed. uv pip install 'mlx-vlm>=0.3.3'")
     from PIL import Image
     import tqdm
 
-    from pipeline_helpers import build_t2i_text_sample
+    from pipeline_helpers import build_t2i_text_sample, load_image_only_processor
     from flow_match import FlashFlowMatchScheduler, DEFAULT_TIMESTEPS
     from hidream_model import HiDreamConfig, build_model, forward_generation, precompute_text_embeds_with_vision
 
     print(f"loading model from {args.model_path} ...", flush=True)
     t0 = time.time()
-    backbone, processor = mlx_vlm_load(args.model_path)
+    processor = load_image_only_processor(args.model_path)
+    backbone = load_model(Path(args.model_path))
     print(f"  loaded in {time.time() - t0:.1f}s")
 
     cfg = HiDreamConfig()
@@ -316,6 +317,8 @@ def main(argv=None):
     ap.add_argument("--noise-clip-std", type=float, default=2.5)
     ap.add_argument("--seed", type=int, default=32)
     args = ap.parse_args(argv)
+    if len(args.ref_images) > 3:
+        ap.error("--ref-images supports at most three images")
 
     if args.shape_test:
         shape_test()

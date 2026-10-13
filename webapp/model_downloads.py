@@ -30,6 +30,8 @@ LEGACY_REPOS = {
     "h3": "ddalcu/MiniMax-H3-FL2VA-MLX-Serve-4bit",
     "hidream": "mlx-community/HiDream-O1-Image-Dev-mlx-q6",
     "music3": "mlx-community/MiniMax-Music3-8bit",
+    "voxcpm2-4bit": "openbmb/VoxCPM2",
+    "qwen3-tts-voicedesign-8bit": "Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
 }
 logger = logging.getLogger(__name__)
 _lock = threading.RLock()
@@ -56,7 +58,8 @@ def _spec(model: str) -> dict:
     if model in manifest:
         return manifest[model]
     if model in LEGACY_REPOS:
-        return {"repository": LEGACY_REPOS[model], "revision": None, "exclude": []}
+        return {"repository": LEGACY_REPOS[model], "revision": None, "exclude": [],
+                "download_supported": False}
     raise ValueError("invalid_generation_model")
 
 
@@ -160,6 +163,8 @@ def transfer(url: str, partial: Path, target: Path, size: int, etag: str) -> Non
 def _plan(model: str, directory: Path, state: Path) -> dict:
     from huggingface_hub import HfApi, get_hf_file_metadata, hf_hub_url
     spec = _spec(model)
+    if spec.get("download_supported") is False:
+        raise ValueError("This model is externally managed; configure its verified local package path.")
     path = state / "plan.json"
     if path.exists():
         plan = json.loads(path.read_text())
@@ -308,6 +313,8 @@ def _supervise(key: str, model: str, directory: Path, event: threading.Event) ->
 
 
 def start(model: str, directory: Path, gemma: Path) -> None:
+    if _spec(model).get("download_supported") is False:
+        raise ValueError("This model is externally managed; configure its verified local package path.")
     targets = components(model, directory, gemma)
     with _lock:
         for name, path in targets:
@@ -328,6 +335,8 @@ def start(model: str, directory: Path, gemma: Path) -> None:
 
 
 def pause(model: str, directory: Path, gemma: Path) -> None:
+    if _spec(model).get("download_supported") is False:
+        raise ValueError("This model is externally managed; there is no project download to pause.")
     targets = components(model, directory, gemma)
     with _lock:
         if any(not _jobs.get(_identity(name, path), {}).get("thread") and _external(path)
@@ -351,6 +360,9 @@ def assert_paths_idle(previous: dict, updated: dict) -> None:
 
 
 def progress(model: str, directory: Path, gemma: Path) -> dict:
+    if _spec(model).get("download_supported") is False:
+        return {"download_state": "manual", "download_catalog": False,
+                "download_percent": None, "download_in_progress": False, "download_error": ""}
     parts = []
     for name, path in components(model, directory, gemma):
         key = _identity(name, path)

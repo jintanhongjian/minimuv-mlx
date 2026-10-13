@@ -15,6 +15,7 @@ from functools import lru_cache
 from pathlib import Path
 
 from safetensors import SafetensorError, safe_open
+from . import fast_h3
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 MODEL_ROOT = Path.home() / ".omlx" / "models" / "pipenetwork"
@@ -26,9 +27,45 @@ IMAGE_MODELS = {
 VIDEO_MODELS = {
     "ltx-2.3-distilled-q4": "ltx-2.3-mlx-q4",
     "ltx-2.3-distilled-q8": "ltx-2.3-mlx-q8",
+    "ltx-2.3-dev-q4": "ltx-2.3-mlx-q4",
 }
+LOCAL_VIDEO_MODELS = {**VIDEO_MODELS, fast_h3.MODEL_ID: fast_h3.DIRECTORY}
+H3_MODELS = {"h3", fast_h3.MODEL_ID}
+VIDEO_QUALITIES = {"preview": 512, "standard": 768, "high": 1024}
+
+
+def video_quality(value: object = "standard") -> str:
+    if not isinstance(value, str) or value not in VIDEO_QUALITIES:
+        raise ValueError("invalid_video_quality")
+    return value
+
+
+def video_canvas(aspect: tuple[int, int], quality: str, model: str = "ltx") -> tuple[int, int]:
+    edge = VIDEO_QUALITIES[video_quality(quality)]
+    ratio = aspect[0] / aspect[1]
+    if model == fast_h3.MODEL_ID:
+        return ((edge, max(256, round(edge / ratio / 32) * 32)) if ratio >= 1
+                else (max(256, round(edge * ratio / 32) * 32), edge))
+    if model in H3_MODELS:
+        width, height = (edge * ratio, float(edge)) if ratio >= 1 else (float(edge), edge / ratio)
+        cap = edge * (1344 if edge == 768 else edge * 1.75)
+        if width * height > cap:
+            scale = (cap / (width * height)) ** 0.5
+            width, height = width * scale, height * scale
+        return max(32, round(width / 32) * 32), max(32, round(height / 32) * 32)
+    return (
+        (edge, max(256, round(edge / ratio / 64) * 64)) if ratio >= 1
+        else (max(256, round(edge * ratio / 64) * 64), edge)
+    )
+
+
 MUSIC_MODELS = {
     "yue2-3b-8bit": "mlx-Yue2-3B",
+}
+SPEECH_MODELS = {
+    "fish-s2-pro-8bit": "fishaudio-s2-pro-8bit-mlx",
+    "voxcpm2-4bit": "VoxCPM2-4bit",
+    "qwen3-tts-voicedesign-8bit": "Qwen3-TTS-12Hz-1.7B-VoiceDesign-8bit",
 }
 YUE_VAE_PATH = MODEL_ROOT / "YuE2-Vae"
 YUE_FILES = ("config.json", "conversion.json", "qwen.tiktoken", "ar-bf16.safetensors", "ar-8bit.safetensors", "nar-bf16.safetensors")
@@ -120,13 +157,15 @@ def model_download_progress(model: str, directory: Path | None = None, gemma_pat
 
 
 def model_path(model: str) -> Path:
-    names = {**IMAGE_MODELS, **VIDEO_MODELS, **MUSIC_MODELS}
+    names = {**IMAGE_MODELS, **LOCAL_VIDEO_MODELS, **MUSIC_MODELS, **SPEECH_MODELS}
     if model not in names:
         raise ValueError("invalid_generation_model")
     return MODEL_ROOT / names[model]
 
 
 def runtime_root(model: str) -> Path:
+    if model in SPEECH_MODELS:
+        return PROJECT_ROOT / "third_party" / "hidream_o1"
     if model in MUSIC_MODELS:
         return PROJECT_ROOT / "third_party" / "mlx_yue"
     return PROJECT_ROOT / "third_party" / ("mflux" if model in IMAGE_MODELS else "ltx_2_mlx")
@@ -213,6 +252,52 @@ def _runtime_error(model: str, python_mtime: int, site_mtime: int) -> str:
 
 def status(model: str, directory: Path | None = None, gemma_path: Path | None = None) -> dict:
     path = directory or model_path(model)
+    if model == fast_h3.MODEL_ID:
+        return fast_h3.status(path)
+    if model in SPEECH_MODELS:
+        root = runtime_root(model)
+        python = root / ".venv" / "bin" / "python"
+        ready = ((path / "config.json").is_file()
+                 and _weights_ready(path, "model.safetensors", "model.safetensors.index.json"))
+        runtime_ready = python.is_file() and os.access(python, os.X_OK)
+        runtime_error = ""
+        if runtime_ready:
+            speech_imports = {
+                "fish-s2-pro-8bit": "from mlx_audio.tts.utils import load_model",
+                "voxcpm2-4bit": (
+                    "from mlx_audio.tts.utils import load_model; "
+                    "from mlx_audio.tts.models.voxcpm2 import Model"
+                ),
+                "qwen3-tts-voicedesign-8bit": (
+                    "from mlx_audio.tts.utils import load_model; "
+                    "from mlx_audio.tts.models.qwen3_tts import Model"
+                ),
+            }[model]
+            try:
+                result = subprocess.run(
+                    [str(python), "-c", speech_imports],
+                    env=environment(model), capture_output=True, text=True, timeout=30,
+                )
+                runtime_error = result.stderr[-2000:] if result.returncode else ""
+            except (OSError, subprocess.TimeoutExpired) as exc:
+                runtime_error = str(exc)
+            runtime_ready = not runtime_error
+        else:
+            runtime_error = "Bundled MLX Audio environment is missing."
+        return {
+            "id": model, "model_path": str(path), "model_ready": ready,
+            "runtime_ready": runtime_ready, "runtime_error": runtime_error,
+            "download_state": "completed" if ready else "not_started",
+            "download_percent": 100.0 if ready else None,
+            "download_in_progress": False,
+            "download_error": "",
+            "model_download_url": {
+                "fish-s2-pro-8bit": "https://huggingface.co/appautomaton/fishaudio-s2-pro-8bit-mlx",
+                "voxcpm2-4bit": "https://huggingface.co/openbmb/VoxCPM2",
+                "qwen3-tts-voicedesign-8bit": "https://huggingface.co/Qwen/Qwen3-TTS-12Hz-1.7B-VoiceDesign",
+            }[model],
+            "code_path": str(root),
+        }
     gemma_path = gemma_path or (YUE_VAE_PATH if model in MUSIC_MODELS else GEMMA_PATH)
     root = runtime_root(model)
     python = root / ".venv" / "bin" / "python"
@@ -236,7 +321,11 @@ def status(model: str, directory: Path | None = None, gemma_path: Path | None = 
         code_ready = (root / "src/lyra/__init__.py").is_file() and shutil.which("ffmpeg") is not None
         source = "vanch007/mlx-Yue2-3B"
     else:
-        ready = all((path / name).is_file() and (path / name).stat().st_size > 0 for name in LTX_FILES)
+        files = (
+            [name for name in LTX_FILES if not name.startswith(("transformer-", "spatial_upscaler"))]
+            + ["transformer-dev.safetensors"]
+        ) if model == "ltx-2.3-dev-q4" else LTX_FILES
+        ready = all((path / name).is_file() and (path / name).stat().st_size > 0 for name in files)
         ready = ready and all((gemma_path / name).is_file() for name in (
             "config.json", "tokenizer.json", "tokenizer_config.json",
         )) and _mlx_weights_ready(gemma_path)
@@ -267,10 +356,13 @@ def status(model: str, directory: Path | None = None, gemma_path: Path | None = 
 
 
 def environment(model: str) -> dict[str, str]:
+    if model == fast_h3.MODEL_ID:
+        return fast_h3.environment()
     root = runtime_root(model)
-    sources = [root / "src"] if model in IMAGE_MODELS or model in MUSIC_MODELS else [
-        root / "packages/ltx-core-mlx/src", root / "packages/ltx-pipelines-mlx/src",
-    ]
+    sources = ([root / "src"] if model in IMAGE_MODELS or model in MUSIC_MODELS else
+               [] if model in SPEECH_MODELS else [
+                   root / "packages/ltx-core-mlx/src", root / "packages/ltx-pipelines-mlx/src",
+               ])
     base = {key: value for key, value in os.environ.items() if not (
         model in MUSIC_MODELS and key in {"PYTORCH_ENABLE_MPS_FALLBACK", "PYTORCH_MPS_FAST_MATH"}
     )}
@@ -283,6 +375,8 @@ def environment(model: str) -> dict[str, str]:
 
 def command(settings: dict, output: Path, first_frame: Path | None = None) -> list[str]:
     model = settings["model"]
+    if model == fast_h3.MODEL_ID:
+        return fast_h3.command(settings, output, first_frame)
     root = runtime_root(model)
     python = str(root / ".venv/bin/python")
     common = [
@@ -291,16 +385,27 @@ def command(settings: dict, output: Path, first_frame: Path | None = None) -> li
         "--output", str(output),
     ]
     if model in IMAGE_MODELS:
+        references = settings.get("reference_images", [])
+        if references and (model != "flux2-klein-4b" or len(references) > 5):
+            raise ValueError("image_reference_conditioning_unsupported")
         return [
             python, "-u", str(PROJECT_ROOT / "scripts/generate_local_image.py"),
             "--model", model, "--model-path", str(settings.get("model_path", model_path(model))),
             "--steps", str(settings["steps"]), *common,
+            *[argument for path in references for argument in ("--reference-image", str(path))],
         ]
+    from . import generation_limits
+    negative = generation_limits.validate_negative_prompt(settings.get("negative_prompt", ""), model)
+    recipe = (
+        ["--one-stage", "--dev-transformer", "transformer-dev.safetensors",
+         "--steps", str(settings["steps"]), "--cfg-scale", "3.0", "--negative-prompt", negative]
+        if model == "ltx-2.3-dev-q4" else ["--distilled", "--stage1-steps", "8", "--stage2-steps", "3"]
+    )
     args = [
         python, "-u", "-m", "ltx_pipelines_mlx.cli", "generate",
         "--model", str(settings.get("model_path", model_path(model))),
         "--gemma", str(settings.get("gemma_path", GEMMA_PATH)),
-        "--distilled", "--low-ram", "--stage1-steps", "8", "--stage2-steps", "3",
+        *recipe, "--low-ram",
         "--frames", str(settings["num_frames"]), "--frame-rate", "24", *common,
     ]
     if first_frame is not None:

@@ -3,11 +3,16 @@
   "gemma_path": "~/.omlx/models/pipenetwork/gemma-3-12b-it-4bit",
   "models": {
     "h3": {"enabled": true, "name": "MiniMax H3 · 4-bit", "model_path": "~/.omlx/models/pipenetwork/MiniMax-H3-FL2VA-MLX-Serve-4bit"},
+    "h3-fasth3-vsa-q8": {"enabled": true, "name": "FastH3 VSA · Q8", "model_path": "~/.omlx/models/pipenetwork/MiniMax-H3-FastH3-VSA-DataFree-MLX-Q8"},
     "hidream": {"enabled": true, "name": "HiDream-O1 · Q6", "model_path": "~/.omlx/models/mlx-community/HiDream-O1-Image-Dev-mlx-q6"},
     "flux2-klein-4b": {"enabled": true, "name": "FLUX.2 Klein 4B", "model_path": "~/.omlx/models/pipenetwork/FLUX.2-klein-4B"},
     "z-image-turbo": {"enabled": true, "name": "Z-Image-Turbo", "model_path": "~/.omlx/models/pipenetwork/Z-Image-Turbo"},
     "ltx-2.3-distilled-q4": {"enabled": true, "name": "LTX 2.3 Distilled 1.1 · Q4", "model_path": "~/.omlx/models/pipenetwork/ltx-2.3-mlx-q4"},
-    "ltx-2.3-distilled-q8": {"enabled": true, "name": "LTX 2.3 Distilled 1.1 · Q8", "model_path": "~/.omlx/models/pipenetwork/ltx-2.3-mlx-q8"}
+    "ltx-2.3-dev-q4": {"enabled": true, "name": "LTX 2.3 Dev · Q4 · CFG", "model_path": "~/.omlx/models/pipenetwork/ltx-2.3-mlx-q4"},
+    "ltx-2.3-distilled-q8": {"enabled": true, "name": "LTX 2.3 Distilled 1.1 · Q8", "model_path": "~/.omlx/models/pipenetwork/ltx-2.3-mlx-q8"},
+    "fish-s2-pro-8bit": {"enabled": true, "name": "Fish Audio S2 Pro · 8-bit", "model_path": "~/.omlx/models/pipenetwork/fishaudio-s2-pro-8bit-mlx"},
+    "voxcpm2-4bit": {"enabled": true, "name": "VoxCPM2 · 4-bit", "model_path": "~/.omlx/models/pipenetwork/VoxCPM2-4bit"},
+    "qwen3-tts-voicedesign-8bit": {"enabled": true, "name": "Qwen3-TTS VoiceDesign · 8-bit", "model_path": "~/.omlx/models/pipenetwork/Qwen3-TTS-12Hz-1.7B-VoiceDesign-8bit"}
   },
   "video": {
     "model_path": "~/.omlx/models/pipenetwork/MiniMax-H3-FL2VA-MLX-Serve-4bit",
@@ -24,6 +29,7 @@
   "text": {
     "service_url": "http://127.0.0.1:8000",
     "model_ids": [],
+    "skill_input_token_budget": 64000,
     "api_params": {
       "temperature": 0.2,
       "max_tokens": 500

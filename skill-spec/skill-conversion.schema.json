@@ -36,11 +36,11 @@
     "id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$", "not": {"pattern": "\\s"}},
     "modelId": {"type": "string", "minLength": 1, "maxLength": 200, "pattern": "\\S", "not": {"anyOf": [{"const": "*"}, {"pattern": "\\u0000"}]}},
     "task": {"enum": ["prompt-enhancement", "storyboard"]},
-    "mode": {"enum": ["video", "image", "music", "long-video"]},
+    "mode": {"enum": ["video", "mv", "image", "music", "long-video"]},
     "taskMode": {
       "if": {"properties": {"task": {"const": "storyboard"}}},
       "then": {"properties": {"mode": {"const": "long-video"}}},
-      "else": {"properties": {"mode": {"enum": ["video", "image", "music"]}}}
+      "else": {"properties": {"mode": {"enum": ["video", "mv", "image", "music"]}}}
     },
     "evidence": {
       "type": "object",
@@ -88,7 +88,7 @@
         "version": {"type": "string", "maxLength": 32, "pattern": "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$", "not": {"pattern": "\\s"}},
         "description": {"$ref": "#/$defs/shortText"},
         "kind": {"const": "knowledge-only"},
-        "bindings": {"type": "array", "minItems": 1, "maxItems": 4, "uniqueItems": true, "items": {"$ref": "#/$defs/binding"}}
+        "bindings": {"type": "array", "minItems": 1, "maxItems": 5, "uniqueItems": true, "items": {"$ref": "#/$defs/binding"}}
       }
     },
     "removal": {
@@ -150,7 +150,7 @@
             "source_snapshot_id": {"$ref": "#/$defs/id"},
             "license_status": {"enum": ["verified", "unknown", "restricted"]},
             "license_obligations": {"type": "array", "maxItems": 16, "items": {"$ref": "#/$defs/shortText"}},
-            "allowed_bindings": {"type": "array", "minItems": 1, "maxItems": 4, "uniqueItems": true, "items": {"$ref": "#/$defs/allowedBinding"}},
+            "allowed_bindings": {"type": "array", "minItems": 1, "maxItems": 5, "uniqueItems": true, "items": {"$ref": "#/$defs/allowedBinding"}},
             "max_instruction_chars": {"type": "integer", "minimum": 1, "maximum": 6000}
           }
         },
@@ -168,7 +168,7 @@
                 "properties": {
                   "id": {"$ref": "#/$defs/id"},
                   "path": {"type": "string", "minLength": 1, "maxLength": 256, "pattern": "^[A-Za-z0-9_-][A-Za-z0-9_./-]*$", "not": {"anyOf": [{"pattern": "(^|/)\\.{1,2}(/|$)"}, {"pattern": "\\s"}]}},
-                  "content": {"type": "string", "minLength": 1, "maxLength": 24000, "not": {"pattern": "\\u0000"}}
+                  "content": {"type": "string", "minLength": 1, "maxLength": 96000, "not": {"pattern": "\\u0000"}}
                 }
               }
             }
@@ -199,7 +199,7 @@
             "properties": {
               "title": {"allOf": [{"$ref": "#/$defs/text"}, {"maxLength": 120}]},
               "prompt": {"allOf": [{"$ref": "#/$defs/text"}, {"maxLength": 4000}]},
-              "duration": {"type": "number", "enum": [5, 8, 10, 15]},
+              "duration": {"type": "number", "minimum": 1, "maximum": 20, "multipleOf": 1},
               "music_prompt": {"allOf": [{"$ref": "#/$defs/text"}, {"maxLength": 4000}]}
             }
           }

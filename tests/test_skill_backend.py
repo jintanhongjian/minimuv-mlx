@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import copy
+import io
 import json
 import tempfile
 import threading
@@ -11,7 +12,7 @@ from unittest.mock import patch
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
-from webapp import server, skill_conversion as skills
+from webapp import prompt_settings, server, skill_conversion as skills
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -69,14 +70,15 @@ class SkillBackendTests(unittest.TestCase):
             removal["evidence"]["file_id"] = "source-1"
         return result
 
-    def test_verified_draft_remains_unapproved_and_hash_is_host_generated(self) -> None:
+    def test_verified_draft_is_installable_without_human_review_and_hash_is_host_generated(self) -> None:
         record = self.prepare()
         result = self.candidate(record)
         validated = skills.validate_result(record, result, lambda *_: 100)
         self.assertTrue(validated["valid"])
-        self.assertFalse(validated["installable"])
-        self.assertTrue(validated["review_required"])
-        self.assertIn("H06", validated["review_checks"][0])
+        self.assertTrue(validated["installable"])
+        self.assertFalse(validated["review_required"])
+        self.assertEqual(validated["review_checks"], [])
+        self.assertFalse(validated["semantic_safety_verified"])
         self.assertEqual(validated["candidate_sha256"], skills.digest(result["package"]))
         self.assertEqual(validated["license_obligations"], record["review"]["obligations"])
 
@@ -90,6 +92,16 @@ class SkillBackendTests(unittest.TestCase):
             change(payload)
             with self.subTest(payload=payload), self.assertRaises(skills.SkillError):
                 skills.prepare(payload, self.capabilities, self.text)
+
+    def test_memory_rejection_is_actionable_and_preserves_http_507(self) -> None:
+        error = HTTPError("http://127.0.0.1:8000/v1/messages/count_tokens", 507, "memory", {},
+                          io.BytesIO(b'{"error":{"message":"Model requires 16GB; only 4GB available"}}'))
+        with patch.object(server, "build_opener") as opener:
+            opener.return_value.open.side_effect = error
+            with self.assertRaisesRegex(skills.SkillError, "skill_text_memory_unavailable") as raised:
+                server._skill_text_response(Request(error.url), "http://127.0.0.1:8000")
+        self.assertEqual(raised.exception.status, 507)
+        self.assertIn("16GB", raised.exception.findings[0]["message"])
 
     def test_unknown_and_restricted_licenses_must_block(self) -> None:
         for status in ("unknown", "restricted"):
@@ -108,6 +120,85 @@ class SkillBackendTests(unittest.TestCase):
     def test_missing_review_is_unknown_not_verified(self) -> None:
         record = self.prepare(False)
         self.assertEqual(record["review"]["status"], "unknown")
+
+    def test_user_confirmation_of_detected_license_is_pinned_to_exact_source(self) -> None:
+        source_value = copy.deepcopy(self.payload["source"])
+        source_value["origin"] = "https://github.com/test/repo"
+        source_value["revision"] = "a" * 40
+        source_value["files"].append({
+            "path": "LICENSE",
+            "content": "MIT License\n\nPermission is hereby granted, free of charge, to any person obtaining a copy.",
+        })
+        source = skills.normalize_source(source_value, skills.artifacts()[0])
+        detected = skills.detect_licenses(source)
+        self.assertEqual(detected, [{"license_name": "MIT", "path": "LICENSE"}])
+        review = skills.confirm_detected_license(source_value, "MIT", "LICENSE")
+        self.assertEqual(review["status"], "verified")
+        self.assertEqual(review["license_name"], "MIT")
+        self.assertEqual(review["reviewer"], "local-ui-user-confirmation")
+
+        payload = {**self.payload, "source": source_value}
+        prepared = skills.prepare(payload, self.capabilities, self.text)
+        self.assertEqual(prepared["license_review"]["status"], "verified")
+        self.assertEqual(prepared["license_review"]["license_name"], "MIT")
+
+        changed = copy.deepcopy(source)
+        changed["files"][0]["content"] += "\nchanged"
+        self.assertEqual(skills.license_review(changed)["status"], "unknown")
+
+    def test_user_cannot_confirm_a_license_absent_from_pinned_source(self) -> None:
+        with self.assertRaisesRegex(skills.SkillError, "license_not_detected"):
+            skills.confirm_detected_license(self.payload["source"], "MIT", "LICENSE")
+        self.assertFalse(self.registry.exists())
+
+    def test_operator_can_declare_a_whitelisted_license_for_local_source(self) -> None:
+        source_value = copy.deepcopy(self.payload["source"])
+        review = skills.confirm_declared_license(source_value, "MIT")
+        self.assertEqual(review["status"], "verified")
+        self.assertEqual(review["license_name"], "MIT")
+        self.assertEqual(review["reviewer"], "local-ui-user-declaration")
+
+        prepared = skills.prepare({**self.payload, "source": source_value}, self.capabilities, self.text)
+        self.assertEqual(prepared["license_review"]["status"], "verified")
+        self.assertEqual(prepared["license_review"]["license_name"], "MIT")
+
+    def test_declared_license_requires_whitelisted_spdx_identifier(self) -> None:
+        for invalid in ("Proprietary", "custom-license", 123, None):
+            with self.subTest(invalid=invalid), self.assertRaisesRegex(skills.SkillError, "invalid_declared_license"):
+                skills.confirm_declared_license(self.payload["source"], invalid)
+        self.assertFalse(self.registry.exists())
+
+    def test_declared_license_types_endpoint_and_declare_pipeline(self) -> None:
+        self.server_patches()
+        httpd = server.ThreadingHTTPServer(("127.0.0.1", 0), server.WebHandler)
+        thread = threading.Thread(target=httpd.serve_forever, daemon=True)
+        thread.start()
+        self.addCleanup(thread.join)
+        self.addCleanup(httpd.server_close)
+        self.addCleanup(httpd.shutdown)
+        base = f"http://127.0.0.1:{httpd.server_port}"
+
+        def post(route, data):
+            return urlopen(Request(base + route, data=skills.encoded(data)), timeout=5)
+
+        with urlopen(base + "/api/skills/license-types", timeout=5) as response:
+            types = json.load(response)["license_types"]
+        self.assertIn("MIT", types)
+        self.assertIn("Apache-2.0", types)
+
+        with post("/api/skills/license-declare", {
+            "source": self.payload["source"], "license_name": "Apache-2.0",
+        }) as response:
+            self.assertEqual(response.status, 200)
+            review = json.load(response)["license_review"]
+        self.assertEqual(review["status"], "verified")
+        self.assertEqual(review["license_name"], "Apache-2.0")
+        with self.assertRaises(HTTPError) as error:
+            post("/api/skills/license-declare", {
+                "source": self.payload["source"], "license_name": "Proprietary",
+            })
+        self.assertEqual(error.exception.code, 422)
+        error.exception.close()
 
     def test_review_is_bound_to_source_origin_revision_and_exact_content(self) -> None:
         self.review()
@@ -148,13 +239,13 @@ class SkillBackendTests(unittest.TestCase):
         payload["source"]["files"] *= 2
         with self.assertRaisesRegex(skills.SkillError, "source_path"):
             skills.prepare(payload, self.capabilities, self.text)
-        for content in ("x" * 24001, "x\x00y", ""):
+        for content in ("x" * 96001, "x\x00y", ""):
             payload = copy.deepcopy(self.payload)
             payload["source"]["files"][0]["content"] = content
             with self.assertRaises(skills.SkillError):
                 skills.prepare(payload, self.capabilities, self.text)
         payload = copy.deepcopy(self.payload)
-        payload["source"]["files"] = [{"path": f"{n}.md", "content": "文" * 24000} for n in range(2)]
+        payload["source"]["files"] = [{"path": f"{n}.md", "content": "文" * 96000} for n in range(2)]
         with self.assertRaisesRegex(skills.SkillError, "too_large"):
             skills.prepare(payload, self.capabilities, self.text)
 
@@ -222,7 +313,7 @@ class SkillBackendTests(unittest.TestCase):
 
     def test_capabilities_follow_enabled_registry_not_model_name_guesses(self) -> None:
         settings = copy.deepcopy(server._DEFAULT_SETTINGS)
-        for model in ("h3", *server.local_models.VIDEO_MODELS):
+        for model in ("h3", *server.local_models.LOCAL_VIDEO_MODELS):
             settings["models"][model]["enabled"] = False
         settings["models"]["music3"]["enabled"] = False
         with patch.object(server, "_settings_snapshot", return_value=settings):
@@ -233,6 +324,14 @@ class SkillBackendTests(unittest.TestCase):
         self.assertEqual(allowed["music"]["model_ids"], ["yue2-3b-8bit"])
         self.assertIn("no lyrics", allowed["music"]["constraints"][0])
         self.assertEqual(text, settings["text"])
+
+    def test_mv_binding_tracks_enabled_video_models(self) -> None:
+        settings = copy.deepcopy(server._DEFAULT_SETTINGS)
+        with patch.object(server, "_settings_snapshot", return_value=settings):
+            capabilities, _ = server._skill_environment()
+        allowed = {item["mode"]: item for item in capabilities["allowed_bindings"]}
+        self.assertEqual(allowed["mv"]["model_ids"], allowed["video"]["model_ids"])
+        self.assertIn("MV visual prompt", allowed["mv"]["constraints"][0])
 
     def test_character_and_token_budgets_are_independent(self) -> None:
         record = self.prepare()
@@ -272,8 +371,98 @@ class SkillBackendTests(unittest.TestCase):
         self.assertEqual(call.call_args.kwargs["text_snapshot"], self.text)
         result["request_id"] = "forged"
         with patch.object(server, "_request_local_text_json", return_value=result):
-            with self.assertRaisesRegex(skills.SkillError, "invalid_skill_conversion"):
-                server._convert_skill_request(key)
+            invalid = server._convert_skill_request(key)
+        self.assertFalse(invalid["validation"]["valid"])
+        self.assertEqual(invalid["error"], "invalid_skill_conversion")
+        self.assertEqual(invalid["result"], result)
+        self.assertIn("H01", {item["code"] for item in invalid["validation"]["findings"]})
+
+    def test_conversion_reserves_output_capacity_and_honors_configured_input_budget(self) -> None:
+        self.text["skill_input_token_budget"] = 64000
+        self.server_patches()
+        record = self.prepare()
+        key = record["request"]["trusted_context"]["request_id"]
+        with (
+            patch.object(server, "_local_text_models", return_value=[{"id":"local-text","max_model_len":32768}]),
+            patch.object(server, "_skill_token_count", return_value=24577),
+            patch.object(server, "_request_local_text_json") as generate,
+            self.assertRaisesRegex(skills.SkillError, "model_context_budget_exceeded"),
+        ):
+            server._convert_skill_request(key)
+        generate.assert_not_called()
+        with (
+            patch.object(server, "_local_text_models", return_value=[{"id":"local-text","max_model_len":262144}]),
+            patch.object(server, "_skill_token_count", return_value=64001),
+            patch.object(server, "_request_local_text_json") as generate,
+            self.assertRaisesRegex(skills.SkillError, "input_token_budget_exceeded"),
+        ):
+            server._convert_skill_request(key)
+        generate.assert_not_called()
+        self.assertEqual(server._text_context_metadata("model", [{"id":"model","max_model_len":True}]), {})
+        self.assertEqual(server._text_context_metadata("model", [{"id":"model","max_model_len":64000}]), {"max_model_len":64000})
+
+    def test_evidence_only_failure_regenerates_once_with_original_sources(self) -> None:
+        self.server_patches()
+        record = self.prepare()
+        valid = self.candidate(record)
+        invalid = copy.deepcopy(valid)
+        invalid["package"]["bindings"][0]["evidence"][0]["excerpt"] = "invented evidence"
+        with patch.object(server, "_request_local_text_json", side_effect=[invalid, valid]) as call:
+            response = server._convert_skill_request(record["request"]["trusted_context"]["request_id"])
+        self.assertTrue(response["validation"]["valid"])
+        self.assertEqual(call.call_count, 2)
+        retry = skills.parse_json(call.call_args.args[2])
+        self.assertEqual(retry["trusted_context"], record["request"]["trusted_context"])
+        self.assertEqual(retry["source_material"], record["request"]["source_material"])
+        self.assertTrue(all(item["code"] == "H04" for item in retry["validation_feedback"]["findings"]))
+        self.assertEqual(invalid["package"]["bindings"][0]["evidence"][0]["excerpt"], "invented evidence")
+
+    def test_repeated_bad_evidence_is_reported_and_mixed_failure_is_not_retried(self) -> None:
+        self.server_patches()
+        record = self.prepare()
+        invalid = self.candidate(record)
+        invalid["package"]["bindings"][0]["evidence"][0]["excerpt"] = "invented evidence"
+        for mixed, expected_calls in ((False, 2), (True, 1)):
+            if mixed:
+                invalid["request_id"] = "forged"
+            with patch.object(server, "_request_local_text_json", return_value=invalid) as call:
+                response = server._convert_skill_request(record["request"]["trusted_context"]["request_id"])
+            self.assertEqual(call.call_count, expected_calls)
+            self.assertEqual(response["error"], "invalid_skill_conversion")
+            self.assertFalse(response["validation"]["valid"])
+            self.assertFalse(response["validation"]["installable"])
+            self.assertEqual(response["result"], invalid)
+
+    def test_retry_recounts_budget_and_rejects_source_drift(self) -> None:
+        self.server_patches()
+        record = self.prepare()
+        invalid = self.candidate(record)
+        invalid["package"]["bindings"][0]["evidence"][0]["excerpt"] = "invented evidence"
+        with patch.object(server, "_request_local_text_json", return_value=invalid) as call, patch.object(
+            server, "_skill_token_count", side_effect=[100, 64001]
+        ), self.assertRaisesRegex(skills.SkillError, "input_token_budget_exceeded"):
+            server._convert_skill_request(record["request"]["trusted_context"]["request_id"])
+
+        self.assertEqual(call.call_count, 1)
+        def retry(*args, **kwargs):
+            if "validation_feedback" in skills.parse_json(args[2]):
+                self.review("restricted")
+            return invalid
+        with patch.object(server, "_request_local_text_json", side_effect=retry), self.assertRaisesRegex(
+            skills.SkillError, "snapshot_changed"
+        ):
+            server._convert_skill_request(record["request"]["trusted_context"]["request_id"])
+
+    def test_editing_conversion_guidance_invalidates_prepared_contract(self) -> None:
+        path = Path(self.directory.name) / "prompts.json"
+        with patch.object(prompt_settings, "SETTINGS_PATH", path):
+            record = self.prepare()
+            current = prompt_settings.snapshot()
+            current["config"]["profiles"]["skill_conversion"]["rules"] = "Copy exact source excerpts."
+            prompt_settings.save(current["config"], current["revision"])
+            with self.assertRaisesRegex(skills.SkillError, "snapshot_changed"):
+                skills.current_record(record["request"]["trusted_context"]["request_id"],
+                                      self.capabilities, self.text)
 
     def test_conversion_unknown_avoids_model_and_tokenizer(self) -> None:
         self.server_patches()
@@ -290,7 +479,7 @@ class SkillBackendTests(unittest.TestCase):
         self.server_patches()
         record = self.prepare()
         key = record["request"]["trusted_context"]["request_id"]
-        for value in (16001, RuntimeError("tokenizer unavailable")):
+        for value in (64001, RuntimeError("tokenizer unavailable")):
             with patch.object(server, "_skill_token_count", **(
                 {"side_effect": value} if isinstance(value, Exception) else {"return_value": value}
             )), patch.object(server, "_request_local_text_json") as generate:
@@ -377,6 +566,9 @@ class SkillBackendTests(unittest.TestCase):
         self.assertEqual(captured[0][1]["system"], "system")
         self.assertEqual(captured[1][1]["max_tokens"], 8192)
         self.assertFalse(captured[1][1]["enable_thinking"])
+        self.assertEqual(captured[1][1]["response_format"]["type"], "json_schema")
+        self.assertTrue(captured[1][1]["response_format"]["json_schema"]["strict"])
+        self.assertEqual(captured[1][1]["response_format"]["json_schema"]["schema"], skills.artifacts()[0])
         for route in ("/redirect", "/large"):
             with self.subTest(route=route), self.assertRaises(RuntimeError):
                 server._skill_text_response(Request(text["service_url"] + route), text["service_url"])
@@ -406,6 +598,37 @@ class SkillBackendTests(unittest.TestCase):
         with post("/api/skills/requests", self.payload) as response:
             self.assertEqual(response.status, 201)
             prepared = json.load(response)
+        source = copy.deepcopy(self.payload["source"])
+        source["origin"] = "https://github.com/test/repo"
+        source["revision"] = "a" * 40
+        source["files"].append({
+            "path": "LICENSE",
+            "content": "MIT License\n\nPermission is hereby granted, free of charge, to any person obtaining a copy.",
+        })
+        confirmation = {
+            "source": source, "license_name": "MIT", "license_path": "LICENSE",
+        }
+        with post("/api/skills/license-review", confirmation) as response:
+            self.assertEqual(response.status, 200)
+            license_review = json.load(response)["license_review"]
+        self.assertEqual(license_review["status"], "verified")
+        self.assertEqual(license_review["license_name"], "MIT")
+        self.assertEqual(len(json.loads(self.registry.read_text())["reviews"]), 2)
+        for invalid in (
+            {**confirmation, "license_name": "Apache-2.0"},
+            {**confirmation, "source_sha256": "f" * 64},
+            {**confirmation, "obligations": ["forged"]},
+        ):
+            with self.subTest(invalid=invalid), self.assertRaises(HTTPError) as error:
+                post("/api/skills/license-review", invalid)
+            self.assertEqual(error.exception.code, 422 if "source_sha256" not in invalid and "obligations" not in invalid else 400)
+            error.exception.close()
+        changed_source = copy.deepcopy(source)
+        changed_source["files"][0]["content"] += "\nchanged"
+        changed_prepared = server._prepare_skill_request({
+            "model": "local-text", "source": changed_source,
+        })
+        self.assertEqual(changed_prepared["license_review"]["status"], "unknown")
         large = copy.deepcopy(self.payload)
         large["source"]["files"] = [{"path": f"{n}.md", "content": "a" * 24000} for n in range(3)]
         self.assertGreater(len(skills.encoded(large)), 64 * 1024)
@@ -430,7 +653,7 @@ class SkillBackendTests(unittest.TestCase):
             ("/api/skills/validate", {"request_id": key, "result": candidate}, {}, 422),
             ("/api/skills/convert", {"request_id": "missing"}, {}, 404),
             ("/api/skills/requests", self.payload, {"Origin": "https://evil.invalid"}, 403),
-            ("/api/skills/requests", b"x" * (128 * 1024 + 1), {}, 413),
+            ("/api/skills/requests", b"x", {"Content-Length": str(skills.MAX_REQUEST_BYTES + 1)}, 413),
             ("/api/skills/requests", b'{"model":"a","model":"b"}', {}, 400),
             ("/api/skills/requests", b"null", {}, 400),
             ("/api/skills/requests", b"{}", {"Content-Length": "invalid"}, 400),

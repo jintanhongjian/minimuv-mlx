@@ -1,17 +1,19 @@
 from __future__ import annotations
 
 import copy
+import io
 import json
 import tempfile
 import threading
 import unittest
+import wave
 from http.server import ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
-from webapp import local_models, output_storage, server, workflows
+from webapp import local_models, mv_music, mv_projects, output_storage, podcasts, server, workflows
 
 
 class OutputLayoutTests(unittest.TestCase):
@@ -209,6 +211,31 @@ class OutputSettingsTests(unittest.TestCase):
         self.assertEqual((self.destination / "long-video" / manifest["id"]).stat().st_mode & 0o777, 0o700)
         self.assertTrue(media.exists())
 
+    def test_migrates_uploaded_mv_music_without_changing_ids_or_originals(self):
+        buffer = io.BytesIO()
+        with wave.open(buffer, "wb") as audio:
+            audio.setnchannels(1)
+            audio.setsampwidth(2)
+            audio.setframerate(8000)
+            audio.writeframes(b"\0\0" * 8000)
+        content = buffer.getvalue()
+        music = mv_music.save_upload(self.source, io.BytesIO(content), len(content), "source.wav")
+        draft = mv_projects.save_project(self.source, {
+            "name": "MV", "music_source_id": music["id"], "prompt": "", "aspect": "16:9"
+        }, lambda value: mv_music.resolve(self.source, value))
+        original = self.source / "mv" / f"{draft['id']}.json"
+        original_bytes = original.read_bytes()
+        server._save_app_settings({**self.settings, "output_directory": str(self.destination)})
+        self.assertEqual(mv_music.list_music(self.destination), [music])
+        copied = mv_projects.list_projects(self.destination)[0]
+        self.assertEqual(copied["id"], draft["id"])
+        self.assertEqual(copied["music_source_id"], music["id"])
+        self.assertEqual(copied["revision"], draft["revision"])
+        self.assertEqual((self.destination / "mv" / original.name).read_bytes(), original_bytes)
+        self.assertEqual(Path(mv_music.resolve(self.destination, music["id"])["path"]).read_bytes(), content)
+        self.assertEqual(Path(mv_music.resolve(self.source, music["id"])["path"]).read_bytes(), content)
+        self.assertEqual(original.read_bytes(), original_bytes)
+
     def test_rejects_busy_nonempty_overlap_and_symlink_without_switch(self):
         with patch.object(server, "_active_job_id", "active"), self.assertRaises(ValueError):
             server._save_app_settings({**self.settings, "output_directory": str(self.destination)})
@@ -224,6 +251,35 @@ class OutputSettingsTests(unittest.TestCase):
             output_storage.prepare_migration(self.source, self.root / "another")
         self.assertEqual(server.OUTPUT_ROOT, self.source)
         self.assertFalse(list(self.root.glob(".minimuv-migration-*")))
+
+    def test_migrates_podcast_projects_preserving_ids_revisions_and_private_bytes(self):
+        segment_id = OutputLayoutTests.ITEM_ID
+        project = podcasts.create(self.source, {
+            "name": "Podcast", "characters": [], "settings": {},
+            "segments": [{"id": segment_id, "character_id": None, "text": "Narration",
+                          "purpose": "story", "gap_seconds": 0}],
+        })
+        buffer = io.BytesIO()
+        with wave.open(buffer, "wb") as audio:
+            audio.setnchannels(1)
+            audio.setsampwidth(2)
+            audio.setframerate(8000)
+            audio.writeframes(b"\0\0" * 800)
+        content = buffer.getvalue()
+        project = podcasts.import_audio(self.source, project["id"], segment_id, project["revision"],
+                                       io.BytesIO(content), len(content))
+        directory = self.source / "podcasts" / project["id"]
+        original = {path.relative_to(directory): path.read_bytes()
+                    for path in directory.rglob("*") if path.is_file()}
+        server._save_app_settings({**self.settings, "output_directory": str(self.destination)})
+        copied = podcasts.get(self.destination, project["id"])
+        self.assertEqual(copied["id"], project["id"])
+        self.assertEqual(copied["revision"], project["revision"])
+        self.assertEqual(copied["segments"], project["segments"])
+        self.assertTrue(podcasts.media_file(self.destination, project["id"], "segment", segment_id).is_file())
+        for relative, content in original.items():
+            self.assertEqual((self.destination / "podcasts" / project["id"] / relative).read_bytes(), content)
+            self.assertEqual((directory / relative).read_bytes(), content)
 
     def test_failed_settings_publication_retains_old_root_and_verified_copy(self):
         (self.source / "music.wav").write_bytes(b"audio")

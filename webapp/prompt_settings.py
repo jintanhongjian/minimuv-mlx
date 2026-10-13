@@ -16,9 +16,21 @@ MAX_FIELD_LENGTH = 6000
 PROFILE_FIELDS = {
     "enhancement": ("role", "task", "rules", "output"),
     "video": ("task",),
+    "mv": ("task",),
     "image": ("task",),
     "music": ("task",),
     "storyboard": ("role", "task", "rules", "output"),
+    "mv_storyboard": ("role", "task", "rules", "output"),
+    "skill_conversion": ("role", "task", "rules", "output"),
+    "assistant": ("role", "task", "rules", "output"),
+}
+LEGACY_PROFILES = {"enhancement", "video", "image", "music", "storyboard"}
+PRE_ASSISTANT_PROFILES = set(PROFILE_FIELDS) - {"assistant"}
+RESPONSE_LANGUAGES = {
+    "en": "English", "zh-CN": "Simplified Chinese", "zh-TW": "Traditional Chinese",
+    "fr": "French", "de": "German", "ja": "Japanese", "ko": "Korean",
+    "es": "Spanish", "pt": "Portuguese", "tr": "Turkish", "ar": "Arabic",
+    "vi": "Vietnamese", "id": "Indonesian", "ru": "Russian",
 }
 _lock = threading.RLock()
 
@@ -47,11 +59,12 @@ def validate(payload: object) -> dict:
                 raise ValueError(f"invalid_prompt_text: {name}.{field}")
             if "\x00" in value:
                 raise ValueError(f"invalid_prompt_text: {name}.{field}")
-            if "{shot_count}" in value and (name, field) != ("storyboard", "task"):
+            if "{shot_count}" in value and (name not in {"storyboard", "mv_storyboard"} or field != "task"):
                 raise ValueError("shot_count_only_in_storyboard_task")
             result["profiles"][name][field] = value.strip()
-    if result["profiles"]["storyboard"]["task"].count("{shot_count}") != 1:
-        raise ValueError("storyboard_task_requires_shot_count")
+    for name in ("storyboard", "mv_storyboard"):
+        if result["profiles"][name]["task"].count("{shot_count}") != 1:
+            raise ValueError("storyboard_task_requires_shot_count")
     if len(_encode(result)) > MAX_BYTES:
         raise ValueError("prompt_config_too_large")
     return result
@@ -67,7 +80,18 @@ def _read(path: Path) -> tuple[dict, bytes]:
             data = stream.read(MAX_BYTES + 1)
         if len(data) > MAX_BYTES:
             raise ValueError("prompt_config_too_large")
-        return validate(json.loads(data)), data
+        config = json.loads(data)
+        if (path == SETTINGS_PATH and isinstance(config, dict) and isinstance(config.get("profiles"), dict)
+                and set(config["profiles"]) in (LEGACY_PROFILES, PRE_ASSISTANT_PROFILES)):
+            defaults, _ = _read(DEFAULTS_PATH)
+            if not isinstance(config["profiles"]["video"], dict):
+                raise ValueError("invalid_prompt_fields: video")
+            legacy = set(config["profiles"]) == LEGACY_PROFILES
+            config["profiles"] = {**defaults["profiles"], **config["profiles"]}
+            # Preserve the old MV/video inheritance until the user explicitly edits MV.
+            if legacy:
+                config["profiles"]["mv"] = dict(config["profiles"]["video"])
+        return validate(config), data
     except (OSError, UnicodeError, ValueError) as exc:
         raise RuntimeError(f"prompt_settings_unavailable: {path.name}: {exc}") from exc
 
@@ -109,14 +133,45 @@ def save(config: object, revision: str) -> dict:
 
 def enhancement(mode: str) -> str:
     profiles = snapshot()["config"]["profiles"]
-    if mode not in {"video", "image", "music"}:
+    if mode not in {"video", "mv", "image", "music"}:
         raise ValueError("invalid_generation_mode")
     return " ".join([*profiles["enhancement"].values(), profiles[mode]["task"]])
 
 
 def storyboard(shot_count: int) -> str:
+    return counted("storyboard", shot_count)
+
+
+def counted(name: str, shot_count: int) -> str:
+    if name not in {"storyboard", "mv_storyboard"}:
+        raise ValueError("invalid_prompt_profile")
     if type(shot_count) is not int or not 1 <= shot_count <= 48:
         raise ValueError("invalid_shot_count")
-    profile = snapshot()["config"]["profiles"]["storyboard"]
+    profile = snapshot()["config"]["profiles"][name]
     return " ".join(profile[field].replace("{shot_count}", str(shot_count))
-                    for field in PROFILE_FIELDS["storyboard"])
+                    for field in PROFILE_FIELDS[name])
+
+
+def skill_conversion() -> str:
+    profile = snapshot()["config"]["profiles"]["skill_conversion"]
+    return " ".join(profile[field] for field in PROFILE_FIELDS["skill_conversion"])
+
+
+def assistant_language(locale: str) -> str:
+    if not isinstance(locale, str) or locale not in RESPONSE_LANGUAGES:
+        raise ValueError("invalid_assistant_locale")
+    return (
+        f"Response language: {RESPONSE_LANGUAGES[locale]} ({locale}), selected in the application UI. "
+        "Use this language for all user-facing replies, plans, confirmation explanations and tool "
+        "error summaries unless the user explicitly requests another language or a translation. "
+        "This response-language rule takes precedence over configured language preferences. "
+        "Do not switch languages because of earlier assistant replies, tool results or quoted source "
+        "material. Preserve code, URLs, model IDs, tool names and error identifiers unchanged."
+    )
+
+
+def assistant(locale: str | None = None) -> str:
+    language = assistant_language(locale) if locale is not None else ""
+    profile = snapshot()["config"]["profiles"]["assistant"]
+    instructions = " ".join(profile[field] for field in PROFILE_FIELDS["assistant"])
+    return instructions + ("\n\n" + language if language else "")

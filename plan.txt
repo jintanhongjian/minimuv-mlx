@@ -15,3 +15,8 @@
 4. 乐器与节奏 (Instruments & Tempo)
 • 乐器：Acoustic guitar（木吉他）, Electric guitar（电吉他）, Piano, Cello（大提琴）, 808 bass, Synth pads（合成器垫音）
 • 速度：Slow tempo（慢板）, Fast tempo（快板）, 90 BPM, Upbeat（欢快节奏）
+
+继续skill批准安装、启用及生成时调用的开发。
+
+将fishaudio模型单独设置在新的播客制作功能中，在该功能中能通过fishaudio模型克隆声音制作歌曲开场、独白、结尾，或生成单独的播客语音（讲故事，生成角色对话），并生成带有时间戳的字幕文件，然后添加语音合
+播客功能中，增加先使用fishaudio根据文字描述生成人物声音，然后在后续的播客生成中作为人物声音调用。

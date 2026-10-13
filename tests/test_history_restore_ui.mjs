@@ -9,9 +9,10 @@ const restoreSource = source.slice(source.indexOf("function restoreHistoryContro
 
 function harness() {
   const controls = new Map();
-  const selectIds = ["#duration", "#aspect", "#steps", "#music-duration", "#music-steps", "#music-lyrics-mode"];
-  for (const id of [...selectIds, "#seed", "#image-seed", "#music-seed", "#music-lyrics",
-    "#prompt-count", "#history-restore-status", "#image-size"]) {
+  const selectIds = ["#aspect", "#video-quality", "#music-lyrics-mode", "#image-quality", "#image-candidate-count"];
+  for (const id of [...selectIds, "#duration", "#steps", "#music-duration", "#music-steps", "#seed", "#image-seed", "#music-seed", "#music-lyrics",
+    "#prompt-count", "#history-restore-status", "#image-size", "#image-aspect",
+    "#image-quality", "#image-candidate-count"]) {
     const control = {
       tagName: selectIds.includes(id) ? "SELECT" : "INPUT", value: "current",
       options: [{ value: "current", dataset: {} }], dataset: {}, hidden: true,
@@ -55,12 +56,13 @@ test("video restores all controls, non-preset steps and saved opening frame", ()
   assert.equal(h.context.projectNameInput.value, "Scene one");
   assert.equal(h.controls.get("#prompt-count").textContent, "14 / 4000");
   assert.equal(h.controls.get("#steps").value, "24");
-  assert.equal(h.controls.get("#steps").options.at(-1).dataset.standardStep, "");
+  assert.equal(h.controls.get("#steps").tagName, "INPUT");
   assert.equal(h.controls.get("#duration").value, "10");
   assert.equal(h.controls.get("#aspect").value, "9:16");
   assert.equal(h.controls.get("#seed").value, "99");
   assert.equal(h.context.turboToggle.checked, false);
   assert.equal(h.context.videoModelChoice.value, "h3");
+  assert.equal(h.controls.get("#video-quality").value, "standard");
   assert.equal(h.frame.dataset.firstFrameId, "frame-id");
   assert.equal(h.frame.dataset.firstFrameUrl, "/snapshot");
   assert.equal(h.context.promptEnhancerResult.hidden, true);
@@ -82,12 +84,14 @@ test("image restores only its own seed; music restores lyrics and non-preset con
   assert.equal(h.context.activeMode, "image");
   assert.equal(h.context.imageModelChoice.value, "hidream");
   assert.equal(h.controls.get("#image-seed").value, "777");
+  assert.equal(h.controls.get("#image-quality").value, "custom");
+  assert.equal(h.controls.get("#image-candidate-count").value, "1");
   assert.equal(h.controls.get("#seed").value, "current");
   h.restore({ kind: "music", prompt: "Song", generation: {
     duration: 45, steps: 25, seed: 333, lyrics_mode: "lyrics", lyrics: "[verse]\nHome" } });
   assert.equal(h.context.activeMode, "music");
   assert.equal(h.controls.get("#music-duration").value, "45");
-  assert.equal(h.controls.get("#music-duration").options.at(-1).text, "45 s");
+  assert.equal(h.controls.get("#music-duration").tagName, "INPUT");
   assert.equal(h.controls.get("#music-steps").value, "25");
   assert.equal(h.controls.get("#music-lyrics").value, "[verse]\nHome");
   assert.equal(h.controls.get("#music-lyrics-mode").value, "lyrics");
@@ -97,12 +101,17 @@ test("image restores only its own seed; music restores lyrics and non-preset con
 test("local history restores the selected model and image resolution", () => {
   const h = harness();
   h.restore({ kind: "image", prompt: "Forest", generation: {
-    model: "z-image-turbo", seed: 42, width: 768, height: 768 } });
+    model: "z-image-turbo", seed: 42, width: 768, height: 768,
+    quality: "custom", candidate_count: 4 } });
   assert.equal(h.context.imageModelChoice.value, "z-image-turbo");
   assert.equal(h.controls.get("#image-size").value, "768");
+  assert.equal(h.controls.get("#image-candidate-count").value, "4");
   h.restore({ kind: "video", prompt: "Ocean", generation: {
     model: "ltx-2.3-distilled-q8", duration: 5, steps: 8, turbo: true } });
   assert.equal(h.context.videoModelChoice.value, "ltx-2.3-distilled-q8");
+  assert.equal(h.controls.get("#video-quality").value, "preview");
+  h.restore({kind:"video", prompt:"Ocean", generation:{model:"ltx-2.3-distilled-q8", quality:"high"}});
+  assert.equal(h.controls.get("#video-quality").value, "high");
   assert.equal(h.controls.get("#steps").value, "8");
   h.restore({ kind: "video", generation: null });
   assert.equal(h.context.videoModelChoice.value, "h3");
@@ -135,9 +144,14 @@ test("active generation, workflows, uploads and text operations are not disrupte
   }
 });
 
-test("restored non-preset options are replaced rather than accumulating", () => {
+test("arbitrary numeric settings restore directly without accumulating options", () => {
   const h = harness();
   h.context.restoreHistoryControl("#steps", 24);
   h.context.restoreHistoryControl("#steps", 32);
-  assert.deepEqual(h.controls.get("#steps").options.map(option => option.value), ["current", "32"]);
+  assert.equal(h.controls.get("#steps").value, "32");
+  assert.equal(h.controls.get("#steps").options.length, 1);
+  h.context.restoreHistoryControl("#duration", 13);
+  h.context.restoreHistoryControl("#music-duration", 299);
+  assert.equal(h.controls.get("#duration").value, "13");
+  assert.equal(h.controls.get("#music-duration").value, "299");
 });

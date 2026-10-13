@@ -16,6 +16,9 @@ function harness({confirmed = true, ok = true, error = "", selected = true} = {}
     removeAttribute() {calls.push("clear");}, load() {}};
   const context = vm.createContext({
     historyDeleteBusy: false, firstFrameBusy: false, currentWorkflow: null,
+    mvBusy: false, currentMV: null, mvProjects: [],
+    loadMVProjects: async () => {calls.push("mv-reload"); return true;},
+    openMVProject() {context.currentMV = null; calls.push("mv-reset");},
     currentJob: selected ? {id: "item", status: "completed"} : null,
     window: {confirm: () => {calls.push("confirm"); return confirmed;}, alert: message => calls.push(message)},
     t: key => key, historyStatus: status,
@@ -94,10 +97,11 @@ test("delete is an accessible cross inside the history card without a separate b
   const list = element();
   list.replaceChildren = () => {list.children = [];};
   const context = vm.createContext({
+    workflowItems: [], currentWorkflow: null, mvProjects: [], currentMV: null, mvBusy: false,
     historyItems: [{id: "item", kind: "music", prompt: "Ballad", created_at: 1}],
     historyFilter: "all", historyCount: {}, historyList: list, historyStatus: {},
     currentJob: null, historyDeleteBusy: false, languageSelect: {value: "en"},
-    t: key => key, document: {createElement: element}, formatGenerationMetrics: () => "",
+    t: key => key, document: {createElement: element, querySelector: () => ({})}, formatGenerationMetrics: () => "",
   });
   vm.runInContext(render, context);
   context.renderHistory();
@@ -112,5 +116,44 @@ test("delete is an accessible cross inside the history card without a separate b
 });
 
 test("history list reserves ten complete cards and nine gaps before scrolling", () => {
-  assert.match(styles, /\.history-list \{[^}]*grid-auto-rows: 66px;[^}]*align-content: start;[^}]*gap: 7px;[^}]*height: calc\(10 \* 66px \+ 9 \* 7px\);[^}]*overflow: auto;/);
+  assert.match(styles, /\.history-list \{[^}]*--history-card-height: 88px;[^}]*grid-auto-rows: var\(--history-card-height\);[^}]*align-content: start;[^}]*gap: 7px;[^}]*height: calc\(10 \* var\(--history-card-height\) \+ 9 \* 7px\);[^}]*overflow: auto;/);
+});
+
+test("history content stays inside cards and truncates long metadata", () => {
+  assert.match(styles, /\.history-item \{[^}]*min-height: 0;[^}]*overflow: hidden;/);
+  assert.match(styles, /\.history-details \{[^}]*min-height: 0;[^}]*max-height: 100%;[^}]*overflow: hidden;/);
+  assert.match(styles, /\.history-date \{[^}]*min-width: 0;[^}]*max-width: 60%;[^}]*overflow: hidden;[^}]*text-overflow: ellipsis;/);
+  assert.match(styles, /\.history-prompt \{[^}]*overflow: hidden;[^}]*overflow-wrap: anywhere;[^}]*-webkit-line-clamp: 2;/);
+});
+
+test("MV deletion uses its revision endpoint and never clears the source song", async () => {
+  const h = harness();
+  const project = {id: "mv", kind: "mv", revision: "rev", music_source_id: "item"};
+  h.context.mvProjects = [project];
+  h.context.currentMV = project;
+  h.context.fetch = async (url, options) => {
+    h.calls.push([url, options.method, JSON.parse(options.body)]);
+    return {ok: true, json: async () => ({deleted: "mv"})};
+  };
+  await h.context.deleteHistoryItem(project);
+  assert.ok(h.calls.some(call => Array.isArray(call) && call[0] === "/api/mv-projects/mv"
+    && call[2].revision === "rev"));
+  assert.equal(h.context.currentMV, null);
+  assert.equal(h.context.currentJob.id, "item");
+  assert.equal(h.frame.dataset.firstFrameId, "item");
+  assert.ok(h.calls.includes("mv-reload"));
+  assert.ok(!h.calls.includes("pause"));
+});
+
+test("MV conflict retains the editor and busy save blocks deletion", async () => {
+  const h = harness({ok: false, error: "mv_conflict"});
+  const project = {id: "mv", kind: "mv", revision: "stale"};
+  h.context.currentMV = project;
+  await h.context.deleteHistoryItem(project);
+  assert.equal(h.context.currentMV, project);
+  assert.match(h.status.textContent, /mv_conflict/);
+  h.calls.length = 0;
+  h.context.mvBusy = true;
+  await h.context.deleteHistoryItem(project);
+  assert.equal(h.calls.length, 0);
 });

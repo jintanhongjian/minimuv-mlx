@@ -21,17 +21,65 @@ const promptSettingTranslations = {
   ru: ["Настройки промптов", "Редактируйте инструкции локальной текстовой модели, а не сюжет. Сохраняются в system_prompts.json и применяются к следующему запросу без перезапуска.", "Назначение", "Общие правила оптимизации", "Оптимизация видео", "Оптимизация изображений", "Оптимизация музыки", "Автоматическая раскадровка", "Роль", "Задача", "Правила и ограничения", "Формат ответа", "Роль, которую выполняет модель.", "Как обрабатывать исходный текст.", "Что сохранять, избегать или приоритизировать.", "Сохраните ожидаемые имена полей JSON.", "Эта задача добавляется к общим правилам. Роль, ограничения и формат трёх режимов меняются в общих правилах.", "Оставьте {shot_count} ровно один раз; он заменится запрошенным числом кадров.", "Просмотр полного системного промпта", "Несохранённый пример с 8 кадрами; запрос использует выбранное число.", "Проверка JSON, ограничения полей и длительности не меняются. Некорректные ответы отклоняются.", "Восстановить значения для этого назначения", "Отмена", "Сохранить", "Сохранение…", "Сохранено. Новые запросы используют эти промпты.", "Не удалось загрузить или сохранить промпты", "Файл изменён в другом месте. Закройте и откройте снова; ваши изменения не сохранены.", "Отменить несохранённые изменения?", "Заменить изменения этого назначения значениями по умолчанию? Сохраните для применения."]
 };
 
+const promptTaskKeys = ["mv", "storyboard", "mv_storyboard", "skill_conversion", "inherited", "previewNote"];
+const promptTaskTranslations = {
+  en: ["MV visual prompt optimization", "Long-video story storyboard", "Music MV visual storyboard", "Skill knowledge conversion", "Appended to the shared optimization rules. Shared rules apply to video, MV, image and music.", "Configured instructions preview (8 sample shots). Runtime timing, reference IDs and selected Skills are appended by the host; the Skill conversion contract and Schema are fixed."],
+  "zh-CN": ["MV 画面提示词优化", "长视频故事分镜", "音乐 MV 画面分镜", "Skill 知识转换", "追加到共用优化规则后；共用规则适用于视频、MV、图像和音乐四类优化。", "预览当前配置（示例为 8 镜）。宿主另外追加实际时序、参考身份和所选 Skill；Skill 转换合同与 Schema 固定不可编辑。"],
+  "zh-TW": ["MV 畫面提示詞最佳化", "長影片故事分鏡", "音樂 MV 畫面分鏡", "Skill 知識轉換", "附加至共用最佳化規則；共用規則適用於影片、MV、圖像和音樂四類。", "預覽目前設定（範例為 8 鏡）。宿主另加實際時序、參考身分及所選 Skill；Skill 轉換合約與 Schema 固定不可編輯。"],
+  fr: ["Optimisation visuelle MV", "Storyboard narratif longue vidéo", "Storyboard visuel MV musical", "Conversion des connaissances Skill", "Ajout aux règles communes de vidéo, MV, image et musique.", "Aperçu configuré (8 plans). L’hôte ajoute les durées, références et Skills choisis. Le contrat et le Schema de conversion Skill sont fixes."],
+  de: ["MV-Bildprompt optimieren", "Storyboard für lange Videos", "Visuelles Musik-MV-Storyboard", "Skill-Wissen konvertieren", "Ergänzt die gemeinsamen Regeln für Video, MV, Bild und Musik.", "Konfigurierte Vorschau (8 Szenen). Laufzeit, Referenzen und gewählte Skills ergänzt der Host. Skill-Vertrag und Schema sind fest."],
+  ja: ["MV映像プロンプト最適化", "長編動画の物語絵コンテ", "音楽MV映像絵コンテ", "Skill知識変換", "動画・MV・画像・音楽の共通最適化ルールに追加されます。", "設定のプレビュー（8カットの例）。実際の時間・参照ID・選択Skillはホストが追加します。Skill変換契約とSchemaは固定です。"],
+  ko: ["MV 시각 프롬프트 최적화", "장편 영상 이야기 스토리보드", "음악 MV 시각 스토리보드", "Skill 지식 변환", "영상·MV·이미지·음악의 공통 최적화 규칙 뒤에 추가됩니다.", "설정 미리보기(8장면). 실제 시간·참조 ID·선택 Skill은 호스트가 추가합니다. Skill 변환 계약과 Schema는 고정입니다."],
+  es: ["Optimización visual MV", "Storyboard narrativo de vídeo largo", "Storyboard visual de MV musical", "Conversión de conocimientos Skill", "Se añade a las reglas comunes de vídeo, MV, imagen y música.", "Vista de configuración (8 planos). El anfitrión añade tiempos, referencias y Skills elegidos. El contrato y Schema de conversión Skill son fijos."],
+  pt: ["Otimização visual MV", "Storyboard narrativo de vídeo longo", "Storyboard visual de MV musical", "Conversão de conhecimento Skill", "Acrescentado às regras comuns de vídeo, MV, imagem e música.", "Prévia configurada (8 cenas). O host acrescenta tempos, referências e Skills escolhidos. O contrato e Schema de conversão Skill são fixos."],
+  tr: ["MV görsel istem optimizasyonu", "Uzun video hikâye planı", "Müzik MV görsel sahne planı", "Skill bilgi dönüşümü", "Video, MV, görsel ve müzik ortak kurallarına eklenir.", "Yapılandırma önizlemesi (8 sahne). Süreleri, referansları ve seçili Skills’i sunucu ekler. Skill dönüşüm sözleşmesi ve Schema sabittir."],
+  ar: ["تحسين التعليمات المرئية لـ MV", "مشاهد قصة فيديو طويل", "مشاهد مرئية لـ MV موسيقي", "تحويل معرفة Skill", "تُضاف إلى القواعد المشتركة للفيديو وMV والصور والموسيقى.", "معاينة الإعدادات (8 مشاهد). يضيف المضيف التوقيت والمراجع وSkills المختارة. عقد تحويل Skill وSchema ثابتان."],
+  vi: ["Tối ưu lời nhắc hình ảnh MV", "Phân cảnh truyện video dài", "Phân cảnh hình ảnh MV âm nhạc", "Chuyển đổi kiến thức Skill", "Thêm vào quy tắc chung cho video, MV, ảnh và nhạc.", "Xem trước cấu hình (8 cảnh). Máy chủ thêm thời gian, tham chiếu và Skill đã chọn. Hợp đồng và Schema chuyển đổi Skill là cố định."],
+  id: ["Optimasi prompt visual MV", "Storyboard cerita video panjang", "Storyboard visual MV musik", "Konversi pengetahuan Skill", "Ditambahkan ke aturan bersama untuk video, MV, gambar dan musik.", "Pratinjau konfigurasi (8 adegan). Host menambahkan waktu, referensi dan Skill pilihan. Kontrak dan Schema konversi Skill tetap."],
+  ru: ["Оптимизация визуального промпта MV", "Сюжетная раскадровка длинного видео", "Визуальная раскадровка музыкального MV", "Преобразование знаний Skill", "Дополняет общие правила для видео, MV, изображений и музыки.", "Предпросмотр настроек (8 кадров). Хост добавляет время, ссылки и выбранные Skills. Контракт и Schema преобразования Skill фиксированы."]
+};
+
+const promptAssistantKeys = ["assistant", "assistantNote", "assistantOutputHelp"];
+const promptAssistantTranslations = {
+  en: ["AI assistant", "The UI response language is appended automatically and shown in the preview. Write actions still require confirmation.", "How the assistant should explain plans, results and errors; JSON is not required."],
+  "zh-CN": ["AI 助手", "自动追加当前界面的回复语言，预览中可查看。写操作仍需用户确认。", "助手如何说明计划、结果和错误；无需限定为 JSON。"],
+  "zh-TW": ["AI 助理", "自動附加目前介面的回覆語言，可在預覽中查看。寫入操作仍需使用者確認。", "助理如何說明計畫、結果及錯誤；無需限定為 JSON。"],
+  fr: ["Assistant IA", "La langue de réponse de l’interface est ajoutée à l’aperçu. Les écritures nécessitent toujours une confirmation.", "Comment expliquer les plans, résultats et erreurs ; JSON non obligatoire."],
+  de: ["KI-Assistent", "Die Antwortsprache der Oberfläche wird in der Vorschau ergänzt. Schreibaktionen erfordern weiterhin Bestätigung.", "Erläuterung von Plänen, Ergebnissen und Fehlern; JSON ist nicht erforderlich."],
+  ja: ["AIアシスタント", "画面の言語を応答言語として自動追加し、プレビューに表示します。書き込みには引き続き確認が必要です。", "計画・結果・エラーの説明方法。JSON形式は不要です。"],
+  ko: ["AI 도우미", "화면의 응답 언어가 자동 추가되어 미리보기에 표시됩니다. 쓰기 작업은 여전히 확인이 필요합니다.", "계획·결과·오류 설명 방식. JSON 형식은 필수가 아닙니다."],
+  es: ["Asistente IA", "El idioma de respuesta de la interfaz se añade a la vista previa. Las escrituras siguen requiriendo confirmación.", "Cómo explicar planes, resultados y errores; JSON no es obligatorio."],
+  pt: ["Assistente IA", "O idioma de resposta da interface é acrescentado à prévia. Escritas ainda exigem confirmação.", "Como explicar planos, resultados e erros; JSON não é obrigatório."],
+  tr: ["AI asistanı", "Arayüzün yanıt dili otomatik eklenir ve önizlemede gösterilir. Yazma işlemleri hâlâ onay gerektirir.", "Plan, sonuç ve hataların açıklanması; JSON zorunlu değildir."],
+  ar: ["مساعد الذكاء الاصطناعي", "تُضاف لغة الرد المحددة في الواجهة تلقائيًا وتظهر في المعاينة. لا تزال عمليات الكتابة تتطلب التأكيد.", "كيفية شرح الخطط والنتائج والأخطاء؛ لا يلزم تنسيق JSON."],
+  vi: ["Trợ lý AI", "Ngôn ngữ trả lời của giao diện được thêm vào bản xem trước. Thao tác ghi vẫn cần xác nhận.", "Cách giải thích kế hoạch, kết quả và lỗi; không bắt buộc JSON."],
+  id: ["Asisten AI", "Bahasa respons antarmuka otomatis ditambahkan ke pratinjau. Tindakan penulisan tetap memerlukan konfirmasi.", "Cara menjelaskan rencana, hasil dan kesalahan; JSON tidak wajib."],
+  ru: ["ИИ-ассистент", "Язык ответа интерфейса добавляется в предпросмотр. Операции записи по-прежнему требуют подтверждения.", "Как объяснять планы, результаты и ошибки; JSON не обязателен."]
+};
+
 function promptSettingText(key) {
-  const values = promptSettingTranslations[document.querySelector("#language").value] || promptSettingTranslations.en;
+  const language = document.querySelector("#language").value;
+  if (promptAssistantKeys.includes(key)) {
+    return (promptAssistantTranslations[language] || promptAssistantTranslations.en)[promptAssistantKeys.indexOf(key)];
+  }
+  if (promptTaskKeys.includes(key)) {
+    return (promptTaskTranslations[language] || promptTaskTranslations.en)[promptTaskKeys.indexOf(key)];
+  }
+  const values = promptSettingTranslations[language] || promptSettingTranslations.en;
   return values[promptSettingKeys.indexOf(key)];
 }
 
-function compilePromptPreview(config, profile) {
+function compilePromptPreview(config, profile, context = {}, locale = "en") {
   const profiles = config.profiles;
-  if (["video", "image", "music"].includes(profile)) {
+  if (["video", "mv", "image", "music"].includes(profile)) {
     return [...Object.values(profiles.enhancement), profiles[profile].task].join(" ");
   }
-  return Object.values(profiles[profile]).join(" ").replace("{shot_count}", "8");
+  const instructions = Object.values(profiles[profile]).join(" ").replace("{shot_count}", "8");
+  const fixed = context[profile];
+  if (profile === "assistant") {
+    return instructions + (fixed?.language_suffixes?.[locale] || "");
+  }
+  return fixed ? fixed.prefix + instructions + fixed.suffix : instructions;
 }
 
 (() => {
@@ -42,6 +90,7 @@ function compilePromptPreview(config, profile) {
   const status = document.querySelector("#prompts-status");
   let draft = null;
   let defaults = null;
+  let previewContext = {};
   let revision = "";
   let original = "";
   let saving = false;
@@ -60,17 +109,18 @@ function compilePromptPreview(config, profile) {
     });
     document.querySelector("#prompts-close").setAttribute("aria-label", promptSettingText("cancel"));
     updateNote();
+    preview();
   }
 
   function updateNote() {
-    document.querySelector("#prompts-profile-note").textContent = select.value === "storyboard"
-      ? promptSettingText("count") : ["video", "image", "music"].includes(select.value)
-        ? promptSettingText("inherited") : "";
+    document.querySelector("#prompts-profile-note").textContent = ["storyboard", "mv_storyboard"].includes(select.value)
+      ? promptSettingText("count") : ["video", "mv", "image", "music"].includes(select.value)
+        ? promptSettingText("inherited") : select.value === "assistant" ? promptSettingText("assistantNote") : "";
   }
 
   function preview() {
     document.querySelector("#prompts-preview").textContent = draft
-      ? compilePromptPreview(draft, select.value) : "";
+      ? compilePromptPreview(draft, select.value, previewContext, document.querySelector("#language").value) : "";
   }
 
   function renderFields() {
@@ -82,7 +132,8 @@ function compilePromptPreview(config, profile) {
       const note = document.createElement("p");
       note.id = `prompt-help-${key}`;
       note.className = "settings-field-note";
-      note.dataset.promptI18n = `${key}Help`;
+      note.dataset.promptI18n = select.value === "assistant" && key === "output"
+        ? "assistantOutputHelp" : `${key}Help`;
       const input = document.createElement("textarea");
       input.id = label.htmlFor;
       input.value = value;
@@ -128,6 +179,7 @@ function compilePromptPreview(config, profile) {
       if (!response.ok) throw new Error(data.detail || data.error);
       draft = structuredClone(data.config);
       defaults = data.defaults;
+      previewContext = data.preview_context || {};
       revision = data.revision;
       original = JSON.stringify(draft);
       select.replaceChildren(...Object.keys(draft.profiles).map(key => {

@@ -1,6 +1,6 @@
 # Bundled HiDream-O1 MLX inference
 
-MiniMuv vendors the unmodified inference sources published by
+MiniMuv vendors the inference sources published by
 [Mrbizarro](https://huggingface.co/Mrbizarro) in
 [mlx-community/HiDream-O1-Image-Dev-mlx-bf16](https://huggingface.co/mlx-community/HiDream-O1-Image-Dev-mlx-bf16/tree/33c7a00bce8e3410304f83ec408a15a1eb6782df/scripts/hidream_o1).
 Pinned upstream revision: `33c7a00bce8e3410304f83ec408a15a1eb6782df`.
@@ -36,13 +36,21 @@ uv pip install --python third_party/hidream_o1/.venv/bin/python \
 Direct dependencies are pinned to the versions used by the existing local runtime.
 Use `requirements-music.txt` instead when also enabling Music3 in this environment.
 See the main [deployment instructions](../../README.md#optional-image-generation)
-for separate model downloads and migration details. Reference-image editing is
-not exposed by the studio; the upstream edit CLI uses PyTorch processor tensors
-and is outside this text-to-image deployment's dependency set.
+for separate model downloads and migration details. The studio exposes up to
+three ordered reference images for HiDream editing and subject-driven generation.
+Local modifications use NumPy processor tensors (no PyTorch dependency), close
+input image handles, validate image formats/pixels and enforce the three-image
+limit in both the CLI and sample builder. The image-only Qwen3VL processor uses
+the model's tokenizer, chat template and Pillow/NumPy Qwen image processor;
+an explicitly unsupported video component avoids loading the unused
+Torchvision processor. The CLI loads the MLX backbone separately.
+Multi-reference quality remains
+model-dependent; single-reference editing is the upstream's better-tested path.
 
 ## Source integrity
 
-SHA-256 of the unmodified files, verified against the pinned upstream revision:
+Original upstream SHA-256 values, verified against the pinned revision before
+the local changes above (not hashes of the modified CLI and helper):
 
 | File | SHA-256 |
 |---|---|

@@ -62,6 +62,18 @@
       "vocoder.safetensors": 258313851
     }
   },
+  "ltx-2.3-dev-q4": {
+    "revision": "56a5866d638ecfe37c54d348e88938235185c2d4",
+    "files": {
+      "LICENSE": 21399, "README.md": 2977,
+      "audio_vae.safetensors": 106509048, "config.json": 951,
+      "connector.safetensors": 6344495512, "embedded_config.json": 7234,
+      "quantize_config.json": 100, "split_model.json": 1835,
+      "transformer-dev.safetensors": 11322002285,
+      "vae_decoder.safetensors": 814349531, "vae_encoder.safetensors": 637885319,
+      "vocoder.safetensors": 258313851
+    }
+  },
   "gemma-3-12b-it-4bit": {
     "revision": "86cc6a8dedbc456dd0e4af01a9d09f396f77e558",
     "files": {
